@@ -1,0 +1,7 @@
+{
+  "name": "Cơ sở giáo dục Thầy Hoàng - Vạn Phú",
+  "description": "Website chính thức Cơ sở giáo dục Thầy Hoàng - Vạn Phú, Thái Nguyên. Tuyển sinh liên tục các lớp 6 đến 12 các môn Toán, Lí, Hoá, Anh, Văn, Sinh. Đăng ký tư vấn trực tuyến nhanh chóng.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+

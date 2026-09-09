@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Rowdies:wght@700&amp;family=Plus+Jakarta+Sans:wght@800&amp;display=swap');
+      .title-navy {
+        font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+        font-size: 35px;
+        font-weight: 800;
+        fill: #16336e;
+        letter-spacing: 0.05em;
+        text-anchor: middle;
+      }
+      .name-red {
+        font-family: 'Rowdies', 'Impact', 'Plus Jakarta Sans', system-ui, sans-serif;
+        font-size: 44px;
+        font-weight: 900;
+        fill: #e11d24;
+        letter-spacing: 0.02em;
+        text-anchor: middle;
+      }
+    </style>
+    <filter id="subtle-shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+
+  <!-- Background Circle Glow / Clean White Ground -->
+  <circle cx="250" cy="250" r="240" fill="#ffffff" />
+
+  <!-- Orbit Ring Top Arc -->
+  <path d="M 120 72 A 205 205 0 0 1 380 72" fill="none" stroke="#16336e" stroke-width="7" stroke-linecap="round"/>
+  
+  <!-- Orbit Ring Side / Bottom Arcs -->
+  <path d="M 455 240 A 205 205 0 0 0 380 72" fill="none" stroke="#16336e" stroke-width="7" stroke-linecap="round"/>
+  <path d="M 45 240 A 205 205 0 0 1 120 72" fill="none" stroke="#16336e" stroke-width="7" stroke-linecap="round"/>
+  
+  <!-- Orbit Ring Bottom Arc -->
+  <path d="M 90 375 A 205 205 0 0 0 410 375" fill="none" stroke="#16336e" stroke-width="7" stroke-linecap="round"/>
+
+  <!-- Orange/Yellow Satellite Nodes -->
+  <!-- Top Left Node -->
+  <circle cx="120" cy="72" r="19" fill="#f59e0b" />
+  <!-- Top Right Node -->
+  <circle cx="380" cy="72" r="19" fill="#f59e0b" />
+  <!-- Bottom Node -->
+  <circle cx="250" cy="445" r="19" fill="#f59e0b" />
+
+  <!-- Graduation Cap (Mortarboard) -->
+  <!-- Top Diamond -->
+  <polygon points="250,55 410,132 250,205 90,132" fill="#16336e" />
+  
+  <!-- Skull Cap Body with rounded base cut -->
+  <path d="M 165,168 L 165,220 C 165,238 200,250 250,250 C 300,250 335,238 335,220 L 335,168 Z" fill="#16336e" />
+  
+  <!-- Tassel -->
+  <!-- Tassel Ribbon & Drop -->
+  <path d="M 105,138 L 105,220" stroke="#16336e" stroke-width="5" stroke-linecap="round"/>
+  <!-- Tassel end bulb -->
+  <circle cx="105" cy="225" r="7" fill="#16336e" />
+  
+  <!-- Central Digital Cursor Arrow (White pointer pointing up) -->
+  <polygon points="235,152 268,212 253,214 266,238 250,246 238,222 225,232" fill="#ffffff" filter="url(#subtle-shadow)" />
+
+  <!-- Text Section -->
+  <!-- Line 1: CƠ SỞ GIÁO DỤC -->
+  <text x="250" y="285" class="title-navy">CƠ SỞ GIÁO DỤC</text>
+
+  <!-- Line 2: THẦY HOÀNG VẠN PHÚ -->
+  <text x="250" y="348" class="name-red">THẦY HOÀNG VẠN PHÚ</text>
+
+  <!-- Bottom Accent Dots / Separator under name -->
+  <circle cx="250" cy="355" r="3.5" fill="#e11d24" />
+</svg>
