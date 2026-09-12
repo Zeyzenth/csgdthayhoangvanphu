@@ -8,11 +8,13 @@ import { ContactMapSection } from './components/ContactMapSection';
 import { Footer } from './components/Footer';
 import { FloatingContacts } from './components/FloatingContacts';
 import { ConsultationModal } from './components/ConsultationModal';
+import { CommunityQrModal } from './components/CommunityQrModal';
 import { GradeLevel, Course } from './types';
 
 export default function App() {
   const [selectedGrade, setSelectedGrade] = useState<GradeLevel | 'all'>('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCommunityModalOpen, setIsCommunityModalOpen] = useState(false);
   const [preselectedGradeForModal, setPreselectedGradeForModal] = useState<GradeLevel | undefined>(undefined);
   const [preselectedCourseForModal, setPreselectedCourseForModal] = useState<Course | null>(null);
 
@@ -36,13 +38,17 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans">
       {/* Sticky Header with Emergency Contact & Social Links */}
-      <Navbar onOpenConsultationModal={() => handleOpenConsultationModal()} />
+      <Navbar
+        onOpenConsultationModal={() => handleOpenConsultationModal()}
+        onOpenCommunityModal={() => setIsCommunityModalOpen(true)}
+      />
 
       {/* Main Content */}
       <main className="flex-grow">
         {/* Hero Section */}
         <Hero
           onOpenConsultationModal={(grade) => handleOpenConsultationModal(grade)}
+          onOpenCommunityModal={() => setIsCommunityModalOpen(true)}
           onSelectGradeFilter={(grade) => setSelectedGrade(grade)}
         />
 
@@ -60,6 +66,7 @@ export default function App() {
           preselectedGrade={selectedGrade !== 'all' ? selectedGrade : undefined}
           preselectedCourse={preselectedCourseForModal}
           onClearPreselectedCourse={() => setPreselectedCourseForModal(null)}
+          onOpenCommunityModal={() => setIsCommunityModalOpen(true)}
         />
 
         {/* Address, Hotline, Facebook & Google Maps Section */}
@@ -70,10 +77,14 @@ export default function App() {
       <Footer
         onSelectGrade={(grade) => setSelectedGrade(grade)}
         onOpenConsultation={handleScrollToConsultation}
+        onOpenCommunityModal={() => setIsCommunityModalOpen(true)}
       />
 
-      {/* Floating Action Buttons (Hotline, Zalo, Facebook, Quick Consultation) */}
-      <FloatingContacts onOpenConsultation={() => handleOpenConsultationModal()} />
+      {/* Floating Action Buttons (Hotline, Zalo, Facebook, Quick Consultation, Community) */}
+      <FloatingContacts
+        onOpenConsultation={() => handleOpenConsultationModal()}
+        onOpenCommunityModal={() => setIsCommunityModalOpen(true)}
+      />
 
       {/* Pop-up Consultation Modal */}
       <ConsultationModal
@@ -81,6 +92,12 @@ export default function App() {
         onClose={() => setIsModalOpen(false)}
         preselectedGrade={preselectedGradeForModal}
         preselectedCourse={preselectedCourseForModal}
+      />
+
+      {/* Community QR Code & Zalo Access Modal */}
+      <CommunityQrModal
+        isOpen={isCommunityModalOpen}
+        onClose={() => setIsCommunityModalOpen(false)}
       />
     </div>
   );

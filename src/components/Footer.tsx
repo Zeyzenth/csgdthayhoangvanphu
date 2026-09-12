@@ -1,14 +1,16 @@
 import React from 'react';
 import { Logo } from './Logo';
-import { MapPin, Phone, MessageCircle, Facebook, Clock, ChevronRight } from 'lucide-react';
+import { MapPin, Phone, MessageCircle, Facebook, Clock, ChevronRight, Users, QrCode, ExternalLink } from 'lucide-react';
 import { GradeLevel, Subject } from '../types';
+import { ZALO_COMMUNITY_LINK } from './CommunityQrModal';
 
 interface FooterProps {
   onSelectGrade: (grade: GradeLevel) => void;
   onOpenConsultation: () => void;
+  onOpenCommunityModal: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onSelectGrade, onOpenConsultation }) => {
+export const Footer: React.FC<FooterProps> = ({ onSelectGrade, onOpenConsultation, onOpenCommunityModal }) => {
   const grades: GradeLevel[] = ['6', '7', '8', '9', '10', '11', '12'];
   const subjects: Subject[] = ['Toán', 'Lí', 'Hoá', 'Anh', 'Văn', 'Sinh'];
 
@@ -63,13 +65,21 @@ export const Footer: React.FC<FooterProps> = ({ onSelectGrade, onOpenConsultatio
               </div>
             </div>
 
-            {/* Social Connect */}
-            <div className="flex items-center gap-3 pt-2">
+            {/* Social Connect & Community */}
+            <div className="flex flex-wrap items-center gap-2 pt-2">
+              <button
+                onClick={onOpenCommunityModal}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 text-xs font-black transition-all cursor-pointer shadow-sm hover:scale-105"
+                title="Nhóm Zalo cộng đồng hỗ trợ & giải đáp thắc mắc"
+              >
+                <Users className="w-3.5 h-3.5 text-slate-950" />
+                <span>Nhóm Zalo Giải Đáp</span>
+              </button>
               <a
                 href="https://www.facebook.com/share/1DErVey6i8/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-colors"
               >
                 <Facebook className="w-3.5 h-3.5" />
                 <span>Facebook Trung Tâm</span>
@@ -78,10 +88,10 @@ export const Footer: React.FC<FooterProps> = ({ onSelectGrade, onOpenConsultatio
                 href="https://zalo.me/0985972525"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-colors"
               >
                 <MessageCircle className="w-3.5 h-3.5" />
-                <span>Chat Zalo Với Trung Tâm</span>
+                <span>Chat Zalo</span>
               </a>
             </div>
           </div>
@@ -151,13 +161,42 @@ export const Footer: React.FC<FooterProps> = ({ onSelectGrade, onOpenConsultatio
               ))}
             </ul>
 
-            <div className="pt-2">
+            <div className="pt-2 space-y-3">
               <button
                 onClick={onOpenConsultation}
                 className="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl transition-colors shadow-sm cursor-pointer"
               >
                 Đăng Ký Tư Vấn Ngay
               </button>
+
+              <div className="bg-slate-900/90 border border-amber-400/30 rounded-2xl p-3 space-y-2">
+                <div className="flex items-center gap-1.5 text-amber-300 text-xs font-bold">
+                  <Users className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Nhóm Giải Đáp Zalo</span>
+                </div>
+                <p className="text-[11px] text-slate-400 leading-snug">
+                  Tham gia cộng đồng để hỏi lịch học, tài liệu & giải đáp thắc mắc trực tiếp.
+                </p>
+                <div className="flex items-center gap-1.5 pt-0.5">
+                  <a
+                    href={ZALO_COMMUNITY_LINK}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 py-1.5 px-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-[11px] rounded-lg text-center transition-colors flex items-center justify-center gap-1"
+                  >
+                    <span>Vào Nhóm</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                  <button
+                    onClick={onOpenCommunityModal}
+                    className="py-1.5 px-2 bg-white/10 hover:bg-white/20 text-slate-200 text-[11px] font-semibold rounded-lg transition-colors flex items-center gap-1 cursor-pointer"
+                    title="Xem mã QR"
+                  >
+                    <QrCode className="w-3 h-3 text-amber-300" />
+                    <span>Mã QR</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -11,19 +11,25 @@ import {
   Check,
   ExternalLink,
   PhoneCall,
-  Calendar
+  Calendar,
+  Users,
+  QrCode
 } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
+import { ZALO_COMMUNITY_LINK } from './CommunityQrModal';
 
 interface ConsultationSectionProps {
   preselectedGrade?: GradeLevel;
   preselectedCourse?: Course | null;
   onClearPreselectedCourse?: () => void;
+  onOpenCommunityModal?: () => void;
 }
 
 export const ConsultationSection: React.FC<ConsultationSectionProps> = ({
   preselectedGrade,
   preselectedCourse,
   onClearPreselectedCourse,
+  onOpenCommunityModal,
 }) => {
   const [copiedPhone, setCopiedPhone] = useState<string | null>(null);
 
@@ -108,6 +114,59 @@ export const ConsultationSection: React.FC<ConsultationSectionProps> = ({
             </div>
           </div>
         )}
+
+        {/* Community Group Banner (Nhóm Cộng Đồng Hỗ Trợ & Giải Đáp Thắc Mắc) */}
+        <div className="mb-8 bg-gradient-to-r from-blue-900/90 via-indigo-900/90 to-blue-950/90 border-2 border-amber-400/40 rounded-3xl p-6 sm:p-7 shadow-2xl backdrop-blur-md relative overflow-hidden">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
+            <div className="flex-1 space-y-3 text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 bg-amber-400/20 border border-amber-300/40 text-amber-300 px-3 py-1 rounded-full text-xs font-black">
+                <Users className="w-4 h-4" />
+                <span>CỘNG ĐỒNG ZALO PHỤ HUYNH & HỌC SINH</span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-black text-white leading-tight">
+                Nhóm Cộng Đồng Hỗ Trợ & Giải Đáp Thắc Mắc
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
+                Kênh giao lưu, nhận tài liệu học tập chọn lọc miễn phí, cập nhật lịch khai giảng các lớp (6 - 12) và được Thầy Hoàng cùng đội ngũ giáo viên trực tiếp tư vấn, giải đáp thắc mắc kịp thời cho phụ huynh & học sinh.
+              </p>
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-1">
+                <a
+                  href={ZALO_COMMUNITY_LINK}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-sm px-5 py-3 rounded-xl shadow-lg transition-all transform hover:scale-105 cursor-pointer"
+                >
+                  <Users className="w-4 h-4 text-slate-950" />
+                  <span>Bấm Tham Gia Nhóm Zalo Ngay</span>
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+                {onOpenCommunityModal && (
+                  <button
+                    type="button"
+                    onClick={onOpenCommunityModal}
+                    className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold text-sm px-4 py-3 rounded-xl transition-all cursor-pointer"
+                  >
+                    <QrCode className="w-4 h-4 text-amber-300" />
+                    <span>Xem Mã QR Quét Trên Điện Thoại</span>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* QR Thumbnail */}
+            <div className="flex flex-col items-center bg-white p-3.5 rounded-2xl shadow-xl border-2 border-white/20 flex-shrink-0 text-slate-900">
+              <QRCodeSVG
+                value={ZALO_COMMUNITY_LINK}
+                size={135}
+                level="H"
+              />
+              <span className="text-[11px] font-bold text-slate-800 mt-2 flex items-center gap-1">
+                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                <span>Quét mã Zalo vào nhóm</span>
+              </span>
+            </div>
+          </div>
+        </div>
 
         {/* Primary Direct Channels Grid (4 Cards) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">

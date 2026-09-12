@@ -5,11 +5,13 @@ import { GradeLevel } from '../types';
 
 interface HeroProps {
   onOpenConsultationModal: (prefillGrade?: GradeLevel) => void;
+  onOpenCommunityModal: () => void;
   onSelectGradeFilter: (grade: GradeLevel) => void;
 }
 
 export const Hero: React.FC<HeroProps> = ({
   onOpenConsultationModal,
+  onOpenCommunityModal,
   onSelectGradeFilter,
 }) => {
   const grades: GradeLevel[] = ['6', '7', '8', '9', '10', '11', '12'];
@@ -84,7 +86,7 @@ export const Hero: React.FC<HeroProps> = ({
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row items-center gap-3 pt-2 justify-center lg:justify-start">
+            <div className="flex flex-col sm:flex-row items-center gap-3 pt-2 justify-center lg:justify-start flex-wrap">
               <button
                 onClick={() => onOpenConsultationModal()}
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold text-base px-6 py-3.5 rounded-xl shadow-lg hover:shadow-red-500/25 transition-all transform hover:-translate-y-0.5 cursor-pointer"
@@ -95,11 +97,19 @@ export const Hero: React.FC<HeroProps> = ({
               </button>
 
               <button
+                onClick={onOpenCommunityModal}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-base px-5 py-3.5 rounded-xl shadow-lg hover:shadow-amber-500/25 transition-all transform hover:-translate-y-0.5 cursor-pointer border border-amber-300"
+              >
+                <Users className="w-5 h-5 text-slate-950" />
+                <span>Nhóm Zalo Hỗ Trợ & Giải Đáp</span>
+              </button>
+
+              <button
                 onClick={scrollToCourses}
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold text-base px-5 py-3.5 rounded-xl transition-all cursor-pointer"
               >
                 <BookOpen className="w-4 h-4 text-amber-400" />
-                <span>Xem Bảng Lớp & Môn Học</span>
+                <span>Bảng Lớp & Môn Học</span>
               </button>
             </div>
 
@@ -107,7 +117,7 @@ export const Hero: React.FC<HeroProps> = ({
             <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-4 text-xs text-slate-300">
               <div className="flex items-center gap-1.5">
                 <Phone className="w-4 h-4 text-amber-400" />
-                <span>Hotline trực tiếp:</span>
+                <span>Hotline:</span>
                 <a href="tel:0985972525" className="text-white font-bold hover:text-amber-300 underline">
                   0985.972.525
                 </a>
@@ -124,8 +134,17 @@ export const Hero: React.FC<HeroProps> = ({
                   rel="noopener noreferrer"
                   className="text-emerald-300 hover:text-emerald-200 underline font-semibold"
                 >
-                  Chat Zalo với trung tâm (Phản hồi ngay)
+                  Chat Zalo cá nhân
                 </a>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Users className="w-4 h-4 text-amber-400" />
+                <button
+                  onClick={onOpenCommunityModal}
+                  className="text-amber-300 hover:text-amber-200 underline font-bold cursor-pointer"
+                >
+                  Nhóm cộng đồng giải đáp thắc mắc
+                </button>
               </div>
             </div>
           </div>

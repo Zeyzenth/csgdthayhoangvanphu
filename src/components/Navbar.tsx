@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Logo } from './Logo';
-import { Phone, MapPin, MessageCircle, Menu, X, Facebook, Sparkles } from 'lucide-react';
+import { Phone, MapPin, MessageCircle, Menu, X, Facebook, Sparkles, Users } from 'lucide-react';
+import { ZALO_COMMUNITY_LINK } from './CommunityQrModal';
 
 interface NavbarProps {
   onOpenConsultationModal: () => void;
+  onOpenCommunityModal: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultationModal }) => {
+export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultationModal, onOpenCommunityModal }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
@@ -55,8 +57,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultationModal }) => {
 
             <span className="text-slate-500">|</span>
 
-            {/* Social Links */}
+            {/* Social Links & Community */}
             <div className="flex items-center gap-2">
+              <button
+                onClick={onOpenCommunityModal}
+                className="inline-flex items-center gap-1.5 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black px-2.5 py-0.5 rounded text-[11px] transition-all cursor-pointer shadow-sm hover:scale-105"
+                title="Nhóm Zalo cộng đồng hỗ trợ & giải đáp thắc mắc"
+              >
+                <Users className="w-3.5 h-3.5 text-slate-950" />
+                <span>Nhóm Zalo Giải Đáp</span>
+              </button>
               <a
                 href="https://www.facebook.com/share/1DErVey6i8/"
                 target="_blank"
@@ -102,7 +112,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultationModal }) => {
         </nav>
 
         {/* Action Button */}
-        <div className="hidden sm:flex items-center gap-3">
+        <div className="hidden sm:flex items-center gap-2.5">
+          <button
+            onClick={onOpenCommunityModal}
+            className="inline-flex items-center gap-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold text-xs px-3.5 py-2.5 rounded-xl transition-all cursor-pointer shadow-sm"
+            title="Nhóm Zalo hỗ trợ & giải đáp thắc mắc"
+          >
+            <Users className="w-4 h-4 text-amber-600" />
+            <span>Nhóm Zalo Giải Đáp</span>
+          </button>
+
           <button
             onClick={onOpenConsultationModal}
             className="inline-flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold text-sm px-4 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 cursor-pointer"
@@ -149,9 +168,20 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultationModal }) => {
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
+                onOpenCommunityModal();
+              }}
+              className="w-full py-3 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black rounded-xl text-center shadow-md flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <Users className="w-4 h-4 text-slate-950" />
+              <span>Nhóm Zalo Cộng Đồng Hỗ Trợ & Giải Đáp</span>
+            </button>
+
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
                 onOpenConsultationModal();
               }}
-              className="w-full py-3 bg-red-600 text-white font-bold rounded-xl text-center shadow-md flex items-center justify-center gap-2"
+              className="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-center shadow-md flex items-center justify-center gap-2 cursor-pointer"
             >
               <Sparkles className="w-4 h-4 text-amber-300" />
               <span>Đăng Ký Tư Vấn Lớp Học Trực Tuyến</span>

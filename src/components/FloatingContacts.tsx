@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Phone, MessageCircle, Facebook, Sparkles, ChevronUp } from 'lucide-react';
+import { Phone, MessageCircle, Facebook, Sparkles, ChevronUp, Users } from 'lucide-react';
 
 interface FloatingContactsProps {
   onOpenConsultation: () => void;
+  onOpenCommunityModal: () => void;
 }
 
-export const FloatingContacts: React.FC<FloatingContactsProps> = ({ onOpenConsultation }) => {
+export const FloatingContacts: React.FC<FloatingContactsProps> = ({ onOpenConsultation, onOpenCommunityModal }) => {
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   // Monitor scroll for back-to-top
@@ -50,6 +51,19 @@ export const FloatingContacts: React.FC<FloatingContactsProps> = ({ onOpenConsul
         </span>
         <Sparkles className="w-4 h-4 text-amber-300 animate-spin" style={{ animationDuration: '3s' }} />
         <span>Đăng Ký Tư Vấn</span>
+      </button>
+
+      {/* Community Group Floating Button */}
+      <button
+        onClick={onOpenCommunityModal}
+        className="w-12 h-12 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 shadow-xl flex items-center justify-center transition-transform hover:scale-110 border-2 border-white cursor-pointer group relative"
+        title="Nhóm Zalo Cộng Đồng Hỗ Trợ & Giải Đáp Thắc Mắc"
+        aria-label="Nhóm Zalo Cộng Đồng"
+      >
+        <Users className="w-6 h-6 text-slate-950" />
+        <span className="absolute right-14 bg-slate-900 text-white text-[11px] font-bold py-1 px-2.5 rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-md">
+          Nhóm Zalo Giải Đáp Thắc Mắc
+        </span>
       </button>
 
       {/* Facebook Floating Button */}
