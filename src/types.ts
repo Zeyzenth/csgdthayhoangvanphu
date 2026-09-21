@@ -91,8 +91,10 @@ export interface ActiveClass {
   teacher: string;
   schedule: string;
   room?: string;
-  status: 'active' | 'enrolling' | 'upcoming';
+  status: 'active' | 'enrolling' | 'upcoming' | 'full';
   statusLabel: string;
+  isOpen?: boolean;
+  isFull?: boolean;
   students: Student[];
   note?: string;
 }

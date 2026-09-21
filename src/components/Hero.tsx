@@ -1,6 +1,6 @@
 import React from 'react';
 import { Logo } from './Logo';
-import { Sparkles, Phone, MessageCircle, ArrowRight, CheckCircle, ShieldCheck, Users, Award, BookOpen, Clock } from 'lucide-react';
+import { Sparkles, Phone, MessageCircle, ArrowRight, CheckCircle, ShieldCheck, Users, Award, BookOpen } from 'lucide-react';
 import { GradeLevel } from '../types';
 
 interface HeroProps {
@@ -211,21 +211,12 @@ export const Hero: React.FC<HeroProps> = ({
                 </div>
 
                 {/* Location Box */}
-                <div className="p-3.5 bg-blue-50/60 rounded-xl border border-blue-100/80 text-xs text-slate-700 space-y-1">
+                <div className="p-3.5 bg-blue-50/60 rounded-xl border border-blue-100/80 text-xs text-slate-700">
                   <div className="flex items-start gap-2">
                     <span className="text-blue-800 font-bold flex-shrink-0">Địa chỉ:</span>
                     <span className="font-medium text-slate-800">
                       Khu Đô Thị Vạn Phú - Vạn Phú - Thái Nguyên
                     </span>
-                  </div>
-                  <div className="space-y-0.5 text-slate-600 pt-1">
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-3.5 h-3.5 text-blue-600 flex-shrink-0" />
-                      <span>Tiếp đón trực tiếp: <strong className="text-slate-900 font-semibold">7h00 - 18h00</strong></span>
-                    </div>
-                    <div className="flex items-center gap-2 text-[11px] text-slate-500 pl-5">
-                      <span>Hỗ trợ tư vấn: <strong className="text-emerald-700 font-semibold">7h00 - 22h00</strong></span>
-                    </div>
                   </div>
                 </div>
 

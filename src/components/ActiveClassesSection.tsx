@@ -7,7 +7,9 @@ import {
   Sparkles,
   Users,
   CheckCircle2,
-  Eye
+  Eye,
+  Clock,
+  AlertCircle
 } from 'lucide-react';
 import { GradeLevel, Subject, AcademicLevel, ActiveClass } from '../types';
 import { ACTIVE_CLASSES } from '../data/activeClassesData';
@@ -293,7 +295,7 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
               className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 font-bold text-xs transition-colors cursor-pointer self-start sm:self-auto shadow-2xs"
             >
               <Eye className="w-4 h-4 text-blue-800" />
-              <span>Xem danh sách học sinh hiện có (23 em)</span>
+              <span>Xem danh sách học sinh hiện có (49 em)</span>
             </button>
           </div>
 
@@ -321,18 +323,21 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredClasses.map((cls) => {
                 const hasStudents = cls.students && cls.students.length > 0;
-                const isMathCoBan = cls.id === 'toan-12-cb1' || cls.id === 'toan-12-cb2';
+                const isClassFull = cls.isFull || cls.status === 'full';
+                const isClassOpen = cls.isOpen || cls.status === 'enrolling';
 
                 return (
                   <div
                     key={cls.id}
-                    onClick={() => onOpenRosterModal(cls.id)}
-                    className={`bg-white rounded-3xl p-6 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col justify-between relative group cursor-pointer ${
-                      isMathCoBan
-                        ? cls.id === 'toan-12-cb1'
-                          ? 'border-2 border-blue-900/40 ring-1 ring-blue-900/10 hover:border-blue-900'
-                          : 'border-2 border-emerald-500/40 ring-1 ring-emerald-500/10 hover:border-emerald-600'
-                        : 'border border-slate-200/80 hover:border-blue-400'
+                    onClick={() => {
+                      onOpenRosterModal(cls.id);
+                    }}
+                    className={`rounded-3xl p-6 transition-all flex flex-col justify-between relative group cursor-pointer ${
+                      isClassFull
+                        ? 'bg-white border-2 border-rose-300 ring-2 ring-rose-100 shadow-sm hover:shadow-lg hover:border-rose-400'
+                        : isClassOpen
+                        ? 'bg-gradient-to-b from-emerald-50/70 via-white to-emerald-50/30 border-2 border-emerald-500 ring-2 ring-emerald-400/20 shadow-md hover:shadow-xl hover:-translate-y-0.5 hover:border-emerald-600'
+                        : 'bg-white border border-slate-200/80 shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:border-amber-400'
                     }`}
                   >
                     <div>
@@ -342,6 +347,28 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
                           Môn {cls.subject} • {cls.grade === 'cntt' ? 'Khối CNTT' : cls.grade === 'van-chu-dep' ? 'Khối Chữ Đẹp' : `Khối ${cls.grade}`}
                         </span>
 
+                        {isClassFull ? (
+                          <span className="px-3 py-1 rounded-full text-xs font-black bg-rose-600 text-white flex items-center gap-1.5 shadow-xs">
+                            <AlertCircle className="w-3.5 h-3.5" />
+                            <span>ĐÃ ĐẦY SĨ SỐ</span>
+                          </span>
+                        ) : isClassOpen ? (
+                          <span className="px-3 py-1 rounded-full text-xs font-black bg-emerald-600 text-white flex items-center gap-1.5 shadow-xs">
+                            <span className="w-2 h-2 rounded-full bg-white animate-ping"></span>
+                            <span>ĐANG MỞ LỚP</span>
+                          </span>
+                        ) : (
+                          <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-900 border border-amber-200">
+                            Sắp mở lớp
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Class Group Tag & Level */}
+                      <div className="flex items-center justify-between gap-2 mb-2">
+                        <span className="inline-block text-xs font-black text-slate-700 bg-slate-100 px-2.5 py-0.5 rounded-md">
+                          Phân nhóm: {cls.classGroup}
+                        </span>
                         <span
                           className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
                             cls.level === 'Nâng Cao'
@@ -353,42 +380,113 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
                         </span>
                       </div>
 
-                      {/* Class Group Tag */}
-                      <div className="mb-2">
-                        <span className="inline-block text-xs font-black text-slate-700 bg-slate-100 px-2.5 py-0.5 rounded-md">
-                          Phân nhóm: {cls.classGroup}
-                        </span>
-                      </div>
-
                       {/* Class Title */}
-                      <h4 className="text-lg font-black text-slate-900 group-hover:text-blue-900 transition-colors leading-snug">
+                      <h4
+                        className={`text-lg font-black leading-snug transition-colors ${
+                          isClassOpen
+                            ? 'text-slate-900 group-hover:text-emerald-800'
+                            : isClassFull
+                            ? 'text-slate-900 group-hover:text-rose-900'
+                            : 'text-slate-900 group-hover:text-blue-900'
+                        }`}
+                      >
                         {cls.name}
                       </h4>
 
+                      {/* Prominent Notification Banner for Status */}
+                      {isClassFull && (
+                        <div className="mt-3 flex items-start gap-2.5 p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-950">
+                          <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0 mt-0.5" />
+                          <div className="text-xs">
+                            <span className="font-black text-rose-900 uppercase">
+                              Thông báo: Đã đầy sĩ số
+                            </span>
+                            <p className="text-[11px] text-slate-600 mt-0.5">
+                              Lớp đã đủ {cls.students.length} học sinh (chốt danh sách). Vui lòng đăng ký vào các lớp còn mở.
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
+                      {isClassOpen && (
+                        <div className="mt-3 flex items-start gap-2.5 p-3 rounded-2xl bg-emerald-50 border border-emerald-300 text-emerald-950">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                          <div className="text-xs">
+                            <span className="font-black text-emerald-900 uppercase">
+                              Lớp đang mở • Nhận đăng ký học ngay
+                            </span>
+                            <p className="text-[11px] text-slate-600 mt-0.5">
+                              Đã có {cls.students.length} học sinh xếp lớp • Đang tiếp nhận bổ sung học sinh.
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
                       {/* Details List */}
                       <div className="space-y-2 my-4 text-xs text-slate-600">
-                        {/* Sĩ số row with quick View Roster badge */}
-                        <div className="flex items-center justify-between gap-2 p-2 rounded-xl bg-slate-50 border border-slate-100 group-hover:border-blue-200 transition-colors">
+                        {/* Sĩ số / Trạng thái row */}
+                        <div
+                          className={`flex items-center justify-between gap-2 p-2 rounded-xl border transition-colors ${
+                            isClassOpen
+                              ? 'bg-emerald-50/60 border-emerald-200'
+                              : isClassFull
+                              ? 'bg-rose-50/50 border-rose-200'
+                              : 'bg-slate-50 border-slate-100 group-hover:border-blue-200'
+                          }`}
+                        >
                           <div className="flex items-center gap-2">
-                            <Users className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                            {hasStudents ? (
+                              <Users
+                                className={`w-4 h-4 flex-shrink-0 ${
+                                  isClassFull ? 'text-rose-600' : 'text-emerald-600'
+                                }`}
+                              />
+                            ) : (
+                              <Clock className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                            )}
                             <span>
-                              Sĩ số:{' '}
-                              <strong className="text-slate-900">
-                                {hasStudents ? `${cls.students.length} học sinh` : cls.statusLabel}
-                              </strong>
+                              {hasStudents ? 'Sĩ số:' : 'Trạng thái:'}{' '}
+                              {hasStudents ? (
+                                <strong className="text-slate-900">
+                                  {cls.students.length} học sinh
+                                  {isClassFull && (
+                                    <span className="ml-1 text-rose-600 font-extrabold">(Đã đầy)</span>
+                                  )}
+                                  {isClassOpen && (
+                                    <span className="ml-1 text-emerald-700 font-extrabold">(Đang mở)</span>
+                                  )}
+                                </strong>
+                              ) : (
+                                <strong className="text-amber-800 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200 font-extrabold">
+                                  Sắp mở lớp
+                                </strong>
+                              )}
                             </span>
                           </div>
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onOpenRosterModal(cls.id);
-                            }}
-                            className="text-[11px] font-bold text-blue-700 bg-blue-100 hover:bg-blue-900 hover:text-white px-2 py-0.5 rounded-lg transition-colors flex items-center gap-1 cursor-pointer"
-                          >
-                            <Eye className="w-3 h-3" />
-                            <span>Xem DS</span>
-                          </button>
+
+                          {hasStudents ? (
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onOpenRosterModal(cls.id);
+                              }}
+                              className={`text-[11px] font-bold px-2 py-0.5 rounded-lg transition-colors flex items-center gap-1 cursor-pointer ${
+                                isClassOpen
+                                  ? 'text-emerald-800 bg-emerald-100 hover:bg-emerald-700 hover:text-white'
+                                  : isClassFull
+                                  ? 'text-rose-800 bg-rose-100 hover:bg-rose-700 hover:text-white'
+                                  : 'text-blue-700 bg-blue-100 hover:bg-blue-900 hover:text-white'
+                              }`}
+                            >
+                              <Eye className="w-3 h-3" />
+                              <span>Xem DS</span>
+                            </button>
+                          ) : (
+                            <span className="text-[10px] font-bold text-amber-700 bg-amber-100/70 px-2 py-0.5 rounded-md border border-amber-200/60">
+                              Đang nhận đăng ký
+                            </span>
+                          )}
                         </div>
 
                         {cls.note && (
@@ -401,33 +499,85 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
 
                     {/* Card Action Buttons */}
                     <div className="pt-4 border-t border-slate-100 space-y-2">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onOpenRosterModal(cls.id);
-                        }}
-                        className="w-full py-2.5 px-4 bg-gradient-to-r from-blue-900 to-indigo-950 hover:from-blue-800 hover:to-indigo-900 text-white font-bold text-xs rounded-xl shadow-xs hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer"
-                      >
-                        <Eye className="w-4 h-4 text-amber-300" />
-                        <span>
-                          {hasStudents
-                            ? `Xem Danh Sách Học Sinh Hiện Có (${cls.students.length} em)`
-                            : `Xem Danh Sách Học Sinh Lớp Này`}
-                        </span>
-                      </button>
+                      {isClassFull ? (
+                        <>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onOpenRosterModal(cls.id);
+                            }}
+                            className="w-full py-2.5 px-4 bg-slate-900 hover:bg-black text-white font-bold text-xs rounded-xl shadow-xs hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer"
+                          >
+                            <Eye className="w-4 h-4 text-rose-300" />
+                            <span>Xem Danh Sách Đã Đầy ({cls.students.length} em)</span>
+                          </button>
 
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onOpenConsultationModal(cls.grade);
-                        }}
-                        className="w-full py-2 px-3 bg-red-50 hover:bg-red-100 text-red-700 font-bold text-xs rounded-xl transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
-                      >
-                        <span>Đăng ký tham gia vào nhóm lớp này</span>
-                        <ChevronRight className="w-3.5 h-3.5" />
-                      </button>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onOpenConsultationModal(cls.grade);
+                            }}
+                            className="w-full py-2 px-3 bg-rose-50 hover:bg-rose-100 text-rose-800 font-bold text-xs rounded-xl border border-rose-200 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                          >
+                            <span>Đăng ký danh sách chờ hoặc chuyển lớp</span>
+                            <ChevronRight className="w-3.5 h-3.5" />
+                          </button>
+                        </>
+                      ) : isClassOpen ? (
+                        <>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onOpenRosterModal(cls.id);
+                            }}
+                            className="w-full py-2.5 px-4 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-black text-xs rounded-xl shadow-xs hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer"
+                          >
+                            <Eye className="w-4 h-4 text-emerald-100" />
+                            <span>Xem Danh Sách Học Sinh Hiện Có ({cls.students.length} em)</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onOpenConsultationModal(cls.grade);
+                            }}
+                            className="w-full py-2 px-3 bg-emerald-100 hover:bg-emerald-200 text-emerald-900 font-extrabold text-xs rounded-xl border border-emerald-300 transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs"
+                          >
+                            <span>Đăng ký tham gia vào nhóm lớp này</span>
+                            <ChevronRight className="w-3.5 h-3.5" />
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onOpenConsultationModal(cls.grade);
+                            }}
+                            className="w-full py-2.5 px-4 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-bold text-xs rounded-xl shadow-xs hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer"
+                          >
+                            <Sparkles className="w-4 h-4 text-amber-200" />
+                            <span>Sắp Mở Lớp • Đăng Ký Xếp Lớp Ngay</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onOpenRosterModal(cls.id);
+                            }}
+                            className="w-full py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                          >
+                            <Eye className="w-3.5 h-3.5 text-slate-500" />
+                            <span>Xem thông tin kế hoạch mở lớp</span>
+                          </button>
+                        </>
+                      )}
                     </div>
                   </div>
                 );
