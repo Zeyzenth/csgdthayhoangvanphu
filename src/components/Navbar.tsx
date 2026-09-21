@@ -14,6 +14,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultationModal, onOpenC
   const navLinks = [
     { name: 'Trang Chủ', href: '#trang-chu' },
     { name: 'Bảng Lớp & Môn Học', href: '#bang-mon-hoc' },
+    { name: 'Lớp Học Hiện Có', href: '#lop-hoc-hien-co' },
     { name: 'Cam Kết Chất Lượng', href: '#cam-ket' },
     { name: 'Liên Hệ & Bản Đồ', href: '#lien-he' },
   ];
@@ -38,7 +39,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultationModal, onOpenC
             </div>
             <div className="hidden md:flex items-center gap-2 text-slate-300">
               <span className="w-1 h-1 rounded-full bg-slate-400"></span>
-              <span className="text-amber-300 font-medium">Tuyển sinh liên tục Lớp 6 - 12 (Toán • Lí • Hoá • Anh • Văn • Sinh)</span>
+              <span className="text-amber-300 font-medium">Tuyển sinh liên tục Lớp 6 - 12 (Toán — Lí — Hoá — Anh — Văn — Sinh — Sử — Địa — Công nghệ thông tin — Luyện viết chữ đẹp)</span>
             </div>
           </div>
 

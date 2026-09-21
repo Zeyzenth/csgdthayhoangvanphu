@@ -9,12 +9,16 @@ import { Footer } from './components/Footer';
 import { FloatingContacts } from './components/FloatingContacts';
 import { ConsultationModal } from './components/ConsultationModal';
 import { CommunityQrModal } from './components/CommunityQrModal';
+import { ActiveClassesSection } from './components/ActiveClassesSection';
+import { ClassRosterModal } from './components/ClassRosterModal';
 import { GradeLevel, Course } from './types';
 
 export default function App() {
   const [selectedGrade, setSelectedGrade] = useState<GradeLevel | 'all'>('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCommunityModalOpen, setIsCommunityModalOpen] = useState(false);
+  const [isRosterModalOpen, setIsRosterModalOpen] = useState(false);
+  const [selectedClassIdForRoster, setSelectedClassIdForRoster] = useState<string | null>(null);
   const [preselectedGradeForModal, setPreselectedGradeForModal] = useState<GradeLevel | undefined>(undefined);
   const [preselectedCourseForModal, setPreselectedCourseForModal] = useState<Course | null>(null);
 
@@ -23,6 +27,12 @@ export default function App() {
     setPreselectedGradeForModal(grade);
     setPreselectedCourseForModal(null);
     setIsModalOpen(true);
+  };
+
+  // Open Roster Modal for a specific class or default
+  const handleOpenRosterModal = (classId?: string) => {
+    setSelectedClassIdForRoster(classId || 'toan-12-all');
+    setIsRosterModalOpen(true);
   };
 
   // Scroll to consultation section on main page
@@ -56,6 +66,12 @@ export default function App() {
         <GradeSubjectTable
           selectedGrade={selectedGrade}
           onSelectGrade={(grade) => setSelectedGrade(grade)}
+        />
+
+        {/* Active Classes (Lớp Học Hiện Có Đang Tuyển Sinh & Hoạt Động) */}
+        <ActiveClassesSection
+          onOpenRosterModal={handleOpenRosterModal}
+          onOpenConsultationModal={(grade) => handleOpenConsultationModal(grade)}
         />
 
         {/* Why Choose Us & Commitments */}
@@ -98,6 +114,14 @@ export default function App() {
       <CommunityQrModal
         isOpen={isCommunityModalOpen}
         onClose={() => setIsCommunityModalOpen(false)}
+      />
+
+      {/* Class Student Roster Viewer Modal */}
+      <ClassRosterModal
+        isOpen={isRosterModalOpen}
+        onClose={() => setIsRosterModalOpen(false)}
+        initialClassId={selectedClassIdForRoster}
+        onOpenConsultationModal={(grade) => handleOpenConsultationModal(grade)}
       />
     </div>
   );

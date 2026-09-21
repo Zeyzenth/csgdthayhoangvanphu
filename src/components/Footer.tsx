@@ -11,8 +11,19 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ onSelectGrade, onOpenConsultation, onOpenCommunityModal }) => {
-  const grades: GradeLevel[] = ['6', '7', '8', '9', '10', '11', '12'];
-  const subjects: Subject[] = ['Toán', 'Lí', 'Hoá', 'Anh', 'Văn', 'Sinh'];
+  const grades: GradeLevel[] = ['6', '7', '8', '9', '10', '11', '12', 'cntt', 'van-chu-dep'];
+  const subjects: Subject[] = [
+    'Toán',
+    'Lí',
+    'Hoá',
+    'Anh',
+    'Văn',
+    'Sinh',
+    'Sử',
+    'Địa',
+    'Công nghệ thông tin',
+    'Luyện viết chữ đẹp',
+  ];
 
   const scrollTo = (selector: string) => {
     const el = document.querySelector(selector);
@@ -122,7 +133,7 @@ export const Footer: React.FC<FooterProps> = ({ onSelectGrade, onOpenConsultatio
               </div>
 
               <div>
-                <p className="text-[11px] font-bold text-slate-400 uppercase mb-2">6 Môn Văn Hóa Trọng Điểm:</p>
+                <p className="text-[11px] font-bold text-slate-400 uppercase mb-2">Các Môn Bồi Dưỡng Trọng Điểm:</p>
                 <div className="flex flex-wrap gap-1.5">
                   {subjects.map((sub) => (
                     <span
@@ -146,6 +157,7 @@ export const Footer: React.FC<FooterProps> = ({ onSelectGrade, onOpenConsultatio
               {[
                 { label: 'Trang Chủ', href: '#trang-chu' },
                 { label: 'Bảng Lớp & Môn Học', href: '#bang-mon-hoc' },
+                { label: 'Lớp Học Hiện Có (Danh Sách Học Sinh)', href: '#lop-hoc-hien-co' },
                 { label: 'Cam Kết Chất Lượng', href: '#cam-ket' },
                 { label: 'Địa Chỉ & Bản Đồ', href: '#lien-he' },
               ].map((link, idx) => (

@@ -1,6 +1,18 @@
-export type GradeLevel = '6' | '7' | '8' | '9' | '10' | '11' | '12';
+export type GradeLevel = '6' | '7' | '8' | '9' | '10' | '11' | '12' | 'cntt' | 'van-chu-dep';
 
-export type Subject = 'Toán' | 'Lí' | 'Hoá' | 'Anh' | 'Văn' | 'Sinh';
+export type Subject =
+  | 'Toán'
+  | 'Lí'
+  | 'Hoá'
+  | 'Anh'
+  | 'Văn'
+  | 'Sinh'
+  | 'Sử'
+  | 'Địa'
+  | 'Công nghệ thông tin'
+  | 'Luyện viết chữ đẹp'
+  | 'Tin học'
+  | 'Luyện chữ';
 
 export type AcademicGoal =
   | 'all'
@@ -8,6 +20,8 @@ export type AcademicGoal =
   | 'on-thi-10'
   | 'on-thi-thpt'
   | 'nang-cao';
+
+export type AcademicLevel = 'Cơ Bản' | 'Nâng Cao';
 
 export interface Course {
   id: string;
@@ -56,4 +70,29 @@ export interface FAQItem {
   question: string;
   answer: string;
   category: 'hoc-phi' | 'chuong-trinh' | 'xep-lop' | 'chat-luong';
+}
+
+export interface Student {
+  id: string;
+  stt: number;
+  name: string;
+  schoolClass: string;
+  schoolName: string;
+  assignedClass: string;
+}
+
+export interface ActiveClass {
+  id: string;
+  name: string;
+  grade: GradeLevel;
+  subject: Subject;
+  level: string;
+  classGroup: string;
+  teacher: string;
+  schedule: string;
+  room?: string;
+  status: 'active' | 'enrolling' | 'upcoming';
+  statusLabel: string;
+  students: Student[];
+  note?: string;
 }

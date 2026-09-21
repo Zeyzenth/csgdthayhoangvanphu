@@ -42,7 +42,7 @@ export const Logo: React.FC<LogoProps> = ({
             Thầy Hoàng - Vạn Phú
           </span>
           <span className="text-[10px] text-slate-500 font-medium hidden sm:inline-block">
-            Toán • Lí • Hoá • Anh • Văn • Sinh (Lớp 6 - 12)
+            Toán — Lí — Hoá — Anh — Văn — Sinh — Sử — Địa — Công nghệ thông tin — Luyện viết chữ đẹp
           </span>
         </div>
       )}

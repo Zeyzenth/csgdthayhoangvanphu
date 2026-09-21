@@ -5,7 +5,7 @@ import { BookOpen, Sparkles, MessageCircle, ExternalLink, Target, ArrowRight } f
 interface GradeSubjectInfo {
   grade: GradeLevel;
   gradeLabel: string;
-  levelGroup: 'THCS' | 'THPT';
+  levelGroup: 'THCS' | 'THPT' | 'CNTT' | 'Kỹ Năng';
   mainTarget: string;
   subjects: {
     name: Subject;
@@ -29,6 +29,8 @@ const GRADE_SUBJECT_DATA: GradeSubjectInfo[] = [
       { name: 'Văn', focus: 'Đọc hiểu văn bản, kỹ năng viết đoạn văn & cảm thụ' },
       { name: 'Anh', focus: 'Ngữ pháp căn bản, từ vựng theo SGK mới, phát âm chuẩn' },
       { name: 'Sinh', focus: 'KHTN phần Sinh học, quan sát thế giới sống & phương pháp khoa học' },
+      { name: 'Sử', focus: 'Lịch sử & Địa lí (phần Lịch sử): Nguồn gốc dân tộc & các nền văn minh cổ đại' },
+      { name: 'Địa', focus: 'Lịch sử & Địa lí (phần Địa lí): Trái Đất, tọa độ địa lí, bản đồ & môi trường sống' },
     ],
     suitableFor: 'Học sinh lớp 5 lên lớp 6, bỡ ngỡ với cách học THCS hoặc hổng kiến thức tiểu học.',
     schedulePattern: '2 buổi / tuần / môn (Ca chiều: 17:00 - 19:00 hoặc T7 - CN)',
@@ -46,6 +48,8 @@ const GRADE_SUBJECT_DATA: GradeSubjectInfo[] = [
       { name: 'Văn', focus: 'Nghị luận xã hội, văn bản thông tin, thực hành tiếng Việt' },
       { name: 'Anh', focus: 'Mở rộng thì ngữ pháp, rèn phản xạ giao tiếp & từ vựng chủ điểm' },
       { name: 'Sinh', focus: 'KHTN phần Sinh thái & trao đổi chất ở sinh vật', tag: 'KHTN' },
+      { name: 'Sử', focus: 'Lịch sử Việt Nam thời phong kiến & thế giới thời trung đại' },
+      { name: 'Địa', focus: 'Địa lí các châu lục (Châu Âu, Châu Á, Châu Phi), đặc trưng tự nhiên và dân cư' },
     ],
     suitableFor: 'Học sinh cần bồi dưỡng kiến thức trọng tâm, học sinh đuối hình học hoặc tiếng Anh.',
     schedulePattern: '2 buổi / tuần / môn (Ca 17:30 - 19:30 hoặc 19:30 - 21:30)',
@@ -64,6 +68,8 @@ const GRADE_SUBJECT_DATA: GradeSubjectInfo[] = [
       { name: 'Anh', focus: 'Ngữ pháp nâng cao, mệnh đề quan hệ, kỹ năng đọc hiểu chuyên sâu' },
       { name: 'Văn', focus: 'Văn nghị luận văn học, phân tích tác phẩm & viết bài hoàn chỉnh' },
       { name: 'Sinh', focus: 'KHTN giải phẫu cơ thể người & hệ cơ quan', tag: 'KHTN' },
+      { name: 'Sử', focus: 'Lịch sử cận đại thế giới & phong trào giải phóng dân tộc, sơ đồ niên biểu' },
+      { name: 'Địa', focus: 'Địa lí tự nhiên Việt Nam (địa hình, khoáng sản, khí hậu, sông ngòi)' },
     ],
     suitableFor: 'Học sinh sợ môn Hóa học mới bắt đầu, học sinh chuẩn bị tâm thế thi vào 10 sớm.',
     schedulePattern: '2 - 3 buổi / tuần / môn (Linh hoạt theo thời khóa biểu trường)',
@@ -82,6 +88,8 @@ const GRADE_SUBJECT_DATA: GradeSubjectInfo[] = [
       { name: 'Lí', focus: 'Điện học, quang học, bài toán mạch hỗn hợp & ôn thi chuyên Lí', tag: 'Thi chuyên/KHTN' },
       { name: 'Hoá', focus: 'Vô cơ & hữu cơ, chuỗi biến hóa, kim loại, phi kim & ôn thi chuyên Hóa', tag: 'Thi chuyên/KHTN' },
       { name: 'Sinh', focus: 'Di truyền & biến dị, bài tập ADN, quy luật Men-đen & ôn thi chuyên Sinh', tag: 'Thi chuyên/KHTN' },
+      { name: 'Sử', focus: 'Lịch sử Việt Nam từ 1919 đến nay, ôn luyện kiến thức KHXH trọng điểm thi vào 10', tag: 'Thi vào 10' },
+      { name: 'Địa', focus: 'Địa lí các vùng kinh tế Việt Nam, kỹ năng đọc Atlat & bảng số liệu thi vào 10', tag: 'Thi vào 10' },
     ],
     suitableFor: 'Tất cả học sinh lớp 9: Cần lấy gốc chống liệt hoặc đặt mục tiêu đỗ trường THPT tốp đầu.',
     schedulePattern: '2 - 3 buổi / tuần (Có ca tăng cường giải đề thi thử thứ 7 & Chủ Nhật)',
@@ -100,11 +108,13 @@ const GRADE_SUBJECT_DATA: GradeSubjectInfo[] = [
       { name: 'Anh', focus: 'Từ vựng B1 - B2, ngữ pháp học thuật, định hướng IELTS / tốt nghiệp THPT' },
       { name: 'Văn', focus: 'Thể loại văn học (Thần thoại, sử thi, thơ trữ tình, nghị luận)' },
       { name: 'Sinh', focus: 'Sinh học tế bào, phân tử sinh học, chu kỳ tế bào & phân bào' },
+      { name: 'Sử', focus: 'Lịch sử và sử học, các nền văn minh thế giới & văn minh phương Đông' },
+      { name: 'Địa', focus: 'Địa lí đại cương, thạch quyển, khí quyển, thủy quyển, thổ nhưỡng & bản đồ' },
     ],
     suitableFor: 'Học sinh lớp 10 mới vào trường cấp 3, choáng ngợp với lượng kiến thức sâu rộng.',
     schedulePattern: '2 buổi / tuần / môn (Ca tối: 18:30 - 20:30 hoặc 19:30 - 21:30)',
     classSize: '15 - 20 học sinh / lớp',
-    highlightNote: 'Giúp học sinh định hình sớm tổ hợp xét tuyển Đại học (A00, A01, B00, D01, D07).',
+    highlightNote: 'Giúp học sinh định hình sớm tổ hợp xét tuyển Đại học (A00, A01, B00, C00, D01, D07, D14, D15).',
   },
   {
     grade: '11',
@@ -118,6 +128,8 @@ const GRADE_SUBJECT_DATA: GradeSubjectInfo[] = [
       { name: 'Anh', focus: 'Chuyên đề từ vựng nâng cao, đọc hiểu dài, rèn kỹ năng điền từ & sửa lỗi sai' },
       { name: 'Văn', focus: 'Văn học hiện thực & lãng mạn, kỹ năng phân tích so sánh văn học' },
       { name: 'Sinh', focus: 'Sinh học cơ thể thực vật & động vật (Tuần hoàn, hô hấp, bài tiết)' },
+      { name: 'Sử', focus: 'Lịch sử thế giới cận - hiện đại, cải cách lịch sử Việt Nam, kỹ năng tổng hợp và liên hệ' },
+      { name: 'Địa', focus: 'Địa lí kinh tế - xã hội thế giới, các khu vực kinh tế lớn, rèn kỹ năng đọc bản đồ và số liệu' },
     ],
     suitableFor: 'Học sinh lớp 11 muốn tích lũy kiến thức sớm, không để dồn ứ áp lực sang năm lớp 12.',
     schedulePattern: '2 buổi / tuần / môn (Bố trí tránh trùng lịch học chính khóa)',
@@ -136,11 +148,45 @@ const GRADE_SUBJECT_DATA: GradeSubjectInfo[] = [
       { name: 'Anh', focus: 'Rèn tốc độ giải đề, bẫy ngữ pháp, phương pháp suy luận đọc hiểu đạt 8+ 9+', tag: 'Luyện thi ĐH' },
       { name: 'Văn', focus: 'Tổng ôn trọn bộ tác phẩm trọng tâm, cấu trúc bài viết điểm cao, rèn văn phong sâu sắc', tag: 'Luyện thi ĐH' },
       { name: 'Sinh', focus: 'Di truyền học quần thể, tiến hóa, sinh thái học & bài tập phả hệ điểm 9 - 10', tag: 'Luyện thi ĐH' },
+      { name: 'Sử', focus: 'Lịch sử Việt Nam & Thế giới, sơ đồ tư duy sự kiện, luyện đề tốt nghiệp THPT 9+', tag: 'Luyện thi ĐH' },
+      { name: 'Địa', focus: 'Khai thác tối đa Atlat Địa lí, địa lí các vùng kinh tế, kỹ năng biểu đồ & bảng số liệu', tag: 'Luyện thi ĐH' },
     ],
     suitableFor: 'Toàn bộ học sinh lớp 12: Đặt mục tiêu đỗ nguyện vọng 1 Đại học tốp đầu (Bách Khoa, Kinh Tế, Y Dược, Ngoại Thương...).',
     schedulePattern: '2 - 3 buổi / tuần (Có phòng học tự học mở cửa hàng ngày cho học sinh)',
     classSize: '15 - 20 học sinh / lớp (Chia lớp theo mục tiêu điểm 7+, 8+, 9+)',
     highlightNote: 'Thi thử định kỳ hàng tháng trên giấy thi chuẩn, giáo viên sửa chi tiết từng lỗi sai nhỏ nhất.',
+  },
+  {
+    grade: 'cntt',
+    gradeLabel: 'Khối Công Nghệ Thông Tin',
+    levelGroup: 'CNTT',
+    mainTarget: 'Tư duy thuật toán, Lập trình ứng dụng (Python / C++ / Scratch), Tin học văn phòng & Kỹ năng số 4.0',
+    subjects: [
+      { name: 'Tin học', focus: 'Lập trình Python & C++ từ cơ bản đến nâng cao, thuật toán, ôn thi HSG Tin học', tag: 'Chuyên sâu' },
+      { name: 'Tin học', focus: 'Tin học văn phòng quốc tế (Word, Excel, PowerPoint thực chiến & kỹ năng số)', tag: 'Thực chiến' },
+      { name: 'Tin học', focus: 'Lập trình tư duy Scratch / Game 2D cho học sinh THCS, khơi nguồn sáng tạo công nghệ', tag: 'Sáng tạo' },
+      { name: 'Tin học', focus: 'Ứng dụng AI thông minh, an toàn mạng và kỹ năng máy tính thiết yếu', tag: 'Kỹ năng mới' },
+    ],
+    suitableFor: 'Học sinh lớp 6 - 12 đam mê máy tính, muốn định hướng sớm ngành Công nghệ thông tin hoặc bồi dưỡng học sinh giỏi.',
+    schedulePattern: '1 - 2 buổi / tuần (Ca tối hoặc cuối tuần tại phòng máy hiện đại)',
+    classSize: '10 - 15 học sinh / lớp (Mỗi học sinh 1 máy tính riêng biệt, thực hành 100%)',
+    highlightNote: 'Học lý thuyết đi đôi với thực hành dự án thực tế; có sản phẩm lập trình sau từng khóa.',
+  },
+  {
+    grade: 'van-chu-dep',
+    gradeLabel: 'Khối Văn Hay Chữ Đẹp',
+    levelGroup: 'Kỹ Năng',
+    mainTarget: 'Rèn nét chữ nết người, tư thế chuẩn, phát triển năng lực cảm thụ văn học & kỹ năng viết văn sáng tạo',
+    subjects: [
+      { name: 'Luyện chữ', focus: 'Luyện nét thanh nét đậm, viết đúng mẫu chữ Bộ GD&ĐT, sửa chữ viết ẩu, sai tư thế', tag: 'Rèn chữ' },
+      { name: 'Luyện chữ', focus: 'Luyện viết chữ đẹp nghệ thuật, kỹ năng viết nhanh giữ vở sạch chữ đẹp trong bài thi', tag: 'Nét chữ đẹp' },
+      { name: 'Văn', focus: 'Cảm thụ văn học, mở rộng vốn từ vựng, diễn đạt câu văn mượt mà, gợi cảm, giàu cảm xúc', tag: 'Văn hay' },
+      { name: 'Văn', focus: 'Kỹ thuật làm bài văn miêu tả, biểu cảm, nghị luận đạt điểm tối đa trong các kỳ thi', tag: 'Điểm cao' },
+    ],
+    suitableFor: 'Học sinh các khối lớp có nét chữ chưa chuẩn, chữ xấu, viết chậm hoặc gặp khó khăn trong việc diễn đạt ý văn.',
+    schedulePattern: '1 - 2 buổi / tuần (Linh hoạt ca chiều hoặc sáng/chiều Thứ 7 - Chủ Nhật)',
+    classSize: '8 - 12 học sinh / lớp (Giáo viên cầm tay chỉ bút, uốn nắn từng nét chữ)',
+    highlightNote: 'Cam kết tiến bộ rõ rệt về nét chữ và năng lực hành văn chỉ sau một lộ trình 8 - 12 buổi học.',
   },
 ];
 
@@ -153,7 +199,7 @@ export const GradeSubjectTable: React.FC<GradeSubjectTableProps> = ({
   selectedGrade = 'all',
   onSelectGrade,
 }) => {
-  const [activeTab, setActiveTab] = useState<'all' | 'thcs' | 'thpt' | GradeLevel>(
+  const [activeTab, setActiveTab] = useState<'all' | 'thcs' | 'thpt' | 'cntt' | 'van-chu-dep' | GradeLevel>(
     selectedGrade !== 'all' ? selectedGrade : 'all'
   );
 
@@ -164,6 +210,12 @@ export const GradeSubjectTable: React.FC<GradeSubjectTableProps> = ({
     if (activeTab === 'thpt') {
       return GRADE_SUBJECT_DATA.filter((g) => g.levelGroup === 'THPT');
     }
+    if (activeTab === 'cntt') {
+      return GRADE_SUBJECT_DATA.filter((g) => g.grade === 'cntt');
+    }
+    if (activeTab === 'van-chu-dep') {
+      return GRADE_SUBJECT_DATA.filter((g) => g.grade === 'van-chu-dep');
+    }
     if (activeTab !== 'all') {
       return GRADE_SUBJECT_DATA.filter((g) => g.grade === activeTab);
     }
@@ -172,7 +224,7 @@ export const GradeSubjectTable: React.FC<GradeSubjectTableProps> = ({
 
   const currentList = filterGrades();
 
-  const handleTabChange = (tab: 'all' | 'thcs' | 'thpt' | GradeLevel) => {
+  const handleTabChange = (tab: 'all' | 'thcs' | 'thpt' | 'cntt' | 'van-chu-dep' | GradeLevel) => {
     setActiveTab(tab);
     if (onSelectGrade) {
       if (tab === 'thcs' || tab === 'thpt' || tab === 'all') {
@@ -197,6 +249,14 @@ export const GradeSubjectTable: React.FC<GradeSubjectTableProps> = ({
         return 'bg-rose-100 text-rose-800 border-rose-200';
       case 'Sinh':
         return 'bg-teal-100 text-teal-800 border-teal-200';
+      case 'Sử':
+        return 'bg-amber-100 text-amber-900 border-amber-300';
+      case 'Địa':
+        return 'bg-emerald-100 text-emerald-900 border-emerald-300';
+      case 'Tin học':
+        return 'bg-cyan-100 text-cyan-800 border-cyan-200';
+      case 'Luyện chữ':
+        return 'bg-fuchsia-100 text-fuchsia-800 border-fuchsia-200';
       default:
         return 'bg-slate-100 text-slate-800 border-slate-200';
     }
@@ -217,8 +277,8 @@ export const GradeSubjectTable: React.FC<GradeSubjectTableProps> = ({
           </h2>
 
           <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-            Cơ sở bồi dưỡng chuyên sâu 6 môn trọng điểm:{' '}
-            <strong className="text-blue-950 font-bold">Toán — Lí — Hoá — Anh — Văn — Sinh</strong>.
+            Bồi dưỡng toàn diện các môn trọng điểm:{' '}
+            <strong className="text-blue-950 font-bold">Toán — Lí — Hoá — Anh — Văn — Sinh — Sử — Địa — Công nghệ thông tin — Luyện viết chữ đẹp</strong> (từ lớp 6 đến 12).
             Sĩ số giới hạn, phân loại lớp theo đúng học lực từng em để đảm bảo sự tiến bộ rõ rệt nhất.
           </p>
         </div>
@@ -233,7 +293,7 @@ export const GradeSubjectTable: React.FC<GradeSubjectTableProps> = ({
                 : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
             }`}
           >
-            Tất Cả Khối Lớp (Lớp 6 - 12)
+            Tất Cả Khối Lớp
           </button>
 
           <button
@@ -258,20 +318,46 @@ export const GradeSubjectTable: React.FC<GradeSubjectTableProps> = ({
             Khối THPT (Lớp 10 - 12)
           </button>
 
+          <button
+            onClick={() => handleTabChange('cntt')}
+            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+              activeTab === 'cntt'
+                ? 'bg-cyan-700 text-white shadow-md'
+                : 'bg-cyan-50 text-cyan-900 hover:bg-cyan-100 border border-cyan-200'
+            }`}
+          >
+            💻 Khối Công Nghệ Thông Tin
+          </button>
+
+          <button
+            onClick={() => handleTabChange('van-chu-dep')}
+            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+              activeTab === 'van-chu-dep'
+                ? 'bg-fuchsia-700 text-white shadow-md'
+                : 'bg-fuchsia-50 text-fuchsia-900 hover:bg-fuchsia-100 border border-fuchsia-200'
+            }`}
+          >
+            ✍️ Khối Văn Hay Chữ Đẹp
+          </button>
+
           <div className="h-5 w-[1px] bg-slate-300 mx-1 hidden sm:block" />
 
           {/* Quick grade buttons */}
-          {(['6', '7', '8', '9', '10', '11', '12'] as GradeLevel[]).map((grade) => (
+          {(['6', '7', '8', '9', '10', '11', '12', 'cntt', 'van-chu-dep'] as GradeLevel[]).map((grade) => (
             <button
               key={grade}
               onClick={() => handleTabChange(grade)}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                 activeTab === grade
-                  ? 'bg-red-600 text-white shadow-sm'
+                  ? grade === 'cntt'
+                    ? 'bg-cyan-700 text-white shadow-sm'
+                    : grade === 'van-chu-dep'
+                    ? 'bg-fuchsia-700 text-white shadow-sm'
+                    : 'bg-red-600 text-white shadow-sm'
                   : 'bg-white text-slate-600 hover:text-blue-900 hover:bg-blue-50 border border-slate-200'
               }`}
             >
-              Lớp {grade}
+              {grade === 'cntt' ? 'Khối CNTT' : grade === 'van-chu-dep' ? 'Khối Chữ Đẹp' : `Lớp ${grade}`}
             </button>
           ))}
         </div>
@@ -281,7 +367,7 @@ export const GradeSubjectTable: React.FC<GradeSubjectTableProps> = ({
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-900 text-white text-xs font-bold uppercase tracking-wider">
-                <th className="py-3.5 px-4 w-28 text-center">Khối Lớp</th>
+                <th className="py-3.5 px-4 w-32 text-center">Khối Lớp</th>
                 <th className="py-3.5 px-4 w-48">Môn Giảng Dạy</th>
                 <th className="py-3.5 px-5">Chương Trình & Mục Tiêu Trọng Tâm</th>
                 <th className="py-3.5 px-4 w-52 text-center">Tư Vấn & Xếp Lớp</th>
@@ -296,11 +382,23 @@ export const GradeSubjectTable: React.FC<GradeSubjectTableProps> = ({
                   {/* Grade Badge */}
                   <td className="py-4 px-4 text-center align-top">
                     <div className="inline-flex flex-col items-center">
-                      <span className="w-14 h-14 rounded-2xl bg-blue-950 text-white font-black text-lg flex items-center justify-center shadow-md">
-                        Lớp {item.grade}
+                      <span className={`w-16 h-14 rounded-2xl text-white font-black text-xs sm:text-sm flex items-center justify-center shadow-md p-1 text-center leading-tight ${
+                        item.grade === 'cntt'
+                          ? 'bg-gradient-to-br from-cyan-700 to-blue-900'
+                          : item.grade === 'van-chu-dep'
+                          ? 'bg-gradient-to-br from-fuchsia-700 to-rose-900'
+                          : 'bg-blue-950'
+                      }`}>
+                        {item.grade === 'cntt' ? 'Khối CNTT' : item.grade === 'van-chu-dep' ? 'Chữ Đẹp' : `Lớp ${item.grade}`}
                       </span>
-                      <span className="text-[11px] font-bold text-slate-500 mt-1.5 uppercase">
-                        {item.levelGroup}
+                      <span className={`text-[10px] font-extrabold mt-1.5 uppercase px-2 py-0.5 rounded ${
+                        item.levelGroup === 'CNTT'
+                          ? 'bg-cyan-100 text-cyan-800'
+                          : item.levelGroup === 'Kỹ Năng'
+                          ? 'bg-fuchsia-100 text-fuchsia-800'
+                          : 'text-slate-500 bg-slate-100'
+                      }`}>
+                        {item.levelGroup === 'CNTT' ? 'Công Nghệ' : item.levelGroup === 'Kỹ Năng' ? 'Rèn Chữ' : item.levelGroup}
                       </span>
                     </div>
                   </td>
@@ -386,12 +484,18 @@ export const GradeSubjectTable: React.FC<GradeSubjectTableProps> = ({
               {/* Card Header: Grade + Level + Subjects */}
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-blue-950 text-white font-black text-lg flex items-center justify-center shadow">
-                    Lớp {item.grade}
+                  <div className={`w-14 h-12 rounded-xl text-white font-black text-xs flex items-center justify-center shadow text-center p-1 leading-tight ${
+                    item.grade === 'cntt'
+                      ? 'bg-gradient-to-br from-cyan-700 to-blue-900'
+                      : item.grade === 'van-chu-dep'
+                      ? 'bg-gradient-to-br from-fuchsia-700 to-rose-900'
+                      : 'bg-blue-950'
+                  }`}>
+                    {item.grade === 'cntt' ? 'CNTT' : item.grade === 'van-chu-dep' ? 'Chữ Đẹp' : `Lớp ${item.grade}`}
                   </div>
                   <div>
                     <span className="text-xs font-bold text-red-600 uppercase tracking-wider block">
-                      Khối {item.levelGroup}
+                      Khối {item.levelGroup === 'CNTT' ? 'Công Nghệ Thông Tin' : item.levelGroup === 'Kỹ Năng' ? 'Văn Hay Chữ Đẹp' : item.levelGroup}
                     </span>
                     <h3 className="font-extrabold text-blue-950 text-sm sm:text-base leading-tight">
                       {item.mainTarget}

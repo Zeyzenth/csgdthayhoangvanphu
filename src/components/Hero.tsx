@@ -64,8 +64,8 @@ export const Hero: React.FC<HeroProps> = ({
 
             {/* Sub-description with Subjects */}
             <p className="text-slate-300 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto lg:mx-0">
-              Chuyên bồi dưỡng văn hóa 6 môn trọng điểm:{' '}
-              <strong className="text-white font-bold">Toán — Lí — Hoá — Anh — Văn — Sinh</strong>.
+              Chuyên bồi dưỡng toàn diện các môn trọng điểm:{' '}
+              <strong className="text-white font-bold">Toán — Lí — Hoá — Anh — Văn — Sinh — Sử — Địa — Công nghệ thông tin — Luyện viết chữ đẹp</strong>.
               Lấy lại gốc nhanh chóng, rèn luyện phương pháp giải bài khoa học, dễ hiểu, đồng hành sát sao cùng phụ huynh trên từng chặng đường tiến bộ của con.
             </p>
 

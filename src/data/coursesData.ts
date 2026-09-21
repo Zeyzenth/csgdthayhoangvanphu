@@ -444,6 +444,100 @@ export const COURSES: Course[] = [
     description: 'Năm lớp 8 là năm đầu tiên học Hóa. Nếu học đúng phương pháp ngay từ đầu, học sinh sẽ thấy Hóa rất thú vị và đạt điểm 9, 10 dễ dàng.',
     suitableFor: 'Học sinh lớp 8 mới làm quen môn Hóa Học',
     tuitionNote: 'Tặng bài ca hóa trị độc quyền & phương pháp cân bằng mol'
+  },
+  // Khối Công Nghệ Thông Tin
+  {
+    id: 'cntt-lap-trinh-python',
+    grade: 'cntt',
+    subject: 'Tin học',
+    title: 'Khối CNTT - Lập Trình Python & Tư Duy Thuật Toán',
+    subtitle: 'Nền tảng khoa học máy tính, thuật toán và giải bài toán bằng code',
+    targetGoal: 'nang-cao',
+    targetGoalLabel: 'Tư duy công nghệ 4.0',
+    levelBadge: 'Khối Công Nghệ Thông Tin',
+    teacher: 'Thầy Hoàng & Kỹ sư CNTT mời giảng',
+    schedule: 'Tối Thứ 7 (19:00 - 21:00) hoặc Sáng Chủ Nhật (08:30 - 10:30)',
+    classSize: '10 - 12 học sinh (1 máy/em)',
+    duration: '1 - 2 buổi / tuần',
+    keyPoints: [
+      'Nắm vững cú pháp Python chuẩn, kiểu dữ liệu, vòng lặp, hàm và mảng',
+      'Rèn luyện tư duy thuật toán logic, giải quyết bài toán thực tế',
+      'Định hướng ôn thi Học sinh giỏi Tin học trẻ các cấp',
+      'Thực hành dự án phần mềm mini: Game 2D, ứng dụng tiện ích'
+    ],
+    description: 'Chương trình được thiết kế chuẩn quốc tế dành riêng cho học sinh từ lớp 6 - 12, tiếp cận lập trình bài bản từ con số 0.',
+    suitableFor: 'Học sinh đam mê máy tính, muốn học lập trình hoặc chuẩn bị thi HSG Tin',
+    tuitionNote: 'Học tại phòng máy lạnh trang bị máy tính cấu hình cao'
+  },
+  {
+    id: 'cntt-tin-hoc-van-phong',
+    grade: 'cntt',
+    subject: 'Tin học',
+    title: 'Khối CNTT - Tin Học Văn Phòng Thực Chiến & Kỹ Năng Số',
+    subtitle: 'Làm chủ Word, Excel, PowerPoint chuẩn quốc tế và an toàn số',
+    targetGoal: 'co-ban',
+    targetGoalLabel: 'Kỹ năng thiết yếu',
+    levelBadge: 'Khối Công Nghệ Thông Tin',
+    teacher: 'Tổ bộ môn Tin học & Kỹ năng số',
+    schedule: 'Chiều Thứ 7 (14:30 - 16:30) hoặc Chiều Chủ Nhật',
+    classSize: '10 - 15 học sinh',
+    duration: '1 buổi / tuần',
+    keyPoints: [
+      'Kỹ năng soạn thảo văn bản, căn lề, mục lục tự động chuẩn form Bộ GD&ĐT',
+      'Excel thực hành: hàm tính toán, xử lý bảng điểm, thống kê biểu đồ',
+      'Thiết kế thuyết trình PowerPoint hiện đại, sinh động cho các bài tập trường',
+      'Ứng dụng Trí tuệ nhân tạo (AI) an toàn để hỗ trợ học tập hiệu quả'
+    ],
+    description: 'Trang bị trọn bộ kỹ năng tin học thực tế giúp học sinh tự tin hoàn thành mọi bài tập thuyết trình, báo cáo tại trường phổ thông và đại học.',
+    suitableFor: 'Học sinh từ lớp 6 đến 12 cần nâng cao kỹ năng máy tính văn phòng',
+    tuitionNote: 'Thực hành 100% trên máy tính tại cơ sở'
+  },
+  // Khối Văn Hay Chữ Đẹp
+  {
+    id: 'van-chu-dep-luyen-chu',
+    grade: 'van-chu-dep',
+    subject: 'Luyện chữ',
+    title: 'Khối Văn Hay Chữ Đẹp - Luyện Chữ Nét Thanh Nét Đậm',
+    subtitle: 'Nét chữ nết người - Uốn nắn tư thế ngồi, cách cầm bút & viết đẹp',
+    targetGoal: 'co-ban',
+    targetGoalLabel: 'Rèn chữ nết người',
+    levelBadge: 'Khối Văn Hay Chữ Đẹp',
+    teacher: 'Cô Mai Lan & Giáo viên Chuyên Luyện Chữ',
+    schedule: 'Sáng Thứ 7 (08:00 - 10:00) hoặc Sáng Chủ Nhật (08:00 - 10:00)',
+    classSize: '8 - 10 học sinh',
+    duration: '1 - 2 buổi / tuần',
+    keyPoints: [
+      'Uốn nắn tư thế ngồi thẳng lưng, khoảng cách mắt chuẩn chống cận thị',
+      'Cách cầm bút chuẩn không mỏi tay, kỹ thuật lia bút và nối nét mềm mại',
+      'Luyện chuẩn form chữ cái, nét thanh nét đậm chuẩn Bộ GD&ĐT',
+      'Rèn tốc độ viết nhanh nhưng vẫn giữ được nét chữ ngay ngắn, sạch đẹp'
+    ],
+    description: 'Khóa học giúp các em học sinh xóa bỏ thói quen viết ẩu, chữ xấu, tẩy xóa trong bài thi, tạo thiện cảm lớn với thầy cô chấm bài.',
+    suitableFor: 'Học sinh mọi lứa tuổi có nét chữ nguệch ngoạc, viết chậm hoặc sai tư thế',
+    tuitionNote: 'Tặng trọn bộ bút mài thanh đậm & vở luyện chữ độc quyền'
+  },
+  {
+    id: 'van-chu-dep-cam-thu-van-hoc',
+    grade: 'van-chu-dep',
+    subject: 'Văn',
+    title: 'Khối Văn Hay Chữ Đẹp - Nghệ Thuật Cảm Thụ & Viết Văn Sáng Tạo',
+    subtitle: 'Khơi nguồn cảm xúc văn học, trau chuốt câu từ và kỹ năng hành văn',
+    targetGoal: 'nang-cao',
+    targetGoalLabel: 'Bồi dưỡng cảm xúc',
+    levelBadge: 'Khối Văn Hay Chữ Đẹp',
+    teacher: 'Cô Mai Lan (Tổ Ngữ Văn)',
+    schedule: 'Chiều Chủ Nhật (14:30 - 17:00)',
+    classSize: '10 - 12 học sinh',
+    duration: '1 buổi / tuần',
+    keyPoints: [
+      'Khơi gợi tình yêu với văn học và thói quen quan sát cuộc sống xung quanh',
+      'Làm giàu vốn từ ngữ miêu tả, biểu cảm, các biện pháp tu từ độc đáo',
+      'Phương pháp mở bài, kết bài sáng tạo gây ấn tượng mạnh mẽ',
+      'Hướng dẫn sửa từng câu văn cộc lốc thành câu văn giàu hình ảnh, nhịp điệu'
+    ],
+    description: 'Đánh thức năng khiếu văn chương tiềm ẩn của học sinh, giúp các em tự tin thể hiện suy nghĩ và cảm xúc qua từng trang viết.',
+    suitableFor: 'Học sinh muốn nâng cao kỹ năng hành văn, yêu thích văn học nghệ thuật',
+    tuitionNote: 'Tặng tuyển tập các bài văn đoạt giải cao và sổ tay ngữ từ'
   }
 ];
 
