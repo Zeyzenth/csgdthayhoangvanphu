@@ -416,7 +416,9 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
                               Lớp đang mở • Nhận đăng ký học ngay
                             </span>
                             <p className="text-[11px] text-slate-600 mt-0.5">
-                              Đã có {cls.students.length} học sinh xếp lớp • Đang tiếp nhận bổ sung học sinh.
+                              {cls.students.length > 0
+                                ? `Đã có ${cls.students.length} học sinh xếp lớp • Đang tiếp nhận bổ sung học sinh.`
+                                : 'Đang mở tiếp nhận đăng ký học sinh, kiểm tra năng lực đầu vào và xếp lịch học.'}
                             </p>
                           </div>
                         </div>
@@ -441,6 +443,8 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
                                   isClassFull ? 'text-rose-600' : 'text-emerald-600'
                                 }`}
                               />
+                            ) : isClassOpen ? (
+                              <Sparkles className="w-4 h-4 text-emerald-600 flex-shrink-0" />
                             ) : (
                               <Clock className="w-4 h-4 text-amber-600 flex-shrink-0" />
                             )}
@@ -455,6 +459,10 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
                                   {isClassOpen && (
                                     <span className="ml-1 text-emerald-700 font-extrabold">(Đang mở)</span>
                                   )}
+                                </strong>
+                              ) : isClassOpen ? (
+                                <strong className="text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md border border-emerald-300 font-extrabold">
+                                  Đang mở tuyển sinh
                                 </strong>
                               ) : (
                                 <strong className="text-amber-800 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200 font-extrabold">
@@ -482,6 +490,11 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
                               <Eye className="w-3 h-3" />
                               <span>Xem DS</span>
                             </button>
+                          ) : isClassOpen ? (
+                            <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md border border-emerald-300 flex items-center gap-1">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+                              <span>Đang nhận hồ sơ</span>
+                            </span>
                           ) : (
                             <span className="text-[10px] font-bold text-amber-700 bg-amber-100/70 px-2 py-0.5 rounded-md border border-amber-200/60">
                               Đang nhận đăng ký
@@ -527,17 +540,31 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
                         </>
                       ) : isClassOpen ? (
                         <>
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onOpenRosterModal(cls.id);
-                            }}
-                            className="w-full py-2.5 px-4 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-black text-xs rounded-xl shadow-xs hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer"
-                          >
-                            <Eye className="w-4 h-4 text-emerald-100" />
-                            <span>Xem Danh Sách Học Sinh Hiện Có ({cls.students.length} em)</span>
-                          </button>
+                          {hasStudents ? (
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onOpenRosterModal(cls.id);
+                              }}
+                              className="w-full py-2.5 px-4 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-black text-xs rounded-xl shadow-xs hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer"
+                            >
+                              <Eye className="w-4 h-4 text-emerald-100" />
+                              <span>Xem Danh Sách Học Sinh Hiện Có ({cls.students.length} em)</span>
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onOpenConsultationModal(cls.grade);
+                              }}
+                              className="w-full py-2.5 px-4 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-black text-xs rounded-xl shadow-xs hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer"
+                            >
+                              <Sparkles className="w-4 h-4 text-emerald-100" />
+                              <span>Đang Mở Lớp • Đăng Ký Xếp Lớp Ngay</span>
+                            </button>
+                          )}
 
                           <button
                             type="button"

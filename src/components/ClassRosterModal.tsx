@@ -571,6 +571,48 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                   badgeText={`${otherClassData.students.length} học sinh`}
                   badgeColorClass="bg-blue-900 text-white"
                 />
+              ) : otherClassData?.isOpen || otherClassData?.status === 'enrolling' ? (
+                <div className="bg-white rounded-3xl p-8 sm:p-10 border-2 border-emerald-400 ring-2 ring-emerald-100 text-center shadow-md max-w-xl mx-auto space-y-4">
+                  <div className="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-800 mx-auto flex items-center justify-center font-bold shadow-xs">
+                    <CheckCircle2 className="w-7 h-7 text-emerald-600" />
+                  </div>
+                  <div>
+                    <span className="px-3 py-1 rounded-full text-xs font-black bg-emerald-600 text-white inline-flex items-center gap-1.5 mb-2 shadow-xs">
+                      <span className="w-2 h-2 rounded-full bg-white animate-ping"></span>
+                      <span>ĐANG MỞ LỚP • NHẬN ĐĂNG KÝ HỌC NGAY</span>
+                    </span>
+                    <h3 className="text-xl font-black text-slate-900">
+                      {otherClassData?.name || 'Lớp Học'}
+                    </h3>
+                  </div>
+                  <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-200 text-xs text-emerald-950 text-left space-y-1.5">
+                    <p className="font-bold flex items-center gap-1.5 text-emerald-900">
+                      <Sparkles className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                      <span>Thông báo mở lớp & Tiếp nhận học sinh:</span>
+                    </p>
+                    <p className="text-slate-700 leading-relaxed">
+                      Lớp học này đang <strong>chính thức mở tiếp nhận đăng ký học viên mới</strong>. Sau khi phụ huynh/học sinh đăng ký, các em sẽ được tham gia bài kiểm tra đánh giá năng lực đầu vào miễn phí để xếp ca học và phân loại nhóm năng lực phù hợp nhất.
+                    </p>
+                  </div>
+                  <div className="flex flex-col sm:flex-row gap-2.5 justify-center pt-2">
+                    <button
+                      onClick={() => {
+                        onClose();
+                        onOpenConsultationModal(otherClassData?.grade as GradeLevel);
+                      }}
+                      className="px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-black text-xs rounded-xl shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
+                    >
+                      <Sparkles className="w-4 h-4 text-emerald-100" />
+                      <span>Đăng ký tham gia vào lớp này ngay</span>
+                    </button>
+                    <button
+                      onClick={() => setSelectedClassId('toan-12-all')}
+                      className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl cursor-pointer"
+                    >
+                      Xem danh sách lớp Toán 12 (49 học sinh)
+                    </button>
+                  </div>
+                </div>
               ) : (
                 <div className="bg-white rounded-3xl p-8 sm:p-10 border border-slate-200 text-center shadow-xs max-w-xl mx-auto space-y-4">
                   <div className="w-14 h-14 rounded-2xl bg-amber-50 text-amber-800 mx-auto flex items-center justify-center font-bold">
@@ -608,7 +650,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                       onClick={() => setSelectedClassId('toan-12-all')}
                       className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl cursor-pointer"
                     >
-                      Xem danh sách lớp Toán 12 (23 học sinh)
+                      Xem danh sách lớp Toán 12 (49 học sinh)
                     </button>
                   </div>
                 </div>

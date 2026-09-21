@@ -283,6 +283,29 @@ export const COURSES: Course[] = [
     tuitionNote: 'Tặng cẩm nang cân bằng oxi hóa khử & bảng tuần hoàn'
   },
   {
+    id: 'toan-11-co-ban',
+    grade: '11',
+    subject: 'Toán',
+    title: 'Toán 11 - Củng Cố Nền Tảng, Vững Vàng Lượng Giác & Hình Không Gian',
+    subtitle: 'Nắm chắc kiến thức cốt lõi, tự tin đạt điểm 7.0 - 8.0 trên lớp',
+    targetGoal: 'co-ban',
+    targetGoalLabel: 'Củng cố nền tảng',
+    levelBadge: 'Nền tảng vững chắc',
+    teacher: 'Thầy Hoàng & Tổ Toán THPT',
+    schedule: 'Tối Thứ 3 & Thứ 6 (19:30 - 21:30)',
+    classSize: '15 học sinh',
+    duration: '2 buổi / tuần',
+    keyPoints: [
+      'Hệ thống công thức lượng giác, phương trình lượng giác cơ bản',
+      'Rèn kỹ năng vẽ hình, xác định giao tuyến, giao điểm trong không gian',
+      'Nắm chắc dãy số, cấp số cộng, cấp số nhân và giới hạn hàm số',
+      'Chữa chi tiết bài tập SGK mới và bài tập trên lớp'
+    ],
+    description: 'Chương trình Toán 11 cơ bản giúp các em học sinh nắm vững kiến thức nền tảng của chương trình mới, khắc phục mất gốc và chuẩn bị tốt cho các bài kiểm tra định kỳ.',
+    suitableFor: 'Học sinh lớp 11 cần nắm chắc kiến thức cơ bản và nâng cao điểm số học bạ',
+    tuitionNote: 'Tặng trọn bộ cẩm nang công thức Toán 11 độc quyền'
+  },
+  {
     id: 'toan-11-nang-cao',
     grade: '11',
     subject: 'Toán',
