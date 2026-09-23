@@ -27,34 +27,35 @@ export function sortStudentsByClassAndName(students: Student[]): Student[] {
   });
 }
 
-// Danh sách chính xác học sinh Lớp Toán 12 Cơ Bản 1 (23 học sinh - 100% 12A9 THPT Lưu Nhân Chú) - ĐÃ ĐẦY SĨ SỐ
+// Danh sách chính xác học sinh Lớp Toán 12 Cơ Bản 1 (24 học sinh - 100% 12A9 THPT Lưu Nhân Chú) - ĐÃ ĐẦY SĨ SỐ
 export const STUDENTS_TOAN_12_CB1: Student[] = [
   { id: 'cb1-1', stt: 1, name: 'Dương Thế Anh', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
   { id: 'cb1-2', stt: 2, name: 'Lê Khánh Chi', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
   { id: 'cb1-3', stt: 3, name: 'Đặng Xuân Chiều', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
   { id: 'cb1-4', stt: 4, name: 'Nguyễn Văn Đại', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
-  { id: 'cb1-5', stt: 5, name: 'Lê Quỳnh Diễm', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
-  { id: 'cb1-6', stt: 6, name: 'Nguyễn Thuỳ Dương', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
+  { id: 'cb1-5', stt: 5, name: 'Lê Đăng Đức', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
+  { id: 'cb1-6', stt: 6, name: 'Lê Quỳnh Diễm', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
   { id: 'cb1-7', stt: 7, name: 'Nguyễn Viết Dương', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
   { id: 'cb1-8', stt: 8, name: 'Trần Đặng Phương Hiếu', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
   { id: 'cb1-9', stt: 9, name: 'Dương Chí Huy', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
   { id: 'cb1-10', stt: 10, name: 'Nguyễn Quang Huyên', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
-  { id: 'cb1-11', stt: 11, name: 'Lưu Quang Linh', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
-  { id: 'cb1-12', stt: 12, name: 'Đỗ Thị Mỹ Linh', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
-  { id: 'cb1-13', stt: 13, name: 'Đào Thùy Loan', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
-  { id: 'cb1-14', stt: 14, name: 'Vũ Gia Long', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
-  { id: 'cb1-15', stt: 15, name: 'Vũ Ngọc Cẩm Ly', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
-  { id: 'cb1-16', stt: 16, name: 'Lê Hồng Minh', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
-  { id: 'cb1-17', stt: 17, name: 'Ngô Kiều Mỹ', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
-  { id: 'cb1-18', stt: 18, name: 'Trần Bảo Ngọc', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
-  { id: 'cb1-19', stt: 19, name: 'Nguyễn Hồng Nhung', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
-  { id: 'cb1-20', stt: 20, name: 'Đặng Thuỳ Trang', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
-  { id: 'cb1-21', stt: 21, name: 'Nguyễn Thị Cẩm Tú', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
-  { id: 'cb1-22', stt: 22, name: 'Phạm Thế Vinh', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
-  { id: 'cb1-23', stt: 23, name: 'Nguyễn Văn Xuân', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
+  { id: 'cb1-11', stt: 11, name: 'Dương Hồng Lê', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
+  { id: 'cb1-12', stt: 12, name: 'Lưu Quang Linh', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
+  { id: 'cb1-13', stt: 13, name: 'Đỗ Thị Mỹ Linh', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
+  { id: 'cb1-14', stt: 14, name: 'Đào Thùy Loan', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
+  { id: 'cb1-15', stt: 15, name: 'Vũ Gia Long', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
+  { id: 'cb1-16', stt: 16, name: 'Vũ Ngọc Cẩm Ly', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
+  { id: 'cb1-17', stt: 17, name: 'Lê Hồng Minh', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
+  { id: 'cb1-18', stt: 18, name: 'Ngô Kiều Mỹ', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
+  { id: 'cb1-19', stt: 19, name: 'Trần Bảo Ngọc', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
+  { id: 'cb1-20', stt: 20, name: 'Nguyễn Hồng Nhung', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
+  { id: 'cb1-21', stt: 21, name: 'Đặng Thuỳ Trang', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
+  { id: 'cb1-22', stt: 22, name: 'Nguyễn Thị Cẩm Tú', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
+  { id: 'cb1-23', stt: 23, name: 'Phạm Thế Vinh', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
+  { id: 'cb1-24', stt: 24, name: 'Nguyễn Văn Xuân', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 1' },
 ];
 
-// Danh sách chính xác học sinh Lớp Toán 12 Cơ Bản 2 (19 học sinh - 100% 12A6 THPT Lưu Nhân Chú) - ĐANG MỞ LỚP
+// Danh sách chính xác học sinh Lớp Toán 12 Cơ Bản 2 (19 học sinh - 100% 12A6 THPT Lưu Nhân Chú) - ĐÃ ĐẦY SĨ SỐ
 export const STUDENTS_TOAN_12_CB2: Student[] = [
   { id: 'cb2-1', stt: 1, name: 'Lê Ngọc Bách', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 2' },
   { id: 'cb2-2', stt: 2, name: 'Lưu Thị Bích', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 2' },
@@ -63,36 +64,52 @@ export const STUDENTS_TOAN_12_CB2: Student[] = [
   { id: 'cb2-5', stt: 5, name: 'Trần Thị Hoài', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 2' },
   { id: 'cb2-6', stt: 6, name: 'Trần Duy Khoa', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 2' },
   { id: 'cb2-7', stt: 7, name: 'Nguyễn Khánh Ly', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 2' },
-  { id: 'cb2-8', stt: 8, name: 'Bùi Khánh Ly', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 2' },
-  { id: 'cb2-9', stt: 9, name: 'Nguyễn Thị Ánh Ngọc', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 2' },
-  { id: 'cb2-10', stt: 10, name: 'Lê Thanh Nhật', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 2' },
-  { id: 'cb2-11', stt: 11, name: 'Trần Quang Phong', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 2' },
-  { id: 'cb2-12', stt: 12, name: 'Lương Khánh Phương', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 2' },
-  { id: 'cb2-13', stt: 13, name: 'Lê Thảo Quyên', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 2' },
-  { id: 'cb2-14', stt: 14, name: 'Nguyễn Phương Thảo', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 2' },
-  { id: 'cb2-15', stt: 15, name: 'Nguyễn Thị Anh Thư', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 2' },
-  { id: 'cb2-16', stt: 16, name: 'Trần Thị Thanh Trúc', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 2' },
-  { id: 'cb2-17', stt: 17, name: 'Nguyễn Thị Thanh Tú', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 2' },
+  { id: 'cb2-8', stt: 8, name: 'Nguyễn Thị Ánh Ngọc', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 2' },
+  { id: 'cb2-9', stt: 9, name: 'Lê Thanh Nhật', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 2' },
+  { id: 'cb2-10', stt: 10, name: 'Trần Quang Phong', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 2' },
+  { id: 'cb2-11', stt: 11, name: 'Lương Khánh Phương', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 2' },
+  { id: 'cb2-12', stt: 12, name: 'Lê Thảo Quyên', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 2' },
+  { id: 'cb2-13', stt: 13, name: 'Nguyễn Phương Thảo', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 2' },
+  { id: 'cb2-14', stt: 14, name: 'La Tiến Vinh', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 2' },
+  { id: 'cb2-15', stt: 15, name: 'Trần Thị Thanh Trúc', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 2' },
+  { id: 'cb2-16', stt: 16, name: 'Nguyễn Thị Thanh Tú', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 2' },
+  { id: 'cb2-17', stt: 17, name: 'Trần Thanh Tú', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 2' },
   { id: 'cb2-18', stt: 18, name: 'Lê Thanh Tùng', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 2' },
   { id: 'cb2-19', stt: 19, name: 'Nguyễn Hải Yến', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 2' },
 ];
 
-// Danh sách chính xác học sinh Lớp Toán 12 Cơ Bản 3 (7 học sinh từ 12A5, 12A7, 12A8 THPT Lưu Nhân Chú) - ĐANG MỞ LỚP
+// Danh sách chính xác học sinh Lớp Toán 12 Cơ Bản 3 (13 học sinh từ 12A5, 12A7, 12A8, 12A9 THPT Lưu Nhân Chú) - ĐANG MỞ LỚP
 export const STUDENTS_TOAN_12_CB3: Student[] = [
   { id: 'cb3-1', stt: 1, name: 'Dương Thị Thảo', schoolClass: '12A5', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 3' },
-  { id: 'cb3-2', stt: 2, name: 'Nguyễn Thị Việt Hà', schoolClass: '12A7', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 3' },
-  { id: 'cb3-3', stt: 3, name: 'Ma Đỗ Bảo Châm', schoolClass: '12A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 3' },
-  { id: 'cb3-4', stt: 4, name: 'Trần Thị Khánh Dinh', schoolClass: '12A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 3' },
-  { id: 'cb3-5', stt: 5, name: 'Nguyễn Thị Quỳnh Như', schoolClass: '12A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 3' },
-  { id: 'cb3-6', stt: 6, name: 'Đỗ Thị Phương', schoolClass: '12A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 3' },
-  { id: 'cb3-7', stt: 7, name: 'Nguyễn Bàn Phương Vy', schoolClass: '12A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 3' },
+  { id: 'cb3-2', stt: 2, name: 'Hoàng Thanh Thương', schoolClass: '12A5', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 3' },
+  { id: 'cb3-3', stt: 3, name: 'Nguyễn Thị Việt Hà', schoolClass: '12A7', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 3' },
+  { id: 'cb3-4', stt: 4, name: 'Dương Quốc Việt', schoolClass: '12A7', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 3' },
+  { id: 'cb3-5', stt: 5, name: 'Nguyễn Thị Bích', schoolClass: '12A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 3' },
+  { id: 'cb3-6', stt: 6, name: 'Ma Đỗ Bảo Châm', schoolClass: '12A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 3' },
+  { id: 'cb3-7', stt: 7, name: 'Trần Thị Khánh Dinh', schoolClass: '12A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 3' },
+  { id: 'cb3-8', stt: 8, name: 'Đỗ Ngọc Như', schoolClass: '12A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 3' },
+  { id: 'cb3-9', stt: 9, name: 'Nguyễn Thị Quỳnh Như', schoolClass: '12A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 3' },
+  { id: 'cb3-10', stt: 10, name: 'Đỗ Thị Phương', schoolClass: '12A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 3' },
+  { id: 'cb3-11', stt: 11, name: 'Nguyễn Bàn Phương Vy', schoolClass: '12A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 3' },
+  { id: 'cb3-12', stt: 12, name: 'Nguyễn Thị Thùy Trang', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 3' },
+  { id: 'cb3-13', stt: 13, name: 'Bùi Khánh Vy', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 3' },
 ];
 
-// Tổng hợp 49 học sinh 3 phân lớp Toán 12 Cơ bản
+// Tổng hợp 56 học sinh 3 phân lớp Toán 12 Cơ bản
 export const STUDENTS_TOAN_12_CO_BAN: Student[] = [
   ...STUDENTS_TOAN_12_CB1,
   ...STUDENTS_TOAN_12_CB2,
   ...STUDENTS_TOAN_12_CB3,
+];
+
+// Danh sách chính xác học sinh Lớp Toán 12 Nâng Cao (6 học sinh từ 12A6, 12A8, 12A9 THPT Lưu Nhân Chú) - ĐANG MỞ LỚP
+export const STUDENTS_TOAN_12_NC: Student[] = [
+  { id: 'nc12-1', stt: 1, name: 'Nguyễn Thị Ngọc Chi', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp 12 NC' },
+  { id: 'nc12-2', stt: 2, name: 'Nguyễn Thùy Trang', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp 12 NC' },
+  { id: 'nc12-3', stt: 3, name: 'Lục Thị Huệ', schoolClass: '12A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp 12 NC' },
+  { id: 'nc12-4', stt: 4, name: 'Triệu Gia Bảo', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp 12 NC' },
+  { id: 'nc12-5', stt: 5, name: 'Nguyễn Thuỳ Dương', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp 12 NC' },
+  { id: 'nc12-6', stt: 6, name: 'Nguyễn Thu Hiền', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp 12 NC' },
 ];
 
 export const ACTIVE_CLASSES: ActiveClass[] = [
@@ -107,11 +124,11 @@ export const ACTIVE_CLASSES: ActiveClass[] = [
     schedule: '',
     room: '',
     status: 'full',
-    statusLabel: 'ĐÃ ĐẦY (23 học sinh)',
+    statusLabel: 'ĐÃ ĐẦY (24 học sinh)',
     isFull: true,
     isOpen: false,
     students: STUDENTS_TOAN_12_CB1,
-    note: 'Lớp đã tiếp nhận đủ 23 học sinh (100% học sinh 12A9 - THPT Lưu Nhân Chú) và ĐÃ CHỐT SĨ SỐ. Quý phụ huynh và học sinh vui lòng đăng ký sang Lớp 2 hoặc Lớp 3 đang mở.',
+    note: 'Lớp 1 đã tiếp nhận đủ 24 học sinh (100% học sinh 12A9 - THPT Lưu Nhân Chú) và ĐÃ CHỐT SĨ SỐ (ĐÃ ĐẦY). Quý phụ huynh và học sinh vui lòng đăng ký sang Lớp 3 (CB 3) đang mở tuyển sinh.',
   },
   {
     id: 'toan-12-cb2',
@@ -123,12 +140,12 @@ export const ACTIVE_CLASSES: ActiveClass[] = [
     teacher: '',
     schedule: '',
     room: '',
-    status: 'enrolling',
-    statusLabel: 'ĐANG MỞ (19 học sinh)',
-    isOpen: true,
-    isFull: false,
+    status: 'full',
+    statusLabel: 'ĐÃ ĐẦY (19 học sinh)',
+    isFull: true,
+    isOpen: false,
     students: STUDENTS_TOAN_12_CB2,
-    note: 'Gồm 19 học sinh lớp 12A6 - THPT Lưu Nhân Chú. Lớp đang mở, tuyển bổ sung các chỉ tiêu cuối cùng.',
+    note: 'Lớp 2 đã tiếp nhận đủ 19 học sinh (100% học sinh 12A6 - THPT Lưu Nhân Chú) và ĐÃ CHỐT SĨ SỐ (ĐÃ ĐẦY). Quý phụ huynh & học sinh vui lòng đăng ký sang Lớp 3 (CB 3) đang mở tuyển sinh.',
   },
   {
     id: 'toan-12-cb3',
@@ -141,11 +158,11 @@ export const ACTIVE_CLASSES: ActiveClass[] = [
     schedule: '',
     room: '',
     status: 'enrolling',
-    statusLabel: 'ĐANG MỞ (7 học sinh)',
+    statusLabel: 'ĐANG MỞ (13 học sinh)',
     isOpen: true,
     isFull: false,
     students: STUDENTS_TOAN_12_CB3,
-    note: 'Gồm 7 học sinh từ các lớp 12A5 (1 em), 12A7 (1 em), 12A8 (5 em) - THPT Lưu Nhân Chú. Lớp đang mở và tiếp tục tuyển sinh để hoàn thiện sĩ số.',
+    note: 'Gồm 13 học sinh từ các lớp 12A5 (2 em), 12A7 (2 em), 12A8 (7 em), 12A9 (2 em) - THPT Lưu Nhân Chú. Lớp đang mở và tiếp tục tuyển sinh để hoàn thiện sĩ số.',
   },
   {
     id: 'toan-12-nc',
@@ -158,11 +175,11 @@ export const ACTIVE_CLASSES: ActiveClass[] = [
     schedule: '',
     room: '',
     status: 'enrolling',
-    statusLabel: 'ĐANG MỞ LỚP',
+    statusLabel: 'ĐANG MỞ (6 học sinh)',
     isOpen: true,
     isFull: false,
-    students: [],
-    note: 'Lớp chuyên sâu giải đề thi thử 8.5+, 9.0+, rèn tư duy Hàm số, Hình không gian Oxyz và Tích phân phân loại. Lớp đang mở, tiếp nhận học sinh đăng ký kiểm tra năng lực đầu vào và xếp lớp.',
+    students: STUDENTS_TOAN_12_NC,
+    note: 'Hiện có 6 học sinh (12A6: 2 em, 12A8: 1 em, 12A9: 3 em - THPT Lưu Nhân Chú). Lớp chuyên sâu giải đề thi thử 8.5+, 9.0+, rèn tư duy Hàm số, Hình không gian Oxyz và Tích phân phân loại. Lớp đang mở và tiếp tục nhận đăng ký bổ sung.',
   },
   {
     id: 'toan-11-cb',

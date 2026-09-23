@@ -295,7 +295,7 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
               className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 font-bold text-xs transition-colors cursor-pointer self-start sm:self-auto shadow-2xs"
             >
               <Eye className="w-4 h-4 text-blue-800" />
-              <span>Xem danh sách học sinh hiện có (49 em)</span>
+              <span>Xem danh sách học sinh hiện có (62 em)</span>
             </button>
           </div>
 
@@ -627,7 +627,7 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
               className="px-5 py-3 bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md cursor-pointer inline-flex items-center gap-2"
             >
               <Eye className="w-4 h-4 text-amber-300" />
-              <span>Xem Danh Sách Toàn Bộ Học Sinh (23 em)</span>
+              <span>Xem Danh Sách Toàn Bộ Học Sinh (62 em)</span>
             </button>
             <button
               onClick={() => onOpenConsultationModal()}
