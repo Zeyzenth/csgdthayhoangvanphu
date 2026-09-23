@@ -102,14 +102,13 @@ export const STUDENTS_TOAN_12_CO_BAN: Student[] = [
   ...STUDENTS_TOAN_12_CB3,
 ];
 
-// Danh sách chính xác học sinh Lớp Toán 12 Nâng Cao (6 học sinh từ 12A6, 12A8, 12A9 THPT Lưu Nhân Chú) - ĐANG MỞ LỚP
+// Danh sách chính xác học sinh Lớp Toán 12 Nâng Cao (5 học sinh từ 12A6, 12A8, 12A9 THPT Lưu Nhân Chú) - ĐANG MỞ LỚP
 export const STUDENTS_TOAN_12_NC: Student[] = [
   { id: 'nc12-1', stt: 1, name: 'Nguyễn Thị Ngọc Chi', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp 12 NC' },
   { id: 'nc12-2', stt: 2, name: 'Nguyễn Thùy Trang', schoolClass: '12A6', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp 12 NC' },
   { id: 'nc12-3', stt: 3, name: 'Lục Thị Huệ', schoolClass: '12A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp 12 NC' },
-  { id: 'nc12-4', stt: 4, name: 'Triệu Gia Bảo', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp 12 NC' },
-  { id: 'nc12-5', stt: 5, name: 'Nguyễn Thuỳ Dương', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp 12 NC' },
-  { id: 'nc12-6', stt: 6, name: 'Nguyễn Thu Hiền', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp 12 NC' },
+  { id: 'nc12-4', stt: 4, name: 'Nguyễn Thuỳ Dương', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp 12 NC' },
+  { id: 'nc12-5', stt: 5, name: 'Nguyễn Thu Hiền', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp 12 NC' },
 ];
 
 export const ACTIVE_CLASSES: ActiveClass[] = [
@@ -175,11 +174,11 @@ export const ACTIVE_CLASSES: ActiveClass[] = [
     schedule: '',
     room: '',
     status: 'enrolling',
-    statusLabel: 'ĐANG MỞ (6 học sinh)',
+    statusLabel: 'ĐANG MỞ (5 học sinh)',
     isOpen: true,
     isFull: false,
     students: STUDENTS_TOAN_12_NC,
-    note: 'Hiện có 6 học sinh (12A6: 2 em, 12A8: 1 em, 12A9: 3 em - THPT Lưu Nhân Chú). Lớp chuyên sâu giải đề thi thử 8.5+, 9.0+, rèn tư duy Hàm số, Hình không gian Oxyz và Tích phân phân loại. Lớp đang mở và tiếp tục nhận đăng ký bổ sung.',
+    note: 'Hiện có 5 học sinh (12A6: 2 em, 12A8: 1 em, 12A9: 2 em - THPT Lưu Nhân Chú). Lớp chuyên sâu giải đề thi thử 8.5+, 9.0+, rèn tư duy Hàm số, Hình không gian Oxyz và Tích phân phân loại. Lớp đang mở và tiếp tục nhận đăng ký bổ sung.',
   },
   {
     id: 'toan-11-cb',

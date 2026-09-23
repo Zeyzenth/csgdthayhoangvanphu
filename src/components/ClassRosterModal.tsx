@@ -262,7 +262,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
             {selectedClassId === 'toan-12-all'
               ? 'BẢNG DANH SÁCH THÀNH VIÊN LỚP TOÁN 12 CƠ BẢN (56 HỌC SINH)'
               : selectedClassId === 'toan-12-nc'
-              ? 'BẢNG DANH SÁCH HỌC SINH LỚP TOÁN 12 NÂNG CAO (6 HỌC SINH - ĐANG MỞ)'
+              ? 'BẢNG DANH SÁCH HỌC SINH LỚP TOÁN 12 NÂNG CAO (5 HỌC SINH - ĐANG MỞ)'
               : selectedClassId === 'toan-12-cb1'
               ? 'BẢNG DANH SÁCH THÀNH VIÊN LỚP 1 (CB 1: 24 HỌC SINH - ĐÃ ĐẦY SĨ SỐ)'
               : selectedClassId === 'toan-12-cb2'
@@ -315,7 +315,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
             }`}
           >
             <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>Toán 12 Nâng Cao (6 em • Đang mở)</span>
+            <span>Toán 12 Nâng Cao (5 em • Đang mở)</span>
           </button>
           <button
             onClick={() => setSelectedClassId('toan-12-cb1')}
@@ -561,7 +561,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                       </span>
                     </h4>
                     <p className="text-xs text-slate-700 mt-0.5">
-                      Hiện có <strong>6 học sinh (12A6: 2 em, 12A8: 1 em, 12A9: 3 em - THPT Lưu Nhân Chú)</strong> đã xếp lớp. Lớp chuyên sâu vận dụng cao 8.5+, 9.0+, rèn luyện đề chuẩn Bộ GD&ĐT và đang tiếp tục nhận đăng ký bổ sung!
+                      Hiện có <strong>5 học sinh (12A6: 2 em, 12A8: 1 em, 12A9: 2 em - THPT Lưu Nhân Chú)</strong> đã xếp lớp. Lớp chuyên sâu vận dụng cao 8.5+, 9.0+, rèn luyện đề chuẩn Bộ GD&ĐT và đang tiếp tục nhận đăng ký bổ sung!
                     </p>
                   </div>
                 </div>
@@ -580,7 +580,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
               <UniformStudentTable
                 students={filteredNc12}
                 title="Bảng Danh Sách Học Sinh: Lớp Toán 12 Nâng Cao (Vận Dụng Cao 8.5+)"
-                subtitle={`Sĩ số: ${filteredNc12.length} / 6 học sinh (12A6: 2 em, 12A8: 1 em, 12A9: 3 em - THPT Lưu Nhân Chú)`}
+                subtitle={`Sĩ số: ${filteredNc12.length} / 5 học sinh (12A6: 2 em, 12A8: 1 em, 12A9: 2 em - THPT Lưu Nhân Chú)`}
                 badgeText={`Toán 12 NC: ${filteredNc12.length} em • ĐANG MỞ`}
                 badgeColorClass="bg-purple-900 text-white"
               />
