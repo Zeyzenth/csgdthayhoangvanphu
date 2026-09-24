@@ -67,6 +67,10 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
     { value: 'Nâng Cao', label: 'Lớp Nâng Cao', desc: 'Vận dụng cao 8.5+, 9+, Chuyên, HSG' },
   ];
 
+  const totalActiveStudents = useMemo(() => {
+    return ACTIVE_CLASSES.reduce((acc, c) => acc + (c.students?.length || 0), 0);
+  }, []);
+
   // Filter classes by 3-level hierarchy & push open/active classes before upcoming classes
   const filteredClasses = useMemo(() => {
     return ACTIVE_CLASSES.filter((c) => {
@@ -75,10 +79,10 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
       const matchLevel = selectedLevel === 'all' || c.level === selectedLevel;
       return matchSubject && matchGrade && matchLevel;
     }).sort((a, b) => {
-      // Ưu tiên lớp đang mở / đã đầy lên trên trước lớp sắp mở
+      // Thứ tự sắp xếp theo yêu cầu: 1. Lớp đầy sĩ số -> 2. Lớp đang mở -> 3. Lớp sắp mở
       const getPriority = (cls: typeof a) => {
-        if (cls.status === 'enrolling' || cls.isOpen) return 1;
-        if (cls.status === 'full') return 2;
+        if (cls.status === 'full' || cls.isFull) return 1;
+        if (cls.status === 'enrolling' || cls.isOpen) return 2;
         return 3; // upcoming (sắp mở lớp)
       };
       return getPriority(a) - getPriority(b);
@@ -303,7 +307,7 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
               className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 font-bold text-xs transition-colors cursor-pointer self-start sm:self-auto shadow-2xs"
             >
               <Eye className="w-4 h-4 text-blue-800" />
-              <span>Xem danh sách học sinh hiện có (83 em)</span>
+              <span>Xem danh sách học sinh hiện có ({totalActiveStudents} em)</span>
             </button>
           </div>
 
@@ -635,7 +639,7 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
               className="px-5 py-3 bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md cursor-pointer inline-flex items-center gap-2"
             >
               <Eye className="w-4 h-4 text-amber-300" />
-              <span>Xem Danh Sách Toàn Bộ Học Sinh (83 em)</span>
+              <span>Xem Danh Sách Toàn Bộ Học Sinh ({totalActiveStudents} em)</span>
             </button>
             <button
               onClick={() => onOpenConsultationModal()}

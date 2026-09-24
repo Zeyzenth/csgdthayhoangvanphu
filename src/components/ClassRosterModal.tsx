@@ -277,6 +277,10 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                 ? 'Môn Toán • Khối 12 (Nâng Cao 8.5+) • Cơ sở Vạn Phú'
                 : selectedClassId === 'toan-11-cb'
                 ? 'Môn Toán • Khối 11 (Cơ Bản) • Cơ sở Vạn Phú'
+                : selectedClassId === 'toan-10-cb'
+                ? 'Môn Toán • Khối 10 (Cơ Bản) • Cơ sở Vạn Phú'
+                : selectedClassId === 'toan-10-nc'
+                ? 'Môn Toán • Khối 10 (Nâng Cao 8.5+) • Cơ sở Vạn Phú'
                 : selectedClassId === 'cntt-active'
                 ? 'Công Nghệ Thông Tin & Kỹ Năng Số • Cơ sở Vạn Phú'
                 : 'Môn Toán • Cơ sở Vạn Phú'}
@@ -285,21 +289,25 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
 
           <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white uppercase">
             {selectedClassId === 'toan-12-all'
-              ? 'BẢNG DANH SÁCH THÀNH VIÊN LỚP TOÁN 12 CƠ BẢN (56 HỌC SINH)'
+              ? 'BẢNG DANH SÁCH THÀNH VIÊN LỚP TOÁN 12 CƠ BẢN (60 HỌC SINH)'
               : selectedClassId === 'toan-12-nc'
               ? 'BẢNG DANH SÁCH HỌC SINH LỚP TOÁN 12 NÂNG CAO (5 HỌC SINH - ĐANG MỞ)'
               : selectedClassId === 'toan-11-cb'
-              ? 'BẢNG DANH SÁCH HỌC SINH LỚP TOÁN 11 CƠ BẢN (8 HỌC SINH - ĐANG MỞ)'
+              ? 'BẢNG DANH SÁCH HỌC SINH LỚP TOÁN 11 CƠ BẢN (14 HỌC SINH - ĐANG MỞ)'
+              : selectedClassId === 'toan-10-cb'
+              ? 'THÔNG BÁO MỞ LỚP TOÁN 10 CƠ BẢN (ĐANG MỞ LỚP & TIẾP NHẬN HỌC SINH)'
+              : selectedClassId === 'toan-10-nc'
+              ? 'THÔNG BÁO MỞ LỚP TOÁN 10 NÂNG CAO (ĐANG MỞ LỚP & TIẾP NHẬN HỌC SINH)'
               : selectedClassId === 'cntt-active'
-              ? 'BẢNG DANH SÁCH HỌC SINH LỚP CÔNG NGHỆ THÔNG TIN & KỸ NĂNG SỐ (14 HỌC SINH - ĐANG MỞ)'
+              ? 'BẢNG DANH SÁCH HỌC SINH LỚP CÔNG NGHỆ THÔNG TIN & KỸ NĂNG SỐ (16 HỌC SINH - ĐANG MỞ)'
               : selectedClassId === 'toan-12-cb1'
-              ? 'BẢNG DANH SÁCH THÀNH VIÊN LỚP 1 (CB 1: 24 HỌC SINH - ĐÃ ĐẦY SĨ SỐ)'
+              ? 'BẢNG DANH SÁCH THÀNH VIÊN LỚP 1 (CB 1: 23 HỌC SINH - ĐÃ ĐẦY SĨ SỐ)'
               : selectedClassId === 'toan-12-cb2'
               ? 'BẢNG DANH SÁCH THÀNH VIÊN LỚP 2 (CB 2: 19 HỌC SINH - ĐÃ ĐẦY SĨ SỐ)'
               : selectedClassId === 'toan-12-cb3'
-              ? 'BẢNG DANH SÁCH THÀNH VIÊN LỚP 3 (CB 3: 13 HỌC SINH - ĐANG MỞ LỚP)'
+              ? 'BẢNG DANH SÁCH THÀNH VIÊN LỚP 3 (CB 3: 18 HỌC SINH - ĐANG MỞ LỚP)'
               : selectedClassId === 'both-separate'
-              ? 'DANH SÁCH THEO 3 PHÂN LỚP: LỚP 1, LỚP 2 & LỚP 3 (56 HỌC SINH)'
+              ? 'DANH SÁCH THEO 3 PHÂN LỚP: LỚP 1, LỚP 2 & LỚP 3 (60 HỌC SINH)'
               : `THÔNG TIN LỚP: ${otherClassData?.name || 'LỚP HỌC'}`}
           </h2>
 
@@ -333,7 +341,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                 : 'bg-white text-slate-700 hover:bg-slate-200'
             }`}
           >
-            Toán 12 Cơ Bản (56 em)
+            Toán 12 Cơ Bản (60 em)
           </button>
           <button
             onClick={() => setSelectedClassId('toan-12-nc')}
@@ -355,7 +363,18 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
             }`}
           >
             <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>Toán 11 Cơ Bản (8 em • Đang mở)</span>
+            <span>Toán 11 Cơ Bản (14 em • Đang mở)</span>
+          </button>
+          <button
+            onClick={() => setSelectedClassId('toan-10-cb')}
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex-shrink-0 cursor-pointer flex items-center gap-1.5 ${
+              selectedClassId === 'toan-10-cb'
+                ? 'bg-emerald-800 text-white shadow-sm'
+                : 'bg-white text-emerald-950 hover:bg-emerald-50 border border-emerald-300'
+            }`}
+          >
+            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>Toán 10 (Đang mở lớp)</span>
           </button>
           <button
             onClick={() => setSelectedClassId('cntt-active')}
@@ -366,7 +385,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
             }`}
           >
             <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>CNTT & Kỹ Năng Số (14 em • Đang mở)</span>
+            <span>CNTT & Kỹ Năng Số (16 em • Đang mở)</span>
           </button>
           <button
             onClick={() => setSelectedClassId('toan-12-cb1')}
@@ -376,7 +395,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                 : 'bg-white text-rose-900 hover:bg-rose-50 border border-rose-200'
             }`}
           >
-            Lớp 1 (CB 1: 24 em • Đã đầy)
+            Lớp 1 (CB 1: 23 em • Đã đầy)
           </button>
           <button
             onClick={() => setSelectedClassId('toan-12-cb2')}
@@ -397,7 +416,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
             }`}
           >
             <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>Lớp 3 (CB 3: 13 em • Đang mở)</span>
+            <span>Lớp 3 (CB 3: 18 em • Đang mở)</span>
           </button>
           <button
             onClick={() => setSelectedClassId('both-separate')}
@@ -409,7 +428,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
           >
             Xem song song 3 lớp CB
           </button>
-          {otherClassData && !['toan-12-all', 'toan-12-nc', 'toan-11-cb', 'cntt-active', 'toan-12-cb1', 'toan-12-cb2', 'toan-12-cb3', 'both-separate'].includes(selectedClassId) && (
+          {otherClassData && !['toan-12-all', 'toan-12-nc', 'toan-11-cb', 'toan-10-cb', 'cntt-active', 'toan-12-cb1', 'toan-12-cb2', 'toan-12-cb3', 'both-separate'].includes(selectedClassId) && (
             <button
               onClick={() => setSelectedClassId(otherClassData.id)}
               className="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex-shrink-0 bg-blue-900 text-white shadow-sm border border-blue-700 cursor-pointer"
@@ -471,18 +490,18 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
 
         {/* Scrollable Area */}
         <div className="flex-grow overflow-y-auto p-4 sm:p-6 bg-slate-50 space-y-6">
-          {/* VIEW 1: TOÀN THỂ LỚP (TẤT CẢ 56 HỌC SINH TRONG 1 BẢNG DUY NHẤT) */}
+          {/* VIEW 1: TOÀN THỂ LỚP (TẤT CẢ 60 HỌC SINH TRONG 1 BẢNG DUY NHẤT) */}
           {selectedClassId === 'toan-12-all' && (
             <UniformStudentTable
               students={filteredAll}
               title="Bảng Danh Sách Toàn Thể Học Sinh Lớp Toán 12 (Cơ Bản)"
-              subtitle={`Tổng số: ${filteredAll.length} / 56 học sinh (Lớp 1: 24 em • Lớp 2: 19 em • Lớp 3: 13 em)`}
+              subtitle={`Tổng số: ${filteredAll.length} / 60 học sinh (Lớp 1: 23 em • Lớp 2: 19 em • Lớp 3: 18 em)`}
               badgeText={`Tổng sĩ số: ${filteredAll.length} em`}
               badgeColorClass="bg-slate-900 text-white"
             />
           )}
 
-          {/* VIEW 2: LỚP 1 (CB 1: 24 HỌC SINH - ĐÃ ĐẦY SĨ SỐ) */}
+          {/* VIEW 2: LỚP 1 (CB 1: 23 HỌC SINH - ĐÃ ĐẦY SĨ SỐ) */}
           {selectedClassId === 'toan-12-cb1' && (
             <div className="space-y-4">
               <div className="p-4 bg-rose-50 border border-rose-300 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-rose-950 shadow-xs">
@@ -492,10 +511,10 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                   </div>
                   <div>
                     <h4 className="font-black text-sm text-rose-900">
-                      THÔNG BÁO: LỚP 1 (CB 1) ĐÃ ĐẦY SĨ SỐ (24/24 HỌC SINH)
+                      THÔNG BÁO: LỚP 1 (CB 1) ĐÃ ĐẦY SĨ SỐ (23/23 HỌC SINH)
                     </h4>
                     <p className="text-xs text-slate-700 mt-0.5">
-                      Lớp 1 gồm 24 học sinh lớp 12A9 THPT Lưu Nhân Chú đã chốt danh sách. Phụ huynh & học sinh vui lòng đăng ký sang <strong className="text-emerald-800">Lớp 3 (CB 3)</strong> đang mở tuyển sinh!
+                      Lớp 1 gồm 23 học sinh lớp 12A9 THPT Lưu Nhân Chú đã chốt danh sách. Phụ huynh & học sinh vui lòng đăng ký sang <strong className="text-emerald-800">Lớp 3 (CB 3)</strong> đang mở tuyển sinh!
                     </p>
                   </div>
                 </div>
@@ -511,7 +530,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
               <UniformStudentTable
                 students={filteredCb1}
                 title="Bảng Danh Sách Thành Viên: Lớp 1 (Lớp CB 1 - ĐÃ ĐẦY)"
-                subtitle={`Sĩ số: ${filteredCb1.length} / 24 học sinh (100% học sinh 12A9 - THPT Lưu Nhân Chú)`}
+                subtitle={`Sĩ số: ${filteredCb1.length} / 23 học sinh (100% học sinh 12A9 - THPT Lưu Nhân Chú)`}
                 badgeText={`Lớp 1: ${filteredCb1.length} em • ĐÃ ĐẦY`}
                 badgeColorClass="bg-rose-950 text-white"
               />
@@ -554,7 +573,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
             </div>
           )}
 
-          {/* VIEW 4: LỚP 3 (CB 3: 13 HỌC SINH - ĐANG MỞ LỚP) */}
+          {/* VIEW 4: LỚP 3 (CB 3: 18 HỌC SINH - ĐANG MỞ LỚP) */}
           {selectedClassId === 'toan-12-cb3' && (
             <div className="space-y-4">
               <div className="p-4 bg-emerald-50 border border-emerald-300 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-emerald-950 shadow-xs">
@@ -570,7 +589,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                       </span>
                     </h4>
                     <p className="text-xs text-slate-700 mt-0.5">
-                      Hiện có <strong>13 học sinh (từ 12A5, 12A7, 12A8, 12A9 THPT Lưu Nhân Chú)</strong> đã đăng ký. Do Lớp 1 và Lớp 2 đã đầy sĩ số, trung tâm tập trung tiếp nhận hồ sơ vào Lớp 3 để hoàn thiện sĩ số.
+                      Hiện có <strong>18 học sinh (12A5: 2 em, 12A7: 2 em, 12A8: 7 em, 12A9: 6 em THPT Lưu Nhân Chú và THPT Đội Cấn: 1 em)</strong> đã đăng ký. Do Lớp 1 và Lớp 2 đã đầy sĩ số, trung tâm tập trung tiếp nhận hồ sơ vào Lớp 3 để hoàn thiện sĩ số.
                     </p>
                   </div>
                 </div>
@@ -589,14 +608,14 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
               <UniformStudentTable
                 students={filteredCb3}
                 title="Bảng Danh Sách Thành Viên: Lớp 3 (Lớp CB 3 - ĐANG MỞ)"
-                subtitle={`Sĩ số: ${filteredCb3.length} / 13 học sinh (12A5: 2 em, 12A7: 2 em, 12A8: 7 em, 12A9: 2 em - THPT Lưu Nhân Chú)`}
+                subtitle={`Sĩ số: ${filteredCb3.length} / 18 học sinh (12A5: 2 em, 12A7: 2 em, 12A8: 7 em, 12A9: 6 em - THPT Lưu Nhân Chú và THPT Đội Cấn: 1 em)`}
                 badgeText={`Lớp 3: ${filteredCb3.length} em • ĐANG MỞ`}
                 badgeColorClass="bg-emerald-800 text-white"
               />
             </div>
           )}
 
-          {/* VIEW: LỚP TOÁN 12 NÂNG CAO (6 HỌC SINH - ĐANG MỞ LỚP) */}
+          {/* VIEW: LỚP TOÁN 12 NÂNG CAO (5 HỌC SINH - ĐANG MỞ LỚP) */}
           {selectedClassId === 'toan-12-nc' && (
             <div className="space-y-4">
               <div className="p-4 bg-purple-50 border border-purple-300 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-purple-950 shadow-xs">
@@ -638,7 +657,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
             </div>
           )}
 
-          {/* VIEW: LỚP TOÁN 11 CƠ BẢN (8 HỌC SINH - ĐANG MỞ LỚP) */}
+          {/* VIEW: LỚP TOÁN 11 CƠ BẢN (14 HỌC SINH - ĐANG MỞ LỚP) */}
           {selectedClassId === 'toan-11-cb' && (
             <div className="space-y-4">
               <div className="p-4 bg-blue-50 border border-blue-300 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-blue-950 shadow-xs">
@@ -654,7 +673,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                       </span>
                     </h4>
                     <p className="text-xs text-slate-700 mt-0.5">
-                      Hiện có <strong>8 học sinh (11A2: 1 em, 11A3: 3 em, 11A9: 1 em, 11A10: 1 em, Khối 11: 2 em - THPT Lưu Nhân Chú)</strong> đã xếp lớp. Lớp bám sát chương trình mới, củng cố Lượng giác, Dãy số, Giới hạn và Hình không gian 11, đang tiếp tục nhận đăng ký bổ sung!
+                      Hiện có <strong>14 học sinh (11A2: 2 em, 11A3: 3 em, 11A9: 6 em, 11A10: 1 em, Khối 11: 2 em - THPT Lưu Nhân Chú)</strong> đã xếp lớp. Lớp bám sát chương trình mới, củng cố Lượng giác, Dãy số, Giới hạn và Hình không gian 11, đang tiếp tục nhận đăng ký bổ sung!
                     </p>
                   </div>
                 </div>
@@ -673,7 +692,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
               <UniformStudentTable
                 students={filteredCb11}
                 title="Bảng Danh Sách Học Sinh: Lớp Toán 11 Cơ Bản (Củng Cố Nền Tảng)"
-                subtitle={`Sĩ số: ${filteredCb11.length} / 8 học sinh (11A2: 1 em, 11A3: 3 em, 11A9: 1 em, 11A10: 1 em, Khối 11: 2 em - THPT Lưu Nhân Chú)`}
+                subtitle={`Sĩ số: ${filteredCb11.length} / 14 học sinh (11A2: 2 em, 11A3: 3 em, 11A9: 6 em, 11A10: 1 em, Khối 11: 2 em - THPT Lưu Nhân Chú)`}
                 badgeText={`Toán 11 CB: ${filteredCb11.length} em • ĐANG MỞ`}
                 badgeColorClass="bg-blue-900 text-white"
               />
@@ -696,7 +715,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                       </span>
                     </h4>
                     <p className="text-xs text-slate-700 mt-0.5">
-                      Hiện có <strong>14 học sinh (TH Vạn Phú: 5 em, THCS Vạn Phú: 8 em, TH Văn Yên: 1 em)</strong> đã đăng ký. Đào tạo tư duy máy tính, kỹ năng số 4.0, tin học văn phòng thực chiến, lập trình căn bản và an toàn mạng. Lớp đang mở và tiếp tục nhận đăng ký bổ sung!
+                      Hiện có <strong>16 học sinh (TH Vạn Phú: 8 em, THCS Vạn Phú: 6 em, THCS Nguyễn Tất Thành: 1 em, TH Văn Yên: 1 em)</strong> đã đăng ký. Đào tạo tư duy máy tính, kỹ năng số 4.0, tin học văn phòng thực chiến, lập trình căn bản và an toàn mạng. Lớp đang mở và tiếp tục nhận đăng ký bổ sung!
                     </p>
                   </div>
                 </div>
@@ -715,7 +734,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
               <UniformStudentTable
                 students={filteredCntt}
                 title="Bảng Danh Sách Học Sinh: Lớp Công Nghệ Thông Tin & Kỹ Năng Số"
-                subtitle={`Sĩ số: ${filteredCntt.length} / 14 học sinh (TH Vạn Phú: 5 em, THCS Vạn Phú: 8 em, TH Văn Yên: 1 em)`}
+                subtitle={`Sĩ số: ${filteredCntt.length} / 16 học sinh (TH Vạn Phú: 8 em, THCS Vạn Phú: 6 em, THCS Nguyễn Tất Thành: 1 em, TH Văn Yên: 1 em)`}
                 badgeText={`CNTT: ${filteredCntt.length} em • ĐANG MỞ`}
                 badgeColorClass="bg-cyan-800 text-white"
               />
@@ -726,14 +745,14 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
           {selectedClassId === 'both-separate' && (
             <div className="space-y-6">
               <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-900 flex items-center justify-between">
-                <span>Tổng hợp cả 3 phân lớp Toán 12 Cơ Bản: <strong>56 học sinh</strong> (Lớp 1 & Lớp 2 đã đầy • Lớp 3 đang mở)</span>
+                <span>Tổng hợp cả 3 phân lớp Toán 12 Cơ Bản: <strong>60 học sinh</strong> (Lớp 1 & Lớp 2 đã đầy • Lớp 3 đang mở)</span>
                 <span className="font-semibold text-[11px]">Cơ sở Vạn Phú - Đại Từ</span>
               </div>
 
               <UniformStudentTable
                 students={filteredCb1}
                 title="1. Lớp 1 (Lớp CB 1 - ĐÃ ĐẦY SĨ SỐ)"
-                subtitle={`Sĩ số: ${filteredCb1.length} / 24 học sinh (12A9 - THPT Lưu Nhân Chú)`}
+                subtitle={`Sĩ số: ${filteredCb1.length} / 23 học sinh (12A9 - THPT Lưu Nhân Chú)`}
                 badgeText={`Lớp 1: ${filteredCb1.length} em • ĐÃ ĐẦY`}
                 badgeColorClass="bg-rose-950 text-white"
               />
@@ -747,7 +766,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
               <UniformStudentTable
                 students={filteredCb3}
                 title="3. Lớp 3 (Lớp CB 3 - ĐANG MỞ LỚP)"
-                subtitle={`Sĩ số: ${filteredCb3.length} / 13 học sinh (12A5: 2 em, 12A7: 2 em, 12A8: 7 em, 12A9: 2 em - THPT Lưu Nhân Chú)`}
+                subtitle={`Sĩ số: ${filteredCb3.length} / 18 học sinh (12A5: 2 em, 12A7: 2 em, 12A8: 7 em, 12A9: 6 em - THPT Lưu Nhân Chú và THPT Đội Cấn: 1 em)`}
                 badgeText={`Lớp 3: ${filteredCb3.length} em • ĐANG MỞ`}
                 badgeColorClass="bg-emerald-800 text-white"
               />
@@ -809,7 +828,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                       onClick={() => setSelectedClassId('toan-12-all')}
                       className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl cursor-pointer"
                     >
-                      Xem danh sách lớp Toán 12 (56 học sinh)
+                      Xem danh sách lớp Toán 12 (60 học sinh)
                     </button>
                   </div>
                 </div>
@@ -850,7 +869,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                       onClick={() => setSelectedClassId('toan-12-all')}
                       className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl cursor-pointer"
                     >
-                      Xem danh sách lớp Toán 12 (56 học sinh)
+                      Xem danh sách lớp Toán 12 (60 học sinh)
                     </button>
                   </div>
                 </div>
@@ -861,7 +880,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
         {/* Footer Actions */}
         <div className="p-4 sm:px-6 bg-white border-t border-slate-200 flex-shrink-0 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="text-xs text-slate-500 text-center sm:text-left">
-            Tổng cộng: <strong className="text-slate-900">{filteredAll.length} học sinh</strong> thuộc Khối 12 (THPT Lưu Nhân Chú)
+            Tổng cộng: <strong className="text-slate-900">{filteredAll.length} học sinh</strong> thuộc 3 phân lớp Toán 12 Cơ Bản
           </div>
 
           <div className="flex items-center gap-2.5 w-full sm:w-auto">
