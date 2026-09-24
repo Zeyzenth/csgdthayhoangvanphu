@@ -470,50 +470,27 @@ export const COURSES: Course[] = [
   },
   // Khối Công Nghệ Thông Tin
   {
-    id: 'cntt-lap-trinh-python',
+    id: 'cntt-cong-nghe-thong-tin',
     grade: 'cntt',
     subject: 'Tin học',
-    title: 'Khối CNTT - Lập Trình Python & Tư Duy Thuật Toán',
-    subtitle: 'Nền tảng khoa học máy tính, thuật toán và giải bài toán bằng code',
+    title: 'Khối CNTT - Công Nghệ Thông Tin & Kỹ Năng Số',
+    subtitle: 'Lập trình ứng dụng, tin học văn phòng thực chiến & kỹ năng số 4.0',
     targetGoal: 'nang-cao',
-    targetGoalLabel: 'Tư duy công nghệ 4.0',
+    targetGoalLabel: 'Kỹ năng công nghệ toàn diện',
     levelBadge: 'Khối Công Nghệ Thông Tin',
-    teacher: 'Thầy Hoàng & Kỹ sư CNTT mời giảng',
-    schedule: 'Tối Thứ 7 (19:00 - 21:00) hoặc Sáng Chủ Nhật (08:30 - 10:30)',
-    classSize: '10 - 12 học sinh (1 máy/em)',
+    teacher: 'Tổ bộ môn CNTT & Kỹ sư mời giảng',
+    schedule: 'Chiều Thứ 7 & Chủ Nhật (Linh hoạt ca học)',
+    classSize: '10 - 15 học sinh (1 máy/em)',
     duration: '1 - 2 buổi / tuần',
     keyPoints: [
-      'Nắm vững cú pháp Python chuẩn, kiểu dữ liệu, vòng lặp, hàm và mảng',
-      'Rèn luyện tư duy thuật toán logic, giải quyết bài toán thực tế',
-      'Định hướng ôn thi Học sinh giỏi Tin học trẻ các cấp',
-      'Thực hành dự án phần mềm mini: Game 2D, ứng dụng tiện ích'
+      'Làm chủ Word, Excel, PowerPoint chuyên sâu phục vụ học tập và thuyết trình',
+      'Tư duy lập trình khoa học từ Scratch, Python cơ bản đến thuật toán',
+      'Kỹ năng số 4.0: Khai thác thông tin an toàn, sử dụng AI thông minh có trách nhiệm',
+      'Thực hành 100% trên dàn máy tính hiện đại tại phòng máy của trung tâm'
     ],
-    description: 'Chương trình được thiết kế chuẩn quốc tế dành riêng cho học sinh từ lớp 6 - 12, tiếp cận lập trình bài bản từ con số 0.',
-    suitableFor: 'Học sinh đam mê máy tính, muốn học lập trình hoặc chuẩn bị thi HSG Tin',
-    tuitionNote: 'Học tại phòng máy lạnh trang bị máy tính cấu hình cao'
-  },
-  {
-    id: 'cntt-tin-hoc-van-phong',
-    grade: 'cntt',
-    subject: 'Tin học',
-    title: 'Khối CNTT - Tin Học Văn Phòng Thực Chiến & Kỹ Năng Số',
-    subtitle: 'Làm chủ Word, Excel, PowerPoint chuẩn quốc tế và an toàn số',
-    targetGoal: 'co-ban',
-    targetGoalLabel: 'Kỹ năng thiết yếu',
-    levelBadge: 'Khối Công Nghệ Thông Tin',
-    teacher: 'Tổ bộ môn Tin học & Kỹ năng số',
-    schedule: 'Chiều Thứ 7 (14:30 - 16:30) hoặc Chiều Chủ Nhật',
-    classSize: '10 - 15 học sinh',
-    duration: '1 buổi / tuần',
-    keyPoints: [
-      'Kỹ năng soạn thảo văn bản, căn lề, mục lục tự động chuẩn form Bộ GD&ĐT',
-      'Excel thực hành: hàm tính toán, xử lý bảng điểm, thống kê biểu đồ',
-      'Thiết kế thuyết trình PowerPoint hiện đại, sinh động cho các bài tập trường',
-      'Ứng dụng Trí tuệ nhân tạo (AI) an toàn để hỗ trợ học tập hiệu quả'
-    ],
-    description: 'Trang bị trọn bộ kỹ năng tin học thực tế giúp học sinh tự tin hoàn thành mọi bài tập thuyết trình, báo cáo tại trường phổ thông và đại học.',
-    suitableFor: 'Học sinh từ lớp 6 đến 12 cần nâng cao kỹ năng máy tính văn phòng',
-    tuitionNote: 'Thực hành 100% trên máy tính tại cơ sở'
+    description: 'Chương trình đào tạo toàn diện trang bị từ kỹ năng văn phòng thực chiến đến tư duy lập trình và ứng dụng công nghệ 4.0.',
+    suitableFor: 'Học sinh từ lớp 3 đến lớp 12 muốn làm chủ máy tính, lập trình và kỹ năng số',
+    tuitionNote: 'Học tại phòng máy lạnh trang bị máy tính cấu hình cao (1 học sinh / 1 máy)'
   },
   // Khối Văn Hay Chữ Đẹp
   {
