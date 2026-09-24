@@ -123,7 +123,7 @@ export const STUDENTS_TOAN_11_CB: Student[] = [
   { id: 'cb11-8', stt: 8, name: 'Nguyễn Thị Miền', schoolClass: 'Khối 11', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp 11 CB' },
 ];
 
-// Danh sách chính xác học sinh Lớp Công Nghệ Thông Tin & Kỹ Năng Số (12 học sinh) - ĐANG MỞ LỚP
+// Danh sách chính xác học sinh Lớp Công Nghệ Thông Tin & Kỹ Năng Số (14 học sinh) - ĐANG MỞ LỚP
 export const STUDENTS_CNTT: Student[] = [
   { id: 'cntt-1', stt: 1, name: 'Dương Nghĩa Minh', schoolClass: '3B3', schoolName: 'TH Vạn Phú', assignedClass: 'Lớp CNTT' },
   { id: 'cntt-2', stt: 2, name: 'Vũ Tiến Đạt', schoolClass: '5A', schoolName: 'TH Vạn Phú', assignedClass: 'Lớp CNTT' },
@@ -137,6 +137,8 @@ export const STUDENTS_CNTT: Student[] = [
   { id: 'cntt-10', stt: 10, name: 'Nguyễn Ngọc Hân', schoolClass: '5D', schoolName: 'TH Văn Yên', assignedClass: 'Lớp CNTT' },
   { id: 'cntt-11', stt: 11, name: 'Lê Phương Thảo', schoolClass: '7A7', schoolName: 'THCS Vạn Phú', assignedClass: 'Lớp CNTT' },
   { id: 'cntt-12', stt: 12, name: 'Nguyễn Thu Vân', schoolClass: '7A5', schoolName: 'THCS Vạn Phú', assignedClass: 'Lớp CNTT' },
+  { id: 'cntt-13', stt: 13, name: 'Trần Ngọc Khánh', schoolClass: '7A1', schoolName: 'THCS Vạn Phú', assignedClass: 'Lớp CNTT' },
+  { id: 'cntt-14', stt: 14, name: 'Đỗ Xuân An', schoolClass: '6A2', schoolName: 'THCS Vạn Phú', assignedClass: 'Lớp CNTT' },
 ];
 
 export const ACTIVE_CLASSES: ActiveClass[] = [
@@ -241,6 +243,23 @@ export const ACTIVE_CLASSES: ActiveClass[] = [
     isFull: false,
     students: [],
     note: 'Chuyên sâu tư duy giải toán vận dụng cao 8.5+, rèn phản xạ Hình không gian, Tổ hợp - Xác suất nâng cao và xây dựng sớm nền tảng thi THPT Quốc Gia.',
+  },
+  {
+    id: 'cntt-active',
+    name: 'Lớp Công Nghệ Thông Tin & Kỹ Năng Số',
+    grade: 'cntt',
+    subject: 'Công nghệ thông tin',
+    level: 'Thực Chiến',
+    classGroup: 'Lớp CNTT & Kỹ Năng Số',
+    teacher: 'Tổ bộ môn CNTT & Kỹ sư mời giảng',
+    schedule: '',
+    room: 'Phòng Máy Tính 4.0',
+    status: 'enrolling',
+    statusLabel: 'ĐANG MỞ (14 học sinh)',
+    isOpen: true,
+    isFull: false,
+    students: STUDENTS_CNTT,
+    note: 'Hiện có 14 học sinh (TH Vạn Phú: 5 em, THCS Vạn Phú: 8 em, TH Văn Yên: 1 em). Rèn luyện tư duy máy tính, kỹ năng số 4.0, tin học văn phòng thực chiến, lập trình cơ bản và an toàn mạng. Lớp đang mở và tiếp tục nhận đăng ký bổ sung.',
   },
   {
     id: 'li-12-thpt',
@@ -376,23 +395,6 @@ export const ACTIVE_CLASSES: ActiveClass[] = [
     statusLabel: 'Sắp mở lớp',
     students: [],
     note: 'Rèn phương pháp viết văn nghị luận xã hội, nghị luận văn học và kỹ năng đọc hiểu văn bản.',
-  },
-  {
-    id: 'cntt-active',
-    name: 'Lớp Công Nghệ Thông Tin & Kỹ Năng Số',
-    grade: 'cntt',
-    subject: 'Công nghệ thông tin',
-    level: 'Thực Chiến',
-    classGroup: 'Lớp CNTT & Kỹ Năng Số',
-    teacher: 'Tổ bộ môn CNTT & Kỹ sư mời giảng',
-    schedule: '',
-    room: 'Phòng Máy Tính 4.0',
-    status: 'enrolling',
-    statusLabel: 'ĐANG MỞ (12 học sinh)',
-    isOpen: true,
-    isFull: false,
-    students: STUDENTS_CNTT,
-    note: 'Hiện có 12 học sinh (TH Vạn Phú: 5 em, THCS Vạn Phú: 6 em, TH Văn Yên: 1 em). Rèn luyện tư duy máy tính, kỹ năng số 4.0, tin học văn phòng thực chiến, lập trình cơ bản và an toàn mạng. Lớp đang mở và tiếp tục nhận đăng ký bổ sung.',
   },
   {
     id: 'van-chu-dep-active',

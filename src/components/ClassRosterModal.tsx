@@ -291,7 +291,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
               : selectedClassId === 'toan-11-cb'
               ? 'BẢNG DANH SÁCH HỌC SINH LỚP TOÁN 11 CƠ BẢN (8 HỌC SINH - ĐANG MỞ)'
               : selectedClassId === 'cntt-active'
-              ? 'BẢNG DANH SÁCH HỌC SINH LỚP CÔNG NGHỆ THÔNG TIN & KỸ NĂNG SỐ (12 HỌC SINH - ĐANG MỞ)'
+              ? 'BẢNG DANH SÁCH HỌC SINH LỚP CÔNG NGHỆ THÔNG TIN & KỸ NĂNG SỐ (14 HỌC SINH - ĐANG MỞ)'
               : selectedClassId === 'toan-12-cb1'
               ? 'BẢNG DANH SÁCH THÀNH VIÊN LỚP 1 (CB 1: 24 HỌC SINH - ĐÃ ĐẦY SĨ SỐ)'
               : selectedClassId === 'toan-12-cb2'
@@ -366,7 +366,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
             }`}
           >
             <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>CNTT & Kỹ Năng Số (12 em • Đang mở)</span>
+            <span>CNTT & Kỹ Năng Số (14 em • Đang mở)</span>
           </button>
           <button
             onClick={() => setSelectedClassId('toan-12-cb1')}
@@ -680,7 +680,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
             </div>
           )}
 
-          {/* VIEW: LỚP CÔNG NGHỆ THÔNG TIN & KỸ NĂNG SỐ (12 HỌC SINH - ĐANG MỞ LỚP) */}
+          {/* VIEW: LỚP CÔNG NGHỆ THÔNG TIN & KỸ NĂNG SỐ (14 HỌC SINH - ĐANG MỞ LỚP) */}
           {selectedClassId === 'cntt-active' && (
             <div className="space-y-4">
               <div className="p-4 bg-cyan-50 border border-cyan-300 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-cyan-950 shadow-xs">
@@ -696,7 +696,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                       </span>
                     </h4>
                     <p className="text-xs text-slate-700 mt-0.5">
-                      Hiện có <strong>12 học sinh (TH Vạn Phú: 5 em, THCS Vạn Phú: 6 em, TH Văn Yên: 1 em)</strong> đã đăng ký. Đào tạo tư duy máy tính, kỹ năng số 4.0, tin học văn phòng thực chiến, lập trình căn bản và an toàn mạng. Lớp đang mở và tiếp tục nhận đăng ký bổ sung!
+                      Hiện có <strong>14 học sinh (TH Vạn Phú: 5 em, THCS Vạn Phú: 8 em, TH Văn Yên: 1 em)</strong> đã đăng ký. Đào tạo tư duy máy tính, kỹ năng số 4.0, tin học văn phòng thực chiến, lập trình căn bản và an toàn mạng. Lớp đang mở và tiếp tục nhận đăng ký bổ sung!
                     </p>
                   </div>
                 </div>
@@ -715,7 +715,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
               <UniformStudentTable
                 students={filteredCntt}
                 title="Bảng Danh Sách Học Sinh: Lớp Công Nghệ Thông Tin & Kỹ Năng Số"
-                subtitle={`Sĩ số: ${filteredCntt.length} / 12 học sinh (TH Vạn Phú: 5 em, THCS Vạn Phú: 6 em, TH Văn Yên: 1 em)`}
+                subtitle={`Sĩ số: ${filteredCntt.length} / 14 học sinh (TH Vạn Phú: 5 em, THCS Vạn Phú: 8 em, TH Văn Yên: 1 em)`}
                 badgeText={`CNTT: ${filteredCntt.length} em • ĐANG MỞ`}
                 badgeColorClass="bg-cyan-800 text-white"
               />
