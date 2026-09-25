@@ -119,7 +119,7 @@ export const STUDENTS_TOAN_12_NC: Student[] = [
   { id: 'nc12-5', stt: 5, name: 'Nguyễn Thu Hiền', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp 12 NC' },
 ];
 
-// Danh sách chính xác học sinh Lớp Toán 11 - Lớp 1 (22 học sinh từ THPT Lưu Nhân Chú) - ĐÃ ĐẦY SĨ SỐ
+// Danh sách chính xác học sinh Lớp Toán 11 - Lớp 1 (24 học sinh từ THPT Lưu Nhân Chú) - ĐÃ ĐẦY SĨ SỐ
 export const STUDENTS_TOAN_11_CB: Student[] = [
   { id: 'cb11-1', stt: 1, name: 'Ngô Thị Phương Thảo', schoolClass: '11A3', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp 11 (Lớp 1)' },
   { id: 'cb11-2', stt: 2, name: 'Phạm Thị Ngọc Huyền', schoolClass: '11A3', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp 11 (Lớp 1)' },
@@ -143,6 +143,8 @@ export const STUDENTS_TOAN_11_CB: Student[] = [
   { id: 'cb11-20', stt: 20, name: 'Lê Thu Hoài', schoolClass: '11A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp 11 (Lớp 1)' },
   { id: 'cb11-21', stt: 21, name: 'Ngô Quỳnh Trang', schoolClass: '11A10', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp 11 (Lớp 1)' },
   { id: 'cb11-22', stt: 22, name: 'Nguyễn Khánh Dinh', schoolClass: '11A5', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp 11 (Lớp 1)' },
+  { id: 'cb11-23', stt: 23, name: 'Lê Thị Quỳnh Anh', schoolClass: '11A4', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp 11 (Lớp 1)' },
+  { id: 'cb11-24', stt: 24, name: 'Nguyễn Tiến Duy', schoolClass: '11A4', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp 11 (Lớp 1)' },
 ];
 export const STUDENTS_TOAN_11_LOP1 = STUDENTS_TOAN_11_CB;
 
@@ -265,11 +267,11 @@ export const ACTIVE_CLASSES: ActiveClass[] = [
     schedule: '',
     room: '',
     status: 'full',
-    statusLabel: 'ĐÃ ĐẦY SĨ SỐ (22 học sinh)',
+    statusLabel: 'ĐÃ ĐẦY SĨ SỐ (24 học sinh)',
     isOpen: false,
     isFull: true,
     students: STUDENTS_TOAN_11_CB,
-    note: 'Hiện có 22 học sinh (11A2: 6 em, 11A3: 4 em, 11A5: 1 em, 11A8: 1 em, 11A9: 7 em, 11A10: 3 em - 100% THPT Lưu Nhân Chú). Lớp 1 đã đủ chỉ tiêu và ĐÃ CHỐT SĨ SỐ (ĐÃ ĐẦY). Quý phụ huynh & học sinh vui lòng đăng ký sang Lớp 2 đang mở tiếp nhận học sinh.',
+    note: 'Hiện có 24 học sinh (11A2: 6 em, 11A3: 4 em, 11A4: 2 em, 11A5: 1 em, 11A8: 1 em, 11A9: 7 em, 11A10: 3 em - 100% THPT Lưu Nhân Chú). Lớp 1 đã đủ chỉ tiêu và ĐÃ CHỐT SĨ SỐ (ĐÃ ĐẦY). Quý phụ huynh & học sinh vui lòng đăng ký sang Lớp 2 đang mở tiếp nhận học sinh.',
   },
   {
     id: 'toan-11-nc',

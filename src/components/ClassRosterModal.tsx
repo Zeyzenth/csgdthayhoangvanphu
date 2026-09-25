@@ -299,7 +299,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
               : selectedClassId === 'toan-12-nc'
               ? 'BẢNG DANH SÁCH HỌC SINH LỚP TOÁN 12 NÂNG CAO (5 HỌC SINH - ĐANG MỞ)'
               : selectedClassId === 'toan-11-cb'
-              ? 'BẢNG DANH SÁCH HỌC SINH LỚP TOÁN 11 - LỚP 1 (22 HỌC SINH - ĐÃ ĐẦY SĨ SỐ)'
+              ? 'BẢNG DANH SÁCH HỌC SINH LỚP TOÁN 11 - LỚP 1 (24 HỌC SINH - ĐÃ ĐẦY SĨ SỐ)'
               : selectedClassId === 'toan-11-nc'
               ? 'THÔNG BÁO MỞ LỚP TOÁN 11 - LỚP 2 (ĐANG MỞ LỚP & TIẾP NHẬN HỌC SINH)'
               : selectedClassId === 'toan-10-cb'
@@ -372,7 +372,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                 : 'bg-white text-rose-900 hover:bg-rose-50 border border-rose-200'
             }`}
           >
-            Toán 11 - Lớp 1 (22 em • Đã đầy)
+            Toán 11 - Lớp 1 (24 em • Đã đầy)
           </button>
           <button
             onClick={() => setSelectedClassId('toan-11-nc')}
@@ -768,7 +768,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
             </div>
           )}
 
-          {/* VIEW: LỚP TOÁN 11 - LỚP 1 (22 HỌC SINH - ĐÃ ĐẦY SĨ SỐ) */}
+          {/* VIEW: LỚP TOÁN 11 - LỚP 1 (24 HỌC SINH - ĐÃ ĐẦY SĨ SỐ) */}
           {selectedClassId === 'toan-11-cb' && (
             <div className="space-y-4">
               <div className="p-4 bg-rose-50 border border-rose-300 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-rose-950 shadow-xs">
@@ -778,13 +778,13 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                   </div>
                   <div>
                     <h4 className="font-black text-sm text-rose-900 flex items-center gap-2">
-                      <span>THÔNG BÁO: LỚP TOÁN 11 - LỚP 1 ĐÃ ĐẦY SĨ SỐ (22/22 HỌC SINH)</span>
+                      <span>THÔNG BÁO: LỚP TOÁN 11 - LỚP 1 ĐÃ ĐẦY SĨ SỐ (24/24 HỌC SINH)</span>
                       <span className="px-2 py-0.5 text-[10px] font-black rounded-full bg-rose-200 text-rose-900 border border-rose-300">
                         ĐÃ ĐẦY SĨ SỐ
                       </span>
                     </h4>
                     <p className="text-xs text-slate-700 mt-0.5">
-                      Hiện có <strong>22 học sinh (11A2: 6 em, 11A3: 4 em, 11A5: 1 em, 11A8: 1 em, 11A9: 7 em, 11A10: 3 em - 100% THPT Lưu Nhân Chú)</strong> đã chốt danh sách. Quý phụ huynh & học sinh vui lòng đăng ký sang <strong className="text-blue-900">Lớp Toán 11 - Lớp 2</strong> đang mở tiếp nhận học sinh!
+                      Hiện có <strong>24 học sinh (11A2: 6 em, 11A3: 4 em, 11A4: 2 em, 11A5: 1 em, 11A8: 1 em, 11A9: 7 em, 11A10: 3 em - 100% THPT Lưu Nhân Chú)</strong> đã chốt danh sách. Quý phụ huynh & học sinh vui lòng đăng ký sang <strong className="text-blue-900">Lớp Toán 11 - Lớp 2</strong> đang mở tiếp nhận học sinh!
                     </p>
                   </div>
                 </div>
@@ -800,7 +800,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
               <UniformStudentTable
                 students={filteredCb11}
                 title="Bảng Danh Sách Học Sinh: Lớp Toán 11 - Lớp 1"
-                subtitle={`Sĩ số: ${filteredCb11.length} / 22 học sinh (11A2: 6 em, 11A3: 4 em, 11A5: 1 em, 11A8: 1 em, 11A9: 7 em, 11A10: 3 em - THPT Lưu Nhân Chú)`}
+                subtitle={`Sĩ số: ${filteredCb11.length} / 24 học sinh (11A2: 6 em, 11A3: 4 em, 11A4: 2 em, 11A5: 1 em, 11A8: 1 em, 11A9: 7 em, 11A10: 3 em - THPT Lưu Nhân Chú)`}
                 badgeText={`Toán 11 - Lớp 1: ${filteredCb11.length} em • ĐÃ ĐẦY`}
                 badgeColorClass="bg-rose-950 text-white"
               />
@@ -858,7 +858,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                     <span>Kế hoạch tuyển sinh & Xếp lớp:</span>
                   </p>
                   <p className="text-slate-700 leading-relaxed">
-                    Sau khi Lớp 1 đạt 22 học sinh và chốt danh sách, trung tâm chính thức mở tiếp nhận đăng ký cho <strong>Lớp Toán 11 - Lớp 2</strong>. Học sinh đăng ký sẽ được tham gia bài kiểm tra phân loại năng lực đầu vào miễn phí, sắp xếp lịch học thuận tiện nhất với thời khóa biểu trường.
+                    Sau khi Lớp 1 đạt 24 học sinh và chốt danh sách, trung tâm chính thức mở tiếp nhận đăng ký cho <strong>Lớp Toán 11 - Lớp 2</strong>. Học sinh đăng ký sẽ được tham gia bài kiểm tra phân loại năng lực đầu vào miễn phí, sắp xếp lịch học thuận tiện nhất với thời khóa biểu trường.
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 text-slate-800">
                     <div className="bg-white p-2.5 rounded-xl border border-emerald-100">
@@ -884,7 +884,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                     onClick={() => setSelectedClassId('toan-11-cb')}
                     className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl cursor-pointer"
                   >
-                    Xem danh sách Lớp 1 (22 học sinh)
+                    Xem danh sách Lớp 1 (24 học sinh)
                   </button>
                 </div>
               </div>
