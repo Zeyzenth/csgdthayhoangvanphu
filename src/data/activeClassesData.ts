@@ -118,7 +118,7 @@ export const STUDENTS_TOAN_12_NC: Student[] = [
   { id: 'nc12-5', stt: 5, name: 'Nguyễn Thu Hiền', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp 12 NC' },
 ];
 
-// Danh sách chính xác học sinh Lớp Toán 11 - Lớp 1 (20 học sinh từ THPT Lưu Nhân Chú) - ĐÃ ĐẦY SĨ SỐ
+// Danh sách chính xác học sinh Lớp Toán 11 - Lớp 1 (21 học sinh từ THPT Lưu Nhân Chú) - ĐÃ ĐẦY SĨ SỐ
 export const STUDENTS_TOAN_11_CB: Student[] = [
   { id: 'cb11-1', stt: 1, name: 'Ngô Thị Phương Thảo', schoolClass: '11A3', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp 11 (Lớp 1)' },
   { id: 'cb11-2', stt: 2, name: 'Phạm Thị Ngọc Huyền', schoolClass: '11A3', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp 11 (Lớp 1)' },
@@ -140,6 +140,7 @@ export const STUDENTS_TOAN_11_CB: Student[] = [
   { id: 'cb11-18', stt: 18, name: 'Nguyễn Thị Dung Nhi', schoolClass: '11A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp 11 (Lớp 1)' },
   { id: 'cb11-19', stt: 19, name: 'Lại Thị Khai Tâm', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp 11 (Lớp 1)' },
   { id: 'cb11-20', stt: 20, name: 'Lê Thu Hoài', schoolClass: '11A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp 11 (Lớp 1)' },
+  { id: 'cb11-21', stt: 21, name: 'Ngô Quỳnh Trang', schoolClass: '11A10', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp 11 (Lớp 1)' },
 ];
 export const STUDENTS_TOAN_11_LOP1 = STUDENTS_TOAN_11_CB;
 
@@ -181,7 +182,7 @@ export const ACTIVE_CLASSES: ActiveClass[] = [
     isFull: true,
     isOpen: false,
     students: STUDENTS_TOAN_12_CB1,
-    note: 'Lớp 1 đã tiếp nhận đủ 23 học sinh (100% học sinh 12A9 - THPT Lưu Nhân Chú) và ĐÃ CHỐT SĨ SỐ (ĐÃ ĐẦY). Quý phụ huynh và học sinh vui lòng đăng ký sang Lớp 3 (CB 3) đang mở tuyển sinh.',
+    note: 'Lớp 1 đã tiếp nhận đủ 23 học sinh (100% học sinh 12A9 - THPT Lưu Nhân Chú) và ĐÃ CHỐT SĨ SỐ (ĐÃ ĐẦY). Cả 3 phân lớp Toán 12 Cơ bản đều đã chốt danh sách.',
   },
   {
     id: 'toan-12-cb2',
@@ -245,11 +246,11 @@ export const ACTIVE_CLASSES: ActiveClass[] = [
     schedule: '',
     room: '',
     status: 'full',
-    statusLabel: 'ĐÃ ĐẦY SĨ SỐ (20 học sinh)',
+    statusLabel: 'ĐÃ ĐẦY SĨ SỐ (21 học sinh)',
     isOpen: false,
     isFull: true,
     students: STUDENTS_TOAN_11_CB,
-    note: 'Hiện có 20 học sinh (11A2: 6 em, 11A3: 4 em, 11A8: 1 em, 11A9: 7 em, 11A10: 2 em - 100% THPT Lưu Nhân Chú). Lớp 1 đã đủ chỉ tiêu và ĐÃ CHỐT SĨ SỐ (ĐÃ ĐẦY). Quý phụ huynh & học sinh vui lòng đăng ký sang Lớp 2 đang mở tiếp nhận học sinh.',
+    note: 'Hiện có 21 học sinh (11A2: 6 em, 11A3: 4 em, 11A8: 1 em, 11A9: 7 em, 11A10: 3 em - 100% THPT Lưu Nhân Chú). Lớp 1 đã đủ chỉ tiêu và ĐÃ CHỐT SĨ SỐ (ĐÃ ĐẦY). Quý phụ huynh & học sinh vui lòng đăng ký sang Lớp 2 đang mở tiếp nhận học sinh.',
   },
   {
     id: 'toan-11-nc',
