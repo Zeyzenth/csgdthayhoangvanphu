@@ -293,7 +293,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
               : selectedClassId === 'toan-12-nc'
               ? 'BẢNG DANH SÁCH HỌC SINH LỚP TOÁN 12 NÂNG CAO (5 HỌC SINH - ĐANG MỞ)'
               : selectedClassId === 'toan-11-cb'
-              ? 'BẢNG DANH SÁCH HỌC SINH LỚP TOÁN 11 CƠ BẢN (14 HỌC SINH - ĐANG MỞ)'
+              ? 'BẢNG DANH SÁCH HỌC SINH LỚP TOÁN 11 CƠ BẢN (16 HỌC SINH - ĐANG MỞ)'
               : selectedClassId === 'toan-10-cb'
               ? 'THÔNG BÁO MỞ LỚP TOÁN 10 CƠ BẢN (ĐANG MỞ LỚP & TIẾP NHẬN HỌC SINH)'
               : selectedClassId === 'toan-10-nc'
@@ -363,7 +363,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
             }`}
           >
             <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>Toán 11 Cơ Bản (14 em • Đang mở)</span>
+            <span>Toán 11 Cơ Bản (16 em • Đang mở)</span>
           </button>
           <button
             onClick={() => setSelectedClassId('toan-10-cb')}
@@ -657,7 +657,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
             </div>
           )}
 
-          {/* VIEW: LỚP TOÁN 11 CƠ BẢN (14 HỌC SINH - ĐANG MỞ LỚP) */}
+          {/* VIEW: LỚP TOÁN 11 CƠ BẢN (16 HỌC SINH - ĐANG MỞ LỚP) */}
           {selectedClassId === 'toan-11-cb' && (
             <div className="space-y-4">
               <div className="p-4 bg-blue-50 border border-blue-300 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-blue-950 shadow-xs">
@@ -673,7 +673,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                       </span>
                     </h4>
                     <p className="text-xs text-slate-700 mt-0.5">
-                      Hiện có <strong>14 học sinh (11A2: 2 em, 11A3: 3 em, 11A9: 6 em, 11A10: 1 em, Khối 11: 2 em - THPT Lưu Nhân Chú)</strong> đã xếp lớp. Lớp bám sát chương trình mới, củng cố Lượng giác, Dãy số, Giới hạn và Hình không gian 11, đang tiếp tục nhận đăng ký bổ sung!
+                      Hiện có <strong>16 học sinh (11A2: 5 em, 11A3: 3 em, 11A9: 6 em, 11A10: 2 em - 100% THPT Lưu Nhân Chú)</strong> đã xếp lớp. Lớp bám sát chương trình mới, củng cố Lượng giác, Dãy số, Giới hạn và Hình không gian 11, đang tiếp tục nhận đăng ký bổ sung!
                     </p>
                   </div>
                 </div>
@@ -692,7 +692,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
               <UniformStudentTable
                 students={filteredCb11}
                 title="Bảng Danh Sách Học Sinh: Lớp Toán 11 Cơ Bản (Củng Cố Nền Tảng)"
-                subtitle={`Sĩ số: ${filteredCb11.length} / 14 học sinh (11A2: 2 em, 11A3: 3 em, 11A9: 6 em, 11A10: 1 em, Khối 11: 2 em - THPT Lưu Nhân Chú)`}
+                subtitle={`Sĩ số: ${filteredCb11.length} / 16 học sinh (11A2: 5 em, 11A3: 3 em, 11A9: 6 em, 11A10: 2 em - THPT Lưu Nhân Chú)`}
                 badgeText={`Toán 11 CB: ${filteredCb11.length} em • ĐANG MỞ`}
                 badgeColorClass="bg-blue-900 text-white"
               />
