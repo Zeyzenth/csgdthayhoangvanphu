@@ -76,7 +76,7 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
     return ACTIVE_CLASSES.filter((c) => {
       const matchSubject = selectedSubject === 'all' || c.subject === selectedSubject;
       const matchGrade = selectedGrade === 'all' || c.grade === selectedGrade;
-      const matchLevel = selectedLevel === 'all' || c.level === selectedLevel;
+      const matchLevel = selectedLevel === 'all' || c.level === selectedLevel || c.grade === '11';
       return matchSubject && matchGrade && matchLevel;
     }).sort((a, b) => {
       // Thứ tự sắp xếp theo yêu cầu: 1. Lớp đầy sĩ số -> 2. Lớp đang mở -> 3. Lớp sắp mở
