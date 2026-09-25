@@ -100,9 +100,10 @@ export const STUDENTS_TOAN_12_CB3: Student[] = [
   { id: 'cb3-19', stt: 19, name: 'Lý Hoàng Ly Ly', schoolClass: '12A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 3' },
   { id: 'cb3-20', stt: 20, name: 'Lục Thị Minh Huệ', schoolClass: '12A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 3' },
   { id: 'cb3-21', stt: 21, name: 'Đỗ Anh Tuấn', schoolClass: '12A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 3' },
+  { id: 'cb3-22', stt: 22, name: 'Dương Tuấn Vinh', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'Lớp CB 3' },
 ];
 
-// Tổng hợp 63 học sinh 3 phân lớp Toán 12 Cơ bản
+// Tổng hợp 64 học sinh các phân lớp Toán 12 Cơ bản
 export const STUDENTS_TOAN_12_CO_BAN: Student[] = [
   ...STUDENTS_TOAN_12_CB1,
   ...STUDENTS_TOAN_12_CB2,
@@ -182,7 +183,7 @@ export const ACTIVE_CLASSES: ActiveClass[] = [
     isFull: true,
     isOpen: false,
     students: STUDENTS_TOAN_12_CB1,
-    note: 'Lớp 1 đã tiếp nhận đủ 23 học sinh (100% học sinh 12A9 - THPT Lưu Nhân Chú) và ĐÃ CHỐT SĨ SỐ (ĐÃ ĐẦY). Cả 3 phân lớp Toán 12 Cơ bản đều đã chốt danh sách.',
+    note: 'Lớp 1 đã tiếp nhận đủ 23 học sinh (100% học sinh 12A9 - THPT Lưu Nhân Chú) và ĐÃ CHỐT SĨ SỐ (ĐÃ ĐẦY). Quý phụ huynh & học sinh vui lòng đăng ký sang Lớp 4 (CB 4) đang mở tuyển sinh.',
   },
   {
     id: 'toan-12-cb2',
@@ -199,7 +200,7 @@ export const ACTIVE_CLASSES: ActiveClass[] = [
     isFull: true,
     isOpen: false,
     students: STUDENTS_TOAN_12_CB2,
-    note: 'Lớp 2 đã tiếp nhận đủ 19 học sinh (100% học sinh 12A6 - THPT Lưu Nhân Chú) và ĐÃ CHỐT SĨ SỐ (ĐÃ ĐẦY). Cả 3 phân lớp Toán 12 Cơ bản đều đã chốt danh sách.',
+    note: 'Lớp 2 đã tiếp nhận đủ 19 học sinh (100% học sinh 12A6 - THPT Lưu Nhân Chú) và ĐÃ CHỐT SĨ SỐ (ĐÃ ĐẦY). Quý phụ huynh & học sinh vui lòng đăng ký sang Lớp 4 (CB 4) đang mở tuyển sinh.',
   },
   {
     id: 'toan-12-cb3',
@@ -212,11 +213,28 @@ export const ACTIVE_CLASSES: ActiveClass[] = [
     schedule: '',
     room: '',
     status: 'full',
-    statusLabel: 'ĐÃ ĐẦY SĨ SỐ (21 học sinh)',
+    statusLabel: 'ĐÃ ĐẦY SĨ SỐ (22 học sinh)',
     isOpen: false,
     isFull: true,
     students: STUDENTS_TOAN_12_CB3,
-    note: 'Gồm 21 học sinh từ các lớp 12A5 (2 em), 12A7 (2 em), 12A8 (10 em), 12A9 (6 em) THPT Lưu Nhân Chú và THPT Đội Cấn (1 em). Lớp 3 đã tiếp nhận đủ chỉ tiêu và ĐÃ CHỐT SĨ SỐ (ĐÃ ĐẦY).',
+    note: 'Gồm 22 học sinh từ các lớp 12A5 (2 em), 12A7 (2 em), 12A8 (10 em), 12A9 (7 em) THPT Lưu Nhân Chú và THPT Đội Cấn (1 em). Lớp 3 đã tiếp nhận đủ chỉ tiêu và ĐÃ CHỐT SĨ SỐ (ĐÃ ĐẦY). Quý phụ huynh & học sinh vui lòng đăng ký sang Lớp 4 (CB 4) đang mở tuyển sinh.',
+  },
+  {
+    id: 'toan-12-cb4',
+    name: 'Lớp Toán 12 (Cơ Bản) - Lớp 4 (CB 4)',
+    grade: '12',
+    subject: 'Toán',
+    level: 'Cơ Bản',
+    classGroup: 'Lớp 4 (CB 4)',
+    teacher: '',
+    schedule: '',
+    room: '',
+    status: 'enrolling',
+    statusLabel: 'ĐANG MỞ LỚP',
+    isOpen: true,
+    isFull: false,
+    students: [],
+    note: 'Lớp 4 (CB 4) được mở thêm nhằm đáp ứng nhu cầu học tập của các em học sinh khi Lớp 1, Lớp 2 và Lớp 3 đã chốt đầy sĩ số. Ôn tập bám sát cấu trúc đề thi tốt nghiệp THPT mới, củng cố nền tảng Hàm số, Khối đa diện, Tọa độ Oxyz và Xác suất. Đang mở lớp tiếp nhận đăng ký bổ sung.',
   },
   {
     id: 'toan-12-nc',
