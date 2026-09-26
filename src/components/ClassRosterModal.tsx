@@ -18,7 +18,8 @@ import { Student, GradeLevel } from '../types';
 import {
   STUDENTS_TOAN_12_CO_BAN,
   STUDENTS_TOAN_12_NC,
-  STUDENTS_TOAN_11_CB,
+  STUDENTS_TOAN_11_CB1,
+  STUDENTS_TOAN_11_CB2,
   STUDENTS_CNTT,
   ACTIVE_CLASSES,
   sortStudentsByClassAndName,
@@ -82,7 +83,12 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
   );
 
   const studentsCb11 = useMemo(
-    () => sortStudentsByClassAndName(STUDENTS_TOAN_11_CB),
+    () => sortStudentsByClassAndName(STUDENTS_TOAN_11_CB1),
+    []
+  );
+
+  const studentsCb11Lop2 = useMemo(
+    () => sortStudentsByClassAndName(STUDENTS_TOAN_11_CB2),
     []
   );
 
@@ -116,14 +122,16 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
   const filteredCb3 = useMemo(() => filterStudents(studentsCb3), [studentsCb3, searchQuery, filterSchoolClass]);
   const filteredNc12 = useMemo(() => filterStudents(studentsNc12), [studentsNc12, searchQuery, filterSchoolClass]);
   const filteredCb11 = useMemo(() => filterStudents(studentsCb11), [studentsCb11, searchQuery, filterSchoolClass]);
+  const filteredCb11Lop2 = useMemo(() => filterStudents(studentsCb11Lop2), [studentsCb11Lop2, searchQuery, filterSchoolClass]);
   const filteredCntt = useMemo(() => filterStudents(studentsCntt), [studentsCntt, searchQuery, filterSchoolClass]);
 
-  // Danh sách các lớp trường thực tế (3A, 3B3, 4B, 5A, 5D, 6A8, 7A1, 7A5, 7A7, 11A2, 12A5...)
+  // Danh sách các lớp trường thực tế (3A, 3B3, 4B, 5A, 5D, 6A8, 7A1, 7A5, 7A7, 11A1, 11A2, 11A3, 11A4, 11A5, 11A7, 11A8, 11A9, 11A10...)
   const schoolClasses = useMemo(() => {
     const set = new Set<string>();
     STUDENTS_TOAN_12_CO_BAN.forEach((s) => { if (s.schoolClass) set.add(s.schoolClass); });
     STUDENTS_TOAN_12_NC.forEach((s) => { if (s.schoolClass) set.add(s.schoolClass); });
-    STUDENTS_TOAN_11_CB.forEach((s) => { if (s.schoolClass) set.add(s.schoolClass); });
+    STUDENTS_TOAN_11_CB1.forEach((s) => { if (s.schoolClass) set.add(s.schoolClass); });
+    STUDENTS_TOAN_11_CB2.forEach((s) => { if (s.schoolClass) set.add(s.schoolClass); });
     STUDENTS_CNTT.forEach((s) => { if (s.schoolClass) set.add(s.schoolClass); });
     return Array.from(set).sort((a, b) => a.localeCompare(b, 'vi', { numeric: true }));
   }, []);
@@ -299,9 +307,9 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
               : selectedClassId === 'toan-12-nc'
               ? 'BẢNG DANH SÁCH HỌC SINH LỚP TOÁN 12 NÂNG CAO (5 HỌC SINH - ĐANG MỞ)'
               : selectedClassId === 'toan-11-cb'
-              ? 'BẢNG DANH SÁCH HỌC SINH LỚP TOÁN 11 - LỚP 1 (24 HỌC SINH - ĐÃ ĐẦY SĨ SỐ)'
+              ? 'BẢNG DANH SÁCH HỌC SINH LỚP TOÁN 11 - LỚP 1 (19 HỌC SINH - ĐÃ ĐẦY SĨ SỐ)'
               : selectedClassId === 'toan-11-nc'
-              ? 'THÔNG BÁO MỞ LỚP TOÁN 11 - LỚP 2 (ĐANG MỞ LỚP & TIẾP NHẬN HỌC SINH)'
+              ? 'BẢNG DANH SÁCH HỌC SINH LỚP TOÁN 11 - LỚP 2 (15 HỌC SINH - ĐANG MỞ)'
               : selectedClassId === 'toan-10-cb'
               ? 'THÔNG BÁO MỞ LỚP TOÁN 10 CƠ BẢN (ĐANG MỞ LỚP & TIẾP NHẬN HỌC SINH)'
               : selectedClassId === 'toan-10-nc'
@@ -372,7 +380,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                 : 'bg-white text-rose-900 hover:bg-rose-50 border border-rose-200'
             }`}
           >
-            Toán 11 - Lớp 1 (24 em • Đã đầy)
+            Toán 11 - Lớp 1 (19 em • Đã đầy)
           </button>
           <button
             onClick={() => setSelectedClassId('toan-11-nc')}
@@ -383,7 +391,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
             }`}
           >
             <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>Toán 11 - Lớp 2 (Đang mở)</span>
+            <span>Toán 11 - Lớp 2 (15 em • Đang mở)</span>
           </button>
           <button
             onClick={() => setSelectedClassId('toan-10-cb')}
@@ -768,7 +776,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
             </div>
           )}
 
-          {/* VIEW: LỚP TOÁN 11 - LỚP 1 (24 HỌC SINH - ĐÃ ĐẦY SĨ SỐ) */}
+          {/* VIEW: LỚP TOÁN 11 - LỚP 1 (19 HỌC SINH - ĐÃ ĐẦY SĨ SỐ) */}
           {selectedClassId === 'toan-11-cb' && (
             <div className="space-y-4">
               <div className="p-4 bg-rose-50 border border-rose-300 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-rose-950 shadow-xs">
@@ -778,13 +786,13 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                   </div>
                   <div>
                     <h4 className="font-black text-sm text-rose-900 flex items-center gap-2">
-                      <span>THÔNG BÁO: LỚP TOÁN 11 - LỚP 1 ĐÃ ĐẦY SĨ SỐ (24/24 HỌC SINH)</span>
+                      <span>THÔNG BÁO: LỚP TOÁN 11 - LỚP 1 ĐÃ ĐẦY SĨ SỐ (19/19 HỌC SINH)</span>
                       <span className="px-2 py-0.5 text-[10px] font-black rounded-full bg-rose-200 text-rose-900 border border-rose-300">
                         ĐÃ ĐẦY SĨ SỐ
                       </span>
                     </h4>
                     <p className="text-xs text-slate-700 mt-0.5">
-                      Hiện có <strong>24 học sinh (11A2: 6 em, 11A3: 4 em, 11A4: 2 em, 11A5: 1 em, 11A8: 1 em, 11A9: 7 em, 11A10: 3 em - 100% THPT Lưu Nhân Chú)</strong> đã chốt danh sách. Quý phụ huynh & học sinh vui lòng đăng ký sang <strong className="text-blue-900">Lớp Toán 11 - Lớp 2</strong> đang mở tiếp nhận học sinh!
+                      Hiện có <strong>19 học sinh (11A1: 3 em, 11A2: 7 em, 11A4: 2 em, 11A5: 1 em, 11A8: 1 em, 11A9: 3 em, 11A10: 2 em - 100% THPT Lưu Nhân Chú)</strong> đã chốt danh sách. Quý phụ huynh & học sinh vui lòng đăng ký sang <strong className="text-blue-900">Lớp Toán 11 - Lớp 2</strong> đang mở tiếp nhận học sinh!
                     </p>
                   </div>
                 </div>
@@ -793,21 +801,21 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                   onClick={() => setSelectedClassId('toan-11-nc')}
                   className="px-4 py-2 bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-800 hover:to-indigo-800 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex-shrink-0 cursor-pointer"
                 >
-                  Xem Lớp 2 đang mở &rarr;
+                  Xem danh sách Lớp 2 (15 em) &rarr;
                 </button>
               </div>
 
               <UniformStudentTable
                 students={filteredCb11}
-                title="Bảng Danh Sách Học Sinh: Lớp Toán 11 - Lớp 1"
-                subtitle={`Sĩ số: ${filteredCb11.length} / 24 học sinh (11A2: 6 em, 11A3: 4 em, 11A4: 2 em, 11A5: 1 em, 11A8: 1 em, 11A9: 7 em, 11A10: 3 em - THPT Lưu Nhân Chú)`}
+                title="Bảng Danh Sách Học Sinh: Lớp Toán 11 - Lớp 1 (CB 1)"
+                subtitle={`Sĩ số: ${filteredCb11.length} / 19 học sinh (11A1: 3 em, 11A2: 7 em, 11A4: 2 em, 11A5: 1 em, 11A8: 1 em, 11A9: 3 em, 11A10: 2 em - THPT Lưu Nhân Chú)`}
                 badgeText={`Toán 11 - Lớp 1: ${filteredCb11.length} em • ĐÃ ĐẦY`}
                 badgeColorClass="bg-rose-950 text-white"
               />
             </div>
           )}
 
-          {/* VIEW: LỚP TOÁN 11 - LỚP 2 (ĐANG MỞ LỚP & TIẾP NHẬN HỌC SINH MỚI) */}
+          {/* VIEW: LỚP TOÁN 11 - LỚP 2 (15 HỌC SINH - ĐANG MỞ LỚP) */}
           {selectedClassId === 'toan-11-nc' && (
             <div className="space-y-4">
               <div className="p-4 bg-blue-50 border border-blue-300 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-blue-950 shadow-xs">
@@ -817,77 +825,44 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                   </div>
                   <div>
                     <h4 className="font-black text-sm text-blue-900 flex items-center gap-2">
-                      <span>LỚP TOÁN 11 - LỚP 2 (ĐANG MỞ LỚP & TIẾP NHẬN HỌC SINH)</span>
+                      <span>LỚP TOÁN 11 - LỚP 2 (CB 2) • ĐANG MỞ LỚP & TIẾP NHẬN HỌC SINH</span>
                       <span className="px-2 py-0.5 text-[10px] font-black rounded-full bg-emerald-200 text-emerald-900 border border-emerald-300">
                         ĐANG MỞ LỚP
                       </span>
                     </h4>
                     <p className="text-xs text-slate-700 mt-0.5">
-                      Lớp Toán 11 - Lớp 2 được mở thêm nhằm đáp ứng nhu cầu học tập của các em học sinh khi Lớp 1 đã đủ sĩ số. Bám sát chương trình GDPT mới, củng cố Lượng giác, Cấp số cộng/nhân, Giới hạn và Hình học không gian 11, đang tiếp tục nhận đăng ký bổ sung!
+                      Lớp Toán 11 - Lớp 2 hiện đã có <strong>15 học sinh chính thức (11A2: 2 em, 11A3: 4 em, 11A4: 1 em, 11A7: 2 em, 11A9: 5 em, 11A10: 1 em - 100% THPT Lưu Nhân Chú)</strong>. Bám sát chương trình GDPT mới, củng cố Lượng giác, Cấp số cộng/nhân, Giới hạn và Hình học không gian 11, đang tiếp tục nhận đăng ký bổ sung!
                     </p>
                   </div>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    onClose();
-                    onOpenConsultationModal('11');
-                  }}
-                  className="px-4 py-2 bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-800 hover:to-indigo-800 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex-shrink-0 cursor-pointer"
-                >
-                  Đăng ký vào Lớp 11 - Lớp 2 ngay
-                </button>
-              </div>
-
-              <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 text-center shadow-xs space-y-4">
-                <div className="w-14 h-14 rounded-2xl bg-blue-50 text-blue-800 mx-auto flex items-center justify-center font-bold">
-                  <Sparkles className="w-7 h-7 text-blue-600" />
-                </div>
-                <div>
-                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-900 inline-flex items-center gap-1.5 mb-2 border border-emerald-200">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-                    <span>ĐANG MỞ LỚP • TIẾP NHẬN ĐĂNG KÝ HỌC VIÊN MỚI</span>
-                  </span>
-                  <h3 className="text-xl font-black text-slate-900">
-                    Lớp Toán 11 - Lớp 2
-                  </h3>
-                </div>
-                <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-200 text-xs text-emerald-950 text-left space-y-2">
-                  <p className="font-bold flex items-center gap-1.5 text-emerald-900">
-                    <Sparkles className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                    <span>Kế hoạch tuyển sinh & Xếp lớp:</span>
-                  </p>
-                  <p className="text-slate-700 leading-relaxed">
-                    Sau khi Lớp 1 đạt 24 học sinh và chốt danh sách, trung tâm chính thức mở tiếp nhận đăng ký cho <strong>Lớp Toán 11 - Lớp 2</strong>. Học sinh đăng ký sẽ được tham gia bài kiểm tra phân loại năng lực đầu vào miễn phí, sắp xếp lịch học thuận tiện nhất với thời khóa biểu trường.
-                  </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 text-slate-800">
-                    <div className="bg-white p-2.5 rounded-xl border border-emerald-100">
-                      <strong>Chương trình:</strong> Bám sát SGK mới (Kết nối / Cánh diều), củng cố Lượng giác & Hình học không gian 11
-                    </div>
-                    <div className="bg-white p-2.5 rounded-xl border border-emerald-100">
-                      <strong>Quyền lợi:</strong> Test thử miễn phí, tặng tài liệu hệ thống công thức Toán 11 độc quyền
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-2.5 justify-center pt-2">
+                <div className="flex items-center gap-2 flex-shrink-0">
                   <button
+                    type="button"
                     onClick={() => {
                       onClose();
                       onOpenConsultationModal('11');
                     }}
-                    className="px-5 py-2.5 bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-800 hover:to-indigo-800 text-white font-black text-xs rounded-xl shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
+                    className="px-4 py-2 bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-800 hover:to-indigo-800 text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer"
                   >
-                    <Sparkles className="w-4 h-4 text-blue-100" />
-                    <span>Đăng ký tham gia Lớp 11 - Lớp 2 ngay</span>
+                    Đăng ký vào Lớp 11 - Lớp 2 ngay
                   </button>
                   <button
+                    type="button"
                     onClick={() => setSelectedClassId('toan-11-cb')}
-                    className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl cursor-pointer"
+                    className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all cursor-pointer"
                   >
-                    Xem danh sách Lớp 1 (24 học sinh)
+                    Xem Lớp 1 (19 em)
                   </button>
                 </div>
               </div>
+
+              <UniformStudentTable
+                students={filteredCb11Lop2}
+                title="Bảng Danh Sách Học Sinh: Lớp Toán 11 - Lớp 2 (CB 2)"
+                subtitle={`Sĩ số hiện tại: ${filteredCb11Lop2.length} / 15 học sinh (11A2: 2 em, 11A3: 4 em, 11A4: 1 em, 11A7: 2 em, 11A9: 5 em, 11A10: 1 em - THPT Lưu Nhân Chú)`}
+                badgeText={`Toán 11 - Lớp 2: ${filteredCb11Lop2.length} em • ĐANG MỞ`}
+                badgeColorClass="bg-blue-800 text-white"
+              />
             </div>
           )}
 
