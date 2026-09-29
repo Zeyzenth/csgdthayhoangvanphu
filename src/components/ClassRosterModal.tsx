@@ -19,6 +19,9 @@ import {
   STUDENTS_TOAN_12_CB1,
   STUDENTS_TOAN_12_CB2,
   STUDENTS_TOAN_12_CB3,
+  STUDENTS_TOAN_11_CB1,
+  STUDENTS_TOAN_11_CB2,
+  STUDENTS_TOAN_11_ALL,
   sortStudentsByClassAndName
 } from '../data/activeClassesData';
 
@@ -62,6 +65,10 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
         setSelectedTab('toan-12-cb1');
       } else if (initialClassId === 'toan-12-all' || initialClassId === 'all') {
         setSelectedTab('toan-12-cb-all');
+      } else if (initialClassId === 'toan-11-cb' || initialClassId === 'toan-11' || initialClassId === 'toan-11-cb1') {
+        setSelectedTab('toan-11-cb1');
+      } else if (initialClassId === 'toan-11-cb2') {
+        setSelectedTab('toan-11-cb2');
       } else {
         setSelectedTab(initialClassId);
       }
@@ -116,6 +123,36 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
         isClassFull: true,
         capacityText: 'Tổng 3 lớp: 75 em • ĐÃ ĐẦY',
         noteText: 'Cả 3 phân lớp Toán 12 Cơ bản (CB1: 29 em, CB2: 23 em, CB3: 23 em) đã đủ chỉ tiêu 75 học sinh. Đang mở đăng ký cho các lớp bổ sung!'
+      };
+    }
+    if (selectedTab === 'toan-11-cb1') {
+      return {
+        currentStudents: STUDENTS_TOAN_11_CB1,
+        tabTitle: 'BẢNG DANH SÁCH THÀNH VIÊN LỚP TOÁN 11 - CƠ BẢN 1 (17 HỌC SINH)',
+        tabSubTitle: 'Sĩ số: 17 / 17 học sinh (Gồm 11A1, 11A2, 11A4, 11A5, 11A9, 11A10 - THPT Lưu Nhân Chú)',
+        isClassFull: false,
+        capacityText: 'Lớp 1: 17 em • Đang mở',
+        noteText: 'Lớp Toán 11 Cơ Bản 1 (CB 1) bám sát chương trình GDPT mới, củng cố Lượng giác, Cấp số cộng/nhân, Giới hạn và Hình học không gian.'
+      };
+    }
+    if (selectedTab === 'toan-11-cb2') {
+      return {
+        currentStudents: STUDENTS_TOAN_11_CB2,
+        tabTitle: 'BẢNG DANH SÁCH THÀNH VIÊN LỚP TOÁN 11 - CƠ BẢN 2 (22 HỌC SINH)',
+        tabSubTitle: 'Sĩ số: 22 / 22 học sinh (Gồm 11A2, 11A3, 11A4, 11A7, 11A8, 11A9, 11A10 - THPT Lưu Nhân Chú)',
+        isClassFull: false,
+        capacityText: 'Lớp 2: 22 em • Đang mở',
+        noteText: 'Lớp Toán 11 Cơ Bản 2 (CB 2) bám sát chương trình GDPT mới, rèn luyện kỹ năng giải toán tư duy và chuẩn bị kiểm tra học kỳ.'
+      };
+    }
+    if (selectedTab === 'toan-11-cb' || selectedTab === 'toan-11-all') {
+      return {
+        currentStudents: STUDENTS_TOAN_11_ALL,
+        tabTitle: 'BẢNG DANH SÁCH TOÀN BỘ 2 PHÂN LỚP TOÁN 11 CƠ BẢN (39 HỌC SINH)',
+        tabSubTitle: 'Tổng sĩ số: 39 học sinh (Gồm CB1: 17 em & CB2: 22 em - THPT Lưu Nhân Chú)',
+        isClassFull: false,
+        capacityText: 'Tổng 2 lớp: 39 em • Đang mở',
+        noteText: 'Tổng cộng 39 học sinh đang theo học tại 2 phân lớp Toán 11 Cơ bản. Lớp đang mở tiếp nhận học sinh mới.'
       };
     }
 
@@ -284,7 +321,33 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
             <span>Toán 12 Nâng Cao (5 em • Đang mở)</span>
           </button>
 
-          {/* Tab Toán 11 */}
+          {/* Tab Toán 11 - CB 1 (17 em) */}
+          <button
+            onClick={() => setSelectedTab('toan-11-cb1')}
+            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
+              selectedTab === 'toan-11-cb1'
+                ? 'bg-white text-slate-900 shadow-sm border border-slate-300 font-black'
+                : 'text-slate-600 hover:bg-slate-200'
+            }`}
+          >
+            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>Toán 11 - CB 1 (17 em)</span>
+          </button>
+
+          {/* Tab Toán 11 - CB 2 (22 em) */}
+          <button
+            onClick={() => setSelectedTab('toan-11-cb2')}
+            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
+              selectedTab === 'toan-11-cb2'
+                ? 'bg-white text-slate-900 shadow-sm border border-slate-300 font-black'
+                : 'text-slate-600 hover:bg-slate-200'
+            }`}
+          >
+            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>Toán 11 - CB 2 (22 em)</span>
+          </button>
+
+          {/* Tab Toán 11 - Toàn bộ (39 em) */}
           <button
             onClick={() => setSelectedTab('toan-11-cb')}
             className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
@@ -294,7 +357,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
             }`}
           >
             <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>Toán 11 (34 em • Đang mở)</span>
+            <span>Toán 11 Cơ Bản (39 em)</span>
           </button>
 
           {/* Tab CNTT */}
@@ -499,17 +562,23 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                             {student.schoolName || 'THPT Lưu Nhân Chú'}
                           </td>
 
-                          {/* Cột Phân lớp (pill màu hồng viền đỏ) */}
+                          {/* Cột Phân lớp (pill màu hồng viền đỏ cho Toán 12, hoặc xanh/tím cho Toán 11) */}
                           <td className="py-2.5 px-3 sm:px-4 text-center whitespace-nowrap">
-                            <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
-                              {student.assignedClass.includes('CB1') || student.assignedClass.includes('CB 1')
-                                ? 'Lớp CB 1 (Đã đầy)'
-                                : student.assignedClass.includes('CB2') || student.assignedClass.includes('CB 2')
-                                ? 'Lớp CB 2 (Đã đầy)'
-                                : student.assignedClass.includes('CB3') || student.assignedClass.includes('CB 3')
-                                ? 'Lớp CB 3 (Đã đầy)'
-                                : student.assignedClass}
-                            </span>
+                            {selectedTab.startsWith('toan-11') || student.assignedClass.includes('Toán 11') ? (
+                              <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-indigo-50 text-indigo-800 border border-indigo-200">
+                                {student.assignedClass}
+                              </span>
+                            ) : (
+                              <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                                {student.assignedClass.includes('CB1') || student.assignedClass.includes('CB 1')
+                                  ? 'Lớp CB 1 (Đã đầy)'
+                                  : student.assignedClass.includes('CB2') || student.assignedClass.includes('CB 2')
+                                  ? 'Lớp CB 2 (Đã đầy)'
+                                  : student.assignedClass.includes('CB3') || student.assignedClass.includes('CB 3')
+                                  ? 'Lớp CB 3 (Đã đầy)'
+                                  : student.assignedClass}
+                              </span>
+                            )}
                           </td>
 
                           {/* Cột Trạng thái: icon tích xanh + Đang theo học */}
@@ -534,7 +603,13 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
         {/* ============================================================== */}
         <div className="p-3 sm:px-5 bg-white border-t border-slate-200 flex-shrink-0 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="text-xs text-slate-500 text-center sm:text-left">
-            Tổng cộng: <strong className="text-slate-800">75 học sinh</strong> thuộc 3 phân lớp Toán 12 Cơ Bản
+            {selectedTab.startsWith('toan-11') ? (
+              <span>Tổng cộng: <strong className="text-slate-800">39 học sinh</strong> thuộc 2 phân lớp Toán 11 Cơ Bản (CB1: 17 em, CB2: 22 em)</span>
+            ) : selectedTab.startsWith('toan-12-cb') ? (
+              <span>Tổng cộng: <strong className="text-slate-800">75 học sinh</strong> thuộc 3 phân lớp Toán 12 Cơ Bản (CB1: 29 em, CB2: 23 em, CB3: 23 em)</span>
+            ) : (
+              <span>Tổng cộng: <strong className="text-slate-800">{filteredStudents.length} học sinh</strong> ({capacityText})</span>
+            )}
           </div>
 
           <div className="flex items-center gap-2.5 w-full sm:w-auto">

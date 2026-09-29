@@ -206,7 +206,7 @@ export const STUDENTS_TOAN_12_NC: Student[] = [
   { id: 'nc12-5', stt: 5, name: 'Nguyễn Thu Hiền', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'NC - Toán 12' },
 ];
 
-// Lớp Toán 11 - Phân lớp CB 1 (19 học sinh)
+// Lớp Toán 11 - Phân lớp CB 1 (17 học sinh - Cập nhật chính xác theo danh sách mới)
 export const STUDENTS_TOAN_11_CB1: Student[] = [
   { id: 'cb11-1', stt: 1, name: 'Phạm Mạnh Tiến', schoolClass: '11A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 11' },
   { id: 'cb11-2', stt: 2, name: 'Vũ Đức Mạnh', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 11' },
@@ -217,19 +217,17 @@ export const STUDENTS_TOAN_11_CB1: Student[] = [
   { id: 'cb11-7', stt: 7, name: 'Ngô Ngọc Bích', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 11' },
   { id: 'cb11-8', stt: 8, name: 'Nguyễn Thị Quỳnh Nga', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 11' },
   { id: 'cb11-9', stt: 9, name: 'Trần Thị Ngọc Ánh', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 11' },
-  { id: 'cb11-10', stt: 10, name: 'Nguyễn Thị Dung Nhi', schoolClass: '11A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 11' },
-  { id: 'cb11-11', stt: 11, name: 'Khương Thị Bích Ngọc', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 11' },
-  { id: 'cb11-12', stt: 12, name: 'Nguyễn Khánh Dinh', schoolClass: '11A5', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 11' },
-  { id: 'cb11-13', stt: 13, name: 'Lê Thị Quỳnh Anh', schoolClass: '11A4', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 11' },
-  { id: 'cb11-14', stt: 14, name: 'Nguyễn Tiến Duy', schoolClass: '11A4', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 11' },
-  { id: 'cb11-15', stt: 15, name: 'Đỗ Minh Đức', schoolClass: '11A1', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 11' },
-  { id: 'cb11-16', stt: 16, name: 'Ma Tuấn Nam', schoolClass: '11A1', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 11' },
-  { id: 'cb11-17', stt: 17, name: 'Nguyễn Huỳnh Đức', schoolClass: '11A1', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 11' },
-  { id: 'cb11-18', stt: 18, name: 'Hoàng Ngọc Mai', schoolClass: '11A10', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 11' },
-  { id: 'cb11-19', stt: 19, name: 'Phạm Hoàng Anh', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 11' },
+  { id: 'cb11-10', stt: 10, name: 'Nguyễn Khánh Dinh', schoolClass: '11A5', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 11' },
+  { id: 'cb11-11', stt: 11, name: 'Lê Thị Quỳnh Anh', schoolClass: '11A4', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 11' },
+  { id: 'cb11-12', stt: 12, name: 'Nguyễn Tiến Duy', schoolClass: '11A4', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 11' },
+  { id: 'cb11-13', stt: 13, name: 'Đỗ Minh Đức', schoolClass: '11A1', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 11' },
+  { id: 'cb11-14', stt: 14, name: 'Ma Tuấn Nam', schoolClass: '11A1', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 11' },
+  { id: 'cb11-15', stt: 15, name: 'Nguyễn Huỳnh Đức', schoolClass: '11A1', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 11' },
+  { id: 'cb11-16', stt: 16, name: 'Hoàng Ngọc Mai', schoolClass: '11A10', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 11' },
+  { id: 'cb11-17', stt: 17, name: 'Phạm Hoàng Anh', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 11' },
 ];
 
-// Lớp Toán 11 - Phân lớp CB 2 (15 học sinh)
+// Lớp Toán 11 - Phân lớp CB 2 (22 học sinh - Cập nhật chính xác theo danh sách mới)
 export const STUDENTS_TOAN_11_CB2: Student[] = [
   { id: 'cb11_2-1', stt: 1, name: 'Lê Khánh Ly', schoolClass: '11A7', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
   { id: 'cb11_2-2', stt: 2, name: 'Ngô Thị Phương Thảo', schoolClass: '11A3', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
@@ -246,6 +244,13 @@ export const STUDENTS_TOAN_11_CB2: Student[] = [
   { id: 'cb11_2-13', stt: 13, name: 'Dương Lê Thùy Linh', schoolClass: '11A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
   { id: 'cb11_2-14', stt: 14, name: 'Ngô Quỳnh Trang', schoolClass: '11A10', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
   { id: 'cb11_2-15', stt: 15, name: 'Chu Trần Bảo Ngọc', schoolClass: '11A7', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
+  { id: 'cb11_2-16', stt: 16, name: 'Nguyễn Thị Dung Nhi', schoolClass: '11A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
+  { id: 'cb11_2-17', stt: 17, name: 'Khương Thị Bích Ngọc', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
+  { id: 'cb11_2-18', stt: 18, name: 'Lương Thanh Trúc', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
+  { id: 'cb11_2-19', stt: 19, name: 'Đặng Thị Hồng Nhung', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
+  { id: 'cb11_2-20', stt: 20, name: 'Trần Luân Hà Vy', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
+  { id: 'cb11_2-21', stt: 21, name: 'Nguyễn Thị Thu Hiền', schoolClass: '11A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
+  { id: 'cb11_2-22', stt: 22, name: 'Trương Phương Uyên', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
 ];
 
 export const STUDENTS_TOAN_11_CB = STUDENTS_TOAN_11_CB1;
@@ -328,12 +333,12 @@ export const ACTIVE_CLASSES: ActiveClass[] = [
     schedule: 'Theo lịch học trong tuần (CB1 & CB2)',
     room: 'Cơ sở Khu Đô Thị Vạn Phú',
     status: 'enrolling',
-    statusLabel: 'ĐANG MỞ (34 học sinh)',
+    statusLabel: 'ĐANG MỞ (39 học sinh)',
     isOpen: true,
     isFull: false,
-    studentCount: 34,
+    studentCount: 39,
     students: STUDENTS_TOAN_11_ALL,
-    note: 'Tổng cộng 34 học sinh đang theo học (gồm CB1: 19 em; CB2: 15 em). Bám sát chương trình GDPT mới, củng cố Lượng giác, Cấp số cộng/nhân, Giới hạn và Hình học không gian 11. Lớp đang mở và tiếp tục nhận đăng ký bổ sung.',
+    note: 'Tổng cộng 39 học sinh đang theo học (gồm CB1: 17 em; CB2: 22 em). Bám sát chương trình GDPT mới, củng cố Lượng giác, Cấp số cộng/nhân, Giới hạn và Hình học không gian 11. Lớp đang mở và tiếp tục nhận đăng ký bổ sung.',
   },
   {
     id: 'toan-10-cb',
