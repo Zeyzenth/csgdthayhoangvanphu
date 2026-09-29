@@ -128,31 +128,31 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
     if (selectedTab === 'toan-11-cb1') {
       return {
         currentStudents: STUDENTS_TOAN_11_CB1,
-        tabTitle: 'BẢNG DANH SÁCH THÀNH VIÊN LỚP TOÁN 11 - CƠ BẢN 1 (17 HỌC SINH)',
-        tabSubTitle: 'Sĩ số: 17 / 17 học sinh (Gồm 11A1, 11A2, 11A4, 11A5, 11A9, 11A10 - THPT Lưu Nhân Chú)',
+        tabTitle: 'BẢNG DANH SÁCH THÀNH VIÊN LỚP TOÁN 11 - CƠ BẢN 1 (19 HỌC SINH)',
+        tabSubTitle: 'Sĩ số: 19 / 19 học sinh • GV: Cô Vũ Hằng (THPT Lưu Nhân Chú)',
         isClassFull: false,
-        capacityText: 'Lớp 1: 17 em • Đang mở',
-        noteText: 'Lớp Toán 11 Cơ Bản 1 (CB 1) bám sát chương trình GDPT mới, củng cố Lượng giác, Cấp số cộng/nhân, Giới hạn và Hình học không gian.'
+        capacityText: 'Lớp 1: 19 em • Đang mở',
+        noteText: 'Lớp Toán 11 Cơ Bản 1 (GV: Cô Vũ Hằng) bám sát chương trình GDPT mới, củng cố Lượng giác, Cấp số cộng/nhân, Giới hạn và Hình học không gian.'
       };
     }
     if (selectedTab === 'toan-11-cb2') {
       return {
         currentStudents: STUDENTS_TOAN_11_CB2,
-        tabTitle: 'BẢNG DANH SÁCH THÀNH VIÊN LỚP TOÁN 11 - CƠ BẢN 2 (22 HỌC SINH)',
-        tabSubTitle: 'Sĩ số: 22 / 22 học sinh (Gồm 11A2, 11A3, 11A4, 11A7, 11A8, 11A9, 11A10 - THPT Lưu Nhân Chú)',
+        tabTitle: 'BẢNG DANH SÁCH THÀNH VIÊN LỚP TOÁN 11 - CƠ BẢN 2 (GV: CÔ VŨ HẰNG)',
+        tabSubTitle: 'Sĩ số: 22 học sinh • GV: Cô Vũ Hằng (100% THPT Lưu Nhân Chú)',
         isClassFull: false,
         capacityText: 'Lớp 2: 22 em • Đang mở',
-        noteText: 'Lớp Toán 11 Cơ Bản 2 (CB 2) bám sát chương trình GDPT mới, rèn luyện kỹ năng giải toán tư duy và chuẩn bị kiểm tra học kỳ.'
+        noteText: 'Lớp Toán 11 Cơ Bản 2 (GV: Cô Vũ Hằng) bám sát cấu trúc kiểm tra học kỳ, rèn luyện kỹ năng giải toán tư duy và nâng cao điểm số.'
       };
     }
     if (selectedTab === 'toan-11-cb' || selectedTab === 'toan-11-all') {
       return {
         currentStudents: STUDENTS_TOAN_11_ALL,
-        tabTitle: 'BẢNG DANH SÁCH TOÀN BỘ 2 PHÂN LỚP TOÁN 11 CƠ BẢN (39 HỌC SINH)',
-        tabSubTitle: 'Tổng sĩ số: 39 học sinh (Gồm CB1: 17 em & CB2: 22 em - THPT Lưu Nhân Chú)',
+        tabTitle: 'BẢNG DANH SÁCH TOÀN BỘ 2 PHÂN LỚP TOÁN 11 CƠ BẢN (41 HỌC SINH)',
+        tabSubTitle: 'Tổng sĩ số: 41 học sinh (Gồm CB1: 19 em & CB2: 22 em • GV: Cô Vũ Hằng)',
         isClassFull: false,
-        capacityText: 'Tổng 2 lớp: 39 em • Đang mở',
-        noteText: 'Tổng cộng 39 học sinh đang theo học tại 2 phân lớp Toán 11 Cơ bản. Lớp đang mở tiếp nhận học sinh mới.'
+        capacityText: 'Tổng 2 lớp: 41 em • Đang mở',
+        noteText: 'Tổng cộng 41 học sinh đang theo học tại 2 phân lớp Toán 11 Cơ bản do Cô Vũ Hằng phụ trách. Lớp đang mở tiếp nhận học sinh mới.'
       };
     }
 
@@ -321,7 +321,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
             <span>Toán 12 Nâng Cao (5 em • Đang mở)</span>
           </button>
 
-          {/* Tab Toán 11 - CB 1 (17 em) */}
+          {/* Tab Toán 11 - CB 1 (19 em) */}
           <button
             onClick={() => setSelectedTab('toan-11-cb1')}
             className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
@@ -331,7 +331,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
             }`}
           >
             <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>Toán 11 - CB 1 (17 em)</span>
+            <span>Toán 11 - CB 1 (19 em)</span>
           </button>
 
           {/* Tab Toán 11 - CB 2 (22 em) */}
@@ -347,7 +347,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
             <span>Toán 11 - CB 2 (22 em)</span>
           </button>
 
-          {/* Tab Toán 11 - Toàn bộ (39 em) */}
+          {/* Tab Toán 11 - Toàn bộ (41 em) */}
           <button
             onClick={() => setSelectedTab('toan-11-cb')}
             className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
@@ -357,7 +357,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
             }`}
           >
             <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>Toán 11 Cơ Bản (39 em)</span>
+            <span>Toán 11 Cơ Bản (41 em)</span>
           </button>
 
           {/* Tab CNTT */}
@@ -535,7 +535,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                         >
                           {/* Cột STT */}
                           <td className="py-2.5 px-3 text-center font-semibold text-slate-400">
-                            {idx + 1}
+                            {selectedTab === 'toan-11-cb2' && sortBy === 'assignedClass' && student.stt ? student.stt : idx + 1}
                           </td>
 
                           {/* Cột Họ và tên: Avatar chữ cái + Tên đậm */}
@@ -604,7 +604,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
         <div className="p-3 sm:px-5 bg-white border-t border-slate-200 flex-shrink-0 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="text-xs text-slate-500 text-center sm:text-left">
             {selectedTab.startsWith('toan-11') ? (
-              <span>Tổng cộng: <strong className="text-slate-800">39 học sinh</strong> thuộc 2 phân lớp Toán 11 Cơ Bản (CB1: 17 em, CB2: 22 em)</span>
+              <span>Tổng cộng: <strong className="text-slate-800">41 học sinh</strong> thuộc 2 phân lớp Toán 11 Cơ Bản (CB1: 19 em, CB2: 22 em • GV: Cô Vũ Hằng)</span>
             ) : selectedTab.startsWith('toan-12-cb') ? (
               <span>Tổng cộng: <strong className="text-slate-800">75 học sinh</strong> thuộc 3 phân lớp Toán 12 Cơ Bản (CB1: 29 em, CB2: 23 em, CB3: 23 em)</span>
             ) : (
