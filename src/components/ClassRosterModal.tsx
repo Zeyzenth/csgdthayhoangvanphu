@@ -50,7 +50,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
   const [selectedTab, setSelectedTab] = useState<string>('toan-12-cb1');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [schoolClassFilter, setSchoolClassFilter] = useState<string>('all');
-  const [sortBy, setSortBy] = useState<'assignedClass' | 'schoolClass' | 'name'>('assignedClass');
+  const [sortBy, setSortBy] = useState<'assignedClass' | 'schoolClass' | 'name'>('schoolClass');
 
   // Đồng bộ initialClassId khi mở modal
   useEffect(() => {
@@ -139,20 +139,20 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
       return {
         currentStudents: STUDENTS_TOAN_11_CB2,
         tabTitle: 'BẢNG DANH SÁCH THÀNH VIÊN LỚP TOÁN 11 - CƠ BẢN 2 (GV: CÔ VŨ HẰNG)',
-        tabSubTitle: 'Sĩ số: 22 học sinh • GV: Cô Vũ Hằng (100% THPT Lưu Nhân Chú)',
+        tabSubTitle: `Sĩ số: ${STUDENTS_TOAN_11_CB2.length} học sinh • GV: Cô Vũ Hằng (100% THPT Lưu Nhân Chú)`,
         isClassFull: false,
-        capacityText: 'Lớp 2: 22 em • Đang mở',
+        capacityText: `Lớp 2: ${STUDENTS_TOAN_11_CB2.length} em • Đang mở`,
         noteText: 'Lớp Toán 11 Cơ Bản 2 (GV: Cô Vũ Hằng) bám sát cấu trúc kiểm tra học kỳ, rèn luyện kỹ năng giải toán tư duy và nâng cao điểm số.'
       };
     }
     if (selectedTab === 'toan-11-cb' || selectedTab === 'toan-11-all') {
       return {
         currentStudents: STUDENTS_TOAN_11_ALL,
-        tabTitle: 'BẢNG DANH SÁCH TOÀN BỘ 2 PHÂN LỚP TOÁN 11 CƠ BẢN (41 HỌC SINH)',
-        tabSubTitle: 'Tổng sĩ số: 41 học sinh (Gồm CB1: 19 em & CB2: 22 em • GV: Cô Vũ Hằng)',
+        tabTitle: `BẢNG DANH SÁCH TOÀN BỘ 2 PHÂN LỚP TOÁN 11 CƠ BẢN (${STUDENTS_TOAN_11_ALL.length} HỌC SINH)`,
+        tabSubTitle: `Tổng sĩ số: ${STUDENTS_TOAN_11_ALL.length} học sinh (Gồm CB1: ${STUDENTS_TOAN_11_CB1.length} em & CB2: ${STUDENTS_TOAN_11_CB2.length} em • GV: Cô Vũ Hằng)`,
         isClassFull: false,
-        capacityText: 'Tổng 2 lớp: 41 em • Đang mở',
-        noteText: 'Tổng cộng 41 học sinh đang theo học tại 2 phân lớp Toán 11 Cơ bản do Cô Vũ Hằng phụ trách. Lớp đang mở tiếp nhận học sinh mới.'
+        capacityText: `Tổng 2 lớp: ${STUDENTS_TOAN_11_ALL.length} em • Đang mở`,
+        noteText: `Tổng cộng ${STUDENTS_TOAN_11_ALL.length} học sinh đang theo học tại 2 phân lớp Toán 11 Cơ bản do Cô Vũ Hằng phụ trách. Lớp đang mở tiếp nhận học sinh mới.`
       };
     }
 
@@ -334,7 +334,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
             <span>Toán 11 - CB 1 (19 em)</span>
           </button>
 
-          {/* Tab Toán 11 - CB 2 (22 em) */}
+          {/* Tab Toán 11 - CB 2 */}
           <button
             onClick={() => setSelectedTab('toan-11-cb2')}
             className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
@@ -344,10 +344,10 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
             }`}
           >
             <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>Toán 11 - CB 2 (22 em)</span>
+            <span>Toán 11 - CB 2 ({STUDENTS_TOAN_11_CB2.length} em)</span>
           </button>
 
-          {/* Tab Toán 11 - Toàn bộ (41 em) */}
+          {/* Tab Toán 11 - Toàn bộ */}
           <button
             onClick={() => setSelectedTab('toan-11-cb')}
             className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
@@ -357,7 +357,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
             }`}
           >
             <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>Toán 11 Cơ Bản (41 em)</span>
+            <span>Toán 11 Cơ Bản ({STUDENTS_TOAN_11_ALL.length} em)</span>
           </button>
 
           {/* Tab CNTT */}
@@ -403,15 +403,34 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
               )}
             </div>
 
-            {/* Lọc theo lớp trường (A1 -> A9) */}
-            <div className="flex items-center gap-1.5 flex-shrink-0">
+            {/* Bộ lọc & Sắp xếp */}
+            <div className="flex flex-wrap items-center gap-1.5 flex-shrink-0">
+              {/* Sắp xếp thứ tự */}
+              <div className="relative">
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as 'assignedClass' | 'schoolClass' | 'name')}
+                  className="pl-8 pr-7 py-2 rounded-xl bg-white border border-slate-300 text-xs font-bold text-slate-700 hover:border-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 appearance-none shadow-2xs cursor-pointer"
+                  title="Chọn cách sắp xếp danh sách"
+                >
+                  <option value="schoolClass">Thứ tự: Lớp trường ➔ Tên A-Z</option>
+                  <option value="name">Thứ tự: Tên học sinh (A ➔ Z)</option>
+                  <option value="assignedClass">Thứ tự: Phân lớp ➔ Lớp trường</option>
+                </select>
+                <ArrowUpDown className="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <span className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                  ▾
+                </span>
+              </div>
+
+              {/* Lọc theo lớp trường (A1 -> A10) */}
               <div className="relative">
                 <select
                   value={schoolClassFilter}
                   onChange={(e) => setSchoolClassFilter(e.target.value)}
                   className="pl-8 pr-7 py-2 rounded-xl bg-white border border-slate-300 text-xs font-bold text-slate-700 hover:border-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 appearance-none shadow-2xs cursor-pointer"
                 >
-                  <option value="all">Lớp trường: Tất cả (A1 ➔ A9)</option>
+                  <option value="all">Lớp trường: Tất cả</option>
                   {availableSchoolClasses.map((cls) => (
                     <option key={cls} value={cls}>
                       Lớp trường: {cls}
@@ -507,10 +526,28 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse text-xs sm:text-sm">
                 <thead>
-                  <tr className="bg-slate-50 text-slate-600 font-extrabold border-b border-slate-200 text-[11px] uppercase tracking-wider">
+                  <tr className="bg-slate-50 text-slate-600 font-extrabold border-b border-slate-200 text-[11px] uppercase tracking-wider select-none">
                     <th className="py-2.5 px-3 text-center w-12">STT</th>
-                    <th className="py-2.5 px-3 sm:px-4">HỌ VÀ TÊN</th>
-                    <th className="py-2.5 px-3 text-center">LỚP Ở TRƯỜNG</th>
+                    <th 
+                      onClick={() => setSortBy(sortBy === 'name' ? 'schoolClass' : 'name')}
+                      className="py-2.5 px-3 sm:px-4 cursor-pointer hover:text-blue-700 transition-colors"
+                      title="Bấm để sắp xếp theo Tên A-Z"
+                    >
+                      <div className="flex items-center gap-1">
+                        <span>HỌ VÀ TÊN</span>
+                        <ArrowUpDown className={`w-3 h-3 ${sortBy === 'name' ? 'text-blue-600' : 'text-slate-400'}`} />
+                      </div>
+                    </th>
+                    <th 
+                      onClick={() => setSortBy(sortBy === 'schoolClass' ? 'name' : 'schoolClass')}
+                      className="py-2.5 px-3 text-center cursor-pointer hover:text-blue-700 transition-colors"
+                      title="Bấm để sắp xếp theo Lớp ở trường"
+                    >
+                      <div className="inline-flex items-center gap-1 justify-center">
+                        <span>LỚP Ở TRƯỜNG</span>
+                        <ArrowUpDown className={`w-3 h-3 ${sortBy === 'schoolClass' ? 'text-blue-600' : 'text-slate-400'}`} />
+                      </div>
+                    </th>
                     <th className="py-2.5 px-3 sm:px-4">TRƯỜNG HỌC</th>
                     <th className="py-2.5 px-3 sm:px-4 text-center">PHÂN LỚP</th>
                     <th className="py-2.5 px-3 text-center">TRẠNG THÁI</th>
@@ -535,7 +572,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                         >
                           {/* Cột STT */}
                           <td className="py-2.5 px-3 text-center font-semibold text-slate-400">
-                            {selectedTab === 'toan-11-cb2' && sortBy === 'assignedClass' && student.stt ? student.stt : idx + 1}
+                            {idx + 1}
                           </td>
 
                           {/* Cột Họ và tên: Avatar chữ cái + Tên đậm */}
@@ -604,7 +641,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
         <div className="p-3 sm:px-5 bg-white border-t border-slate-200 flex-shrink-0 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="text-xs text-slate-500 text-center sm:text-left">
             {selectedTab.startsWith('toan-11') ? (
-              <span>Tổng cộng: <strong className="text-slate-800">41 học sinh</strong> thuộc 2 phân lớp Toán 11 Cơ Bản (CB1: 19 em, CB2: 22 em • GV: Cô Vũ Hằng)</span>
+              <span>Tổng cộng: <strong className="text-slate-800">{STUDENTS_TOAN_11_ALL.length} học sinh</strong> thuộc 2 phân lớp Toán 11 Cơ Bản (CB1: {STUDENTS_TOAN_11_CB1.length} em, CB2: {STUDENTS_TOAN_11_CB2.length} em • GV: Cô Vũ Hằng)</span>
             ) : selectedTab.startsWith('toan-12-cb') ? (
               <span>Tổng cộng: <strong className="text-slate-800">75 học sinh</strong> thuộc 3 phân lớp Toán 12 Cơ Bản (CB1: 29 em, CB2: 23 em, CB3: 23 em)</span>
             ) : (
