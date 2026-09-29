@@ -1,28 +1,31 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   X,
   Users,
-  Search,
   School,
   CheckCircle2,
   Printer,
   ChevronRight,
-  Filter,
   BookOpen,
   Sparkles,
   Clock,
   AlertCircle,
-  Laptop
+  Lock,
+  Unlock,
+  Eye,
+  EyeOff,
+  Search,
+  ShieldCheck,
+  ArrowUpDown
 } from 'lucide-react';
 import { Student, GradeLevel } from '../types';
 import {
-  STUDENTS_TOAN_12_CO_BAN,
-  STUDENTS_TOAN_12_NC,
-  STUDENTS_TOAN_11_CB1,
-  STUDENTS_TOAN_11_CB2,
-  STUDENTS_CNTT,
   ACTIVE_CLASSES,
-  sortStudentsByClassAndName,
+  STUDENTS_TOAN_12_CO_BAN,
+  STUDENTS_TOAN_12_CB1,
+  STUDENTS_TOAN_12_CB2,
+  STUDENTS_TOAN_12_CB3,
+  sortStudentsByClassAndName
 } from '../data/activeClassesData';
 
 interface ClassRosterModalProps {
@@ -38,244 +41,115 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
   initialClassId,
   onOpenConsultationModal,
 }) => {
-  // 'toan-12-all' (tất cả 56 em cơ bản) | 'toan-12-nc' | 'toan-12-cb1' | 'toan-12-cb2' | 'toan-12-cb3' | 'both-separate'
-  const [selectedClassId, setSelectedClassId] = useState<string>('toan-12-all');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filterSchoolClass, setFilterSchoolClass] = useState<string>('all');
+  const [selectedClassId, setSelectedClassId] = useState<string>('all');
+  const [isUnlocked, setIsUnlocked] = useState<boolean>(() => {
+    return sessionStorage.getItem('thvp_roster_auth') === 'true';
+  });
+  const [passwordInput, setPasswordInput] = useState<string>('');
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [authError, setAuthError] = useState<string>('');
+  const [subClassFilter, setSubClassFilter] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [sortBy, setSortBy] = useState<'assignedClass' | 'schoolClass' | 'name'>('assignedClass');
 
-  // Sync initialClassId if changes when opened
-  React.useEffect(() => {
+  // Sync initialClassId if provided
+  useEffect(() => {
     if (initialClassId) {
-      if (initialClassId === 'toan-12-all' || initialClassId === 'all') {
-        setSelectedClassId('toan-12-all');
-      } else if (initialClassId === 'both-separate') {
-        setSelectedClassId('both-separate');
+      if (initialClassId === 'toan-12-all' || initialClassId === 'all' || initialClassId === 'both-separate') {
+        setSelectedClassId('all');
+      } else if (initialClassId === 'toan-12-cb1' || initialClassId === 'toan-12-cb2' || initialClassId === 'toan-12-cb3' || initialClassId === 'toan-12-cb4') {
+        setSelectedClassId('toan-12-cb');
+      } else if (initialClassId === 'toan-11-nc') {
+        setSelectedClassId('toan-11-cb');
       } else {
         setSelectedClassId(initialClassId);
       }
+    } else {
+      setSelectedClassId('all');
     }
-  }, [initialClassId]);
+  }, [initialClassId, isOpen]);
 
-  // Luôn sắp xếp danh sách học sinh: Lớp trường A1 -> A9 (12A5 -> 12A6 -> 12A7 -> 12A8 -> 12A9) và tên A -> Z
-  const allStudentsSorted = useMemo(
-    () => sortStudentsByClassAndName(STUDENTS_TOAN_12_CO_BAN),
-    []
-  );
+  // Reset filter when switching class
+  useEffect(() => {
+    setSubClassFilter('all');
+    setSearchQuery('');
+  }, [selectedClassId]);
 
-  const studentsCb1 = useMemo(
-    () => sortStudentsByClassAndName(STUDENTS_TOAN_12_CO_BAN.filter((s) => s.assignedClass === 'Lớp CB 1')),
-    []
-  );
+  // Tổng số học sinh toàn trung tâm
+  const totalCenterStudents = useMemo(() => {
+    return ACTIVE_CLASSES.reduce((acc, c) => acc + (c.studentCount ?? 0), 0);
+  }, []);
 
-  const studentsCb2 = useMemo(
-    () => sortStudentsByClassAndName(STUDENTS_TOAN_12_CO_BAN.filter((s) => s.assignedClass === 'Lớp CB 2')),
-    []
-  );
+  const selectedClass = useMemo(() => {
+    if (selectedClassId === 'all') return null;
+    return ACTIVE_CLASSES.find((c) => c.id === selectedClassId) || null;
+  }, [selectedClassId]);
 
-  const studentsCb3 = useMemo(
-    () => sortStudentsByClassAndName(STUDENTS_TOAN_12_CO_BAN.filter((s) => s.assignedClass === 'Lớp CB 3')),
-    []
-  );
-
-  const studentsNc12 = useMemo(
-    () => sortStudentsByClassAndName(STUDENTS_TOAN_12_NC),
-    []
-  );
-
-  const studentsCb11 = useMemo(
-    () => sortStudentsByClassAndName(STUDENTS_TOAN_11_CB1),
-    []
-  );
-
-  const studentsCb11Lop2 = useMemo(
-    () => sortStudentsByClassAndName(STUDENTS_TOAN_11_CB2),
-    []
-  );
-
-  const studentsCntt = useMemo(
-    () => sortStudentsByClassAndName(STUDENTS_CNTT),
-    []
-  );
-
-  const otherClassData = ACTIVE_CLASSES.find((c) => c.id === selectedClassId);
-
-  // Bộ lọc tìm kiếm học sinh
-  const filterStudents = (list: Student[]) => {
-    return list.filter((student) => {
-      const matchSearch =
-        searchQuery.trim() === '' ||
-        student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        student.schoolClass.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        student.schoolName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        String(student.stt).includes(searchQuery.trim());
-
-      const matchSchoolClass =
-        filterSchoolClass === 'all' || student.schoolClass === filterSchoolClass;
-
-      return matchSearch && matchSchoolClass;
-    });
+  // Xác thực mật khẩu THVP2026
+  const handleVerifyPassword = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (passwordInput.trim() === 'THVP2026') {
+      setIsUnlocked(true);
+      setAuthError('');
+      sessionStorage.setItem('thvp_roster_auth', 'true');
+      setPasswordInput('');
+    } else {
+      setAuthError('Mật khẩu không chính xác. Vui lòng kiểm tra lại!');
+    }
   };
 
-  const filteredAll = useMemo(() => filterStudents(allStudentsSorted), [allStudentsSorted, searchQuery, filterSchoolClass]);
-  const filteredCb1 = useMemo(() => filterStudents(studentsCb1), [studentsCb1, searchQuery, filterSchoolClass]);
-  const filteredCb2 = useMemo(() => filterStudents(studentsCb2), [studentsCb2, searchQuery, filterSchoolClass]);
-  const filteredCb3 = useMemo(() => filterStudents(studentsCb3), [studentsCb3, searchQuery, filterSchoolClass]);
-  const filteredNc12 = useMemo(() => filterStudents(studentsNc12), [studentsNc12, searchQuery, filterSchoolClass]);
-  const filteredCb11 = useMemo(() => filterStudents(studentsCb11), [studentsCb11, searchQuery, filterSchoolClass]);
-  const filteredCb11Lop2 = useMemo(() => filterStudents(studentsCb11Lop2), [studentsCb11Lop2, searchQuery, filterSchoolClass]);
-  const filteredCntt = useMemo(() => filterStudents(studentsCntt), [studentsCntt, searchQuery, filterSchoolClass]);
+  const handleLockAgain = () => {
+    setIsUnlocked(false);
+    sessionStorage.removeItem('thvp_roster_auth');
+    setPasswordInput('');
+    setAuthError('');
+  };
 
-  // Danh sách các lớp trường thực tế (3A, 3B3, 4B, 5A, 5D, 6A8, 7A1, 7A5, 7A7, 11A1, 11A2, 11A3, 11A4, 11A5, 11A7, 11A8, 11A9, 11A10...)
-  const schoolClasses = useMemo(() => {
-    const set = new Set<string>();
-    STUDENTS_TOAN_12_CO_BAN.forEach((s) => { if (s.schoolClass) set.add(s.schoolClass); });
-    STUDENTS_TOAN_12_NC.forEach((s) => { if (s.schoolClass) set.add(s.schoolClass); });
-    STUDENTS_TOAN_11_CB1.forEach((s) => { if (s.schoolClass) set.add(s.schoolClass); });
-    STUDENTS_TOAN_11_CB2.forEach((s) => { if (s.schoolClass) set.add(s.schoolClass); });
-    STUDENTS_CNTT.forEach((s) => { if (s.schoolClass) set.add(s.schoolClass); });
-    return Array.from(set).sort((a, b) => a.localeCompare(b, 'vi', { numeric: true }));
-  }, []);
+  // Danh sách học sinh theo phân lớp và tìm kiếm (được sắp xếp A1 -> A9, rồi A -> Z)
+  const displayedStudents = useMemo(() => {
+    if (!selectedClass || !selectedClass.students) return [];
+
+    let list: Student[] = [...selectedClass.students];
+
+    // Phân lớp cho Toán 12 Cơ bản
+    if (selectedClass.id === 'toan-12-cb') {
+      if (subClassFilter === 'cb1') {
+        list = STUDENTS_TOAN_12_CB1;
+      } else if (subClassFilter === 'cb2') {
+        list = STUDENTS_TOAN_12_CB2;
+      } else if (subClassFilter === 'cb3') {
+        list = STUDENTS_TOAN_12_CB3;
+      } else {
+        list = STUDENTS_TOAN_12_CO_BAN;
+      }
+    }
+
+    // Sắp xếp linh hoạt theo tùy chọn (mặc định: Phân lớp CB1 -> CB2 -> CB3, sau đó đến Lớp trường A1-A9, rồi đến Tên A-Z)
+    const sorted = sortStudentsByClassAndName(list, sortBy);
+
+    // Lọc theo tìm kiếm
+    if (!searchQuery.trim()) return sorted;
+
+    const q = searchQuery.toLowerCase().trim();
+    return sorted.filter((s) => {
+      const matchName = s.name.toLowerCase().includes(q);
+      const matchClass = s.schoolClass?.toLowerCase().includes(q);
+      const matchSchool = s.schoolName?.toLowerCase().includes(q);
+      const matchAssigned = s.assignedClass?.toLowerCase().includes(q);
+      return matchName || matchClass || matchSchool || matchAssigned;
+    });
+  }, [selectedClass, subClassFilter, searchQuery]);
 
   if (!isOpen) return null;
 
-  const handlePrint = () => {
-    window.print();
-  };
-
-  // Component Bảng Thành Viên chuẩn thống nhất cho tất cả các góc nhìn
-  const UniformStudentTable: React.FC<{
-    students: Student[];
-    title: string;
-    subtitle: string;
-    badgeText: string;
-    badgeColorClass?: string;
-  }> = ({ students, title, subtitle, badgeText, badgeColorClass = 'bg-blue-900 text-white' }) => {
-    return (
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-        {/* Table Header Banner */}
-        <div className={`${badgeColorClass} px-4 py-3.5 flex flex-wrap items-center justify-between gap-2`}>
-          <div className="flex items-center gap-2.5">
-            <span className="w-7 h-7 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center font-black text-xs shadow-xs">
-              <Users className="w-4 h-4" />
-            </span>
-            <div>
-              <h3 className="font-extrabold text-sm sm:text-base tracking-tight text-white uppercase">
-                {title}
-              </h3>
-              <p className="text-[11px] text-blue-100/90">
-                {subtitle}
-              </p>
-            </div>
-          </div>
-          <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-white/20 text-white border border-white/30 backdrop-blur-xs">
-            {badgeText}
-          </span>
-        </div>
-
-        {students.length === 0 ? (
-          <div className="p-8 text-center text-xs text-slate-500">
-            Không có học sinh nào phù hợp với từ khóa hoặc lớp đang lọc.
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-slate-100/90 border-b border-slate-200 text-[11px] font-bold uppercase text-slate-600">
-                  <th className="py-2.5 px-3 sm:px-4 text-center w-12 sm:w-14">STT</th>
-                  <th className="py-2.5 px-3 sm:px-4">Họ và tên</th>
-                  <th className="py-2.5 px-3 sm:px-4 text-center">Lớp ở trường</th>
-                  <th className="py-2.5 px-3 sm:px-4 hidden md:table-cell">Trường học</th>
-                  <th className="py-2.5 px-3 sm:px-4 text-center">Phân lớp</th>
-                  <th className="py-2.5 px-3 sm:px-4 text-center hidden sm:table-cell">Trạng thái</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 text-xs sm:text-sm">
-                {students.map((student, idx) => (
-                  <tr key={student.id} className="hover:bg-blue-50/40 transition-colors">
-                    <td className="py-2.5 px-3 sm:px-4 text-center font-bold text-slate-400">
-                      {idx + 1}
-                    </td>
-                    <td className="py-2.5 px-3 sm:px-4 font-bold text-slate-900">
-                      <div className="flex items-center gap-2">
-                        <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center text-[10px] font-bold flex-shrink-0">
-                          {student.name.split(' ').pop()?.charAt(0) || 'H'}
-                        </span>
-                        <span>{student.name}</span>
-                      </div>
-                    </td>
-                    <td className="py-2.5 px-3 sm:px-4 text-center">
-                      <span className="inline-block px-2.5 py-0.5 bg-blue-50 border border-blue-200 text-blue-900 font-extrabold text-xs rounded-md">
-                        {student.schoolClass}
-                      </span>
-                    </td>
-                    <td className="py-2.5 px-3 sm:px-4 hidden md:table-cell text-slate-600 text-xs">
-                      {student.schoolName}
-                    </td>
-                    <td className="py-2.5 px-3 sm:px-4 text-center">
-                      <span
-                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 font-bold text-[11px] rounded-md ${
-                          student.assignedClass === 'Lớp CB 1' ||
-                          student.assignedClass === 'Lớp CB 2' ||
-                          student.assignedClass === 'Lớp CB 3' ||
-                          student.assignedClass.includes('Lớp 11 (Lớp 1)')
-                            ? 'bg-rose-100 text-rose-900 border border-rose-200'
-                            : student.assignedClass.includes('NC')
-                            ? 'bg-purple-100 text-purple-900 border border-purple-300'
-                            : student.assignedClass.includes('CNTT')
-                            ? 'bg-cyan-100 text-cyan-900 border border-cyan-300'
-                            : 'bg-emerald-100 text-emerald-900 border border-emerald-300'
-                        }`}
-                      >
-                        <span>{student.assignedClass}</span>
-                        {student.assignedClass === 'Lớp CB 1' ||
-                        student.assignedClass === 'Lớp CB 2' ||
-                        student.assignedClass === 'Lớp CB 3' ||
-                        student.assignedClass.includes('Lớp 11 (Lớp 1)') ? (
-                          <span className="text-[10px] text-rose-600 font-semibold">(Đã đầy)</span>
-                        ) : student.assignedClass.includes('NC') ? (
-                          <span className="text-[10px] text-purple-700 font-semibold">(Đang mở)</span>
-                        ) : student.assignedClass.includes('CNTT') ? (
-                          <span className="text-[10px] text-cyan-700 font-semibold">(Đang mở)</span>
-                        ) : (
-                          <span className="text-[10px] text-emerald-700 font-semibold">(Đang mở)</span>
-                        )}
-                      </span>
-                    </td>
-                    <td className="py-2.5 px-3 sm:px-4 text-center hidden sm:table-cell">
-                      <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
-                        <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                        <span>Đang theo học</span>
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
-    );
-  };
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
-      role="dialog"
-      aria-modal="true"
-    >
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs transition-opacity"
-        onClick={onClose}
-      />
-
-      {/* Modal Dialog */}
-      <div className="relative bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[92vh] flex flex-col z-10 border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-950/80 backdrop-blur-sm animate-fadeIn">
+      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[92vh] flex flex-col overflow-hidden border border-slate-200">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-950 via-blue-900 to-indigo-950 text-white p-5 sm:p-6 flex-shrink-0 relative">
+        <div className="bg-gradient-to-r from-blue-950 via-slate-900 to-blue-900 text-white p-4 sm:p-6 flex-shrink-0 relative">
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 sm:top-5 sm:right-5 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 rounded-full p-2 transition-colors cursor-pointer"
+            className="absolute top-4 right-4 sm:top-5 sm:right-5 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white/90 transition-colors cursor-pointer"
             aria-label="Đóng"
           >
             <X className="w-5 h-5" />
@@ -284,49 +158,30 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
           <div className="flex flex-wrap items-center gap-2 mb-2">
             <span className="px-2.5 py-0.5 rounded-full text-xs font-black bg-amber-400 text-slate-950 flex items-center gap-1">
               <Users className="w-3.5 h-3.5" />
-              <span>DANH SÁCH THÀNH VIÊN LỚP HỌC</span>
+              <span>THỐNG KÊ SĨ SỐ & THÔNG TIN LỚP HỌC</span>
             </span>
             <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/15 text-blue-100 border border-white/20">
-              {selectedClassId === 'toan-12-nc'
-                ? 'Môn Toán • Khối 12 (Nâng Cao 8.5+) • Cơ sở Vạn Phú'
-                : selectedClassId === 'toan-11-cb' || selectedClassId === 'toan-11-nc'
-                ? 'Môn Toán • Khối 11 • Cơ sở Vạn Phú'
-                : selectedClassId === 'toan-10-cb'
-                ? 'Môn Toán • Khối 10 (Cơ Bản) • Cơ sở Vạn Phú'
-                : selectedClassId === 'toan-10-nc'
-                ? 'Môn Toán • Khối 10 (Nâng Cao 8.5+) • Cơ sở Vạn Phú'
-                : selectedClassId === 'cntt-active'
-                ? 'Công Nghệ Thông Tin & Kỹ Năng Số • Cơ sở Vạn Phú'
-                : 'Môn Toán • Cơ sở Vạn Phú'}
+              Tổng số học sinh đang học: <strong className="text-amber-300 ml-1">{totalCenterStudents} em</strong>
             </span>
+            {isUnlocked ? (
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 flex items-center gap-1">
+                <Unlock className="w-3 h-3 text-emerald-400" />
+                <span>Đã mở khóa danh sách</span>
+              </span>
+            ) : (
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-200 border border-amber-400/30 flex items-center gap-1">
+                <Lock className="w-3 h-3 text-amber-300" />
+                <span>Bảo mật danh sách</span>
+              </span>
+            )}
           </div>
 
           <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white uppercase">
-            {selectedClassId === 'toan-12-all'
-              ? 'BẢNG DANH SÁCH THÀNH VIÊN LỚP TOÁN 12 CƠ BẢN (64 HỌC SINH)'
-              : selectedClassId === 'toan-12-nc'
-              ? 'BẢNG DANH SÁCH HỌC SINH LỚP TOÁN 12 NÂNG CAO (5 HỌC SINH - ĐANG MỞ)'
-              : selectedClassId === 'toan-11-cb'
-              ? 'BẢNG DANH SÁCH HỌC SINH LỚP TOÁN 11 - LỚP 1 (19 HỌC SINH - ĐÃ ĐẦY SĨ SỐ)'
-              : selectedClassId === 'toan-11-nc'
-              ? 'BẢNG DANH SÁCH HỌC SINH LỚP TOÁN 11 - LỚP 2 (15 HỌC SINH - ĐANG MỞ)'
-              : selectedClassId === 'toan-10-cb'
-              ? 'THÔNG BÁO MỞ LỚP TOÁN 10 CƠ BẢN (ĐANG MỞ LỚP & TIẾP NHẬN HỌC SINH)'
-              : selectedClassId === 'toan-10-nc'
-              ? 'THÔNG BÁO MỞ LỚP TOÁN 10 NÂNG CAO (ĐANG MỞ LỚP & TIẾP NHẬN HỌC SINH)'
-              : selectedClassId === 'cntt-active'
-              ? 'BẢNG DANH SÁCH HỌC SINH LỚP CÔNG NGHỆ THÔNG TIN & KỸ NĂNG SỐ (18 HỌC SINH - ĐANG MỞ)'
-              : selectedClassId === 'toan-12-cb1'
-              ? 'BẢNG DANH SÁCH THÀNH VIÊN LỚP 1 (CB 1: 23 HỌC SINH - ĐÃ ĐẦY SĨ SỐ)'
-              : selectedClassId === 'toan-12-cb2'
-              ? 'BẢNG DANH SÁCH THÀNH VIÊN LỚP 2 (CB 2: 19 HỌC SINH - ĐÃ ĐẦY SĨ SỐ)'
-              : selectedClassId === 'toan-12-cb3'
-              ? 'BẢNG DANH SÁCH THÀNH VIÊN LỚP 3 (CB 3: 22 HỌC SINH - ĐÃ ĐẦY SĨ SỐ)'
-              : selectedClassId === 'toan-12-cb4'
-              ? 'THÔNG BÁO MỞ LỚP TOÁN 12 CƠ BẢN - LỚP 4 (CB 4 - ĐANG MỞ LỚP)'
-              : selectedClassId === 'both-separate'
-              ? 'DANH SÁCH THEO 3 PHÂN LỚP ĐÃ CHỐT: LỚP 1, LỚP 2 & LỚP 3 (64 HỌC SINH)'
-              : `THÔNG TIN LỚP: ${otherClassData?.name || 'LỚP HỌC'}`}
+            {selectedClassId === 'all'
+              ? `BẢNG TỔNG HỢP SĨ SỐ CÁC LỚP HỌC (${totalCenterStudents} HỌC SINH)`
+              : selectedClass?.name
+              ? `${selectedClass.name.toUpperCase()} - ${selectedClass.studentCount ? `${selectedClass.studentCount} HỌC SINH` : selectedClass.statusLabel}`
+              : 'THÔNG TIN SĨ SỐ LỚP HỌC'}
           </h2>
 
           <div className="flex flex-wrap items-center gap-y-1 gap-x-4 text-xs sm:text-sm text-blue-200 mt-2">
@@ -335,31 +190,37 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
               <span>Cơ sở: <strong className="text-white">Khu Đô Thị Vạn Phú - Thái Nguyên</strong></span>
             </div>
             <div className="flex items-center gap-1.5">
-              <Users className="w-4 h-4 text-amber-400" />
-              <span>
-                Thứ tự sắp xếp:{' '}
-                <strong className="text-amber-300">
-                  Lớp trường từ A1 đến A10 &rarr; Tên theo A-Z
-                </strong>
-              </span>
+              <Sparkles className="w-4 h-4 text-amber-400" />
+              <span>Tất cả các lớp đang mở tiếp nhận học sinh</span>
             </div>
           </div>
         </div>
 
-        {/* Tab Switcher - Unified Design */}
+        {/* Tab Switcher */}
         <div className="bg-slate-100 p-2 sm:px-6 border-b border-slate-200 flex-shrink-0 flex items-center gap-2 overflow-x-auto">
           <span className="text-xs font-bold text-slate-500 hidden sm:inline flex-shrink-0">
-            Chế độ xem:
+            Xem lớp:
           </span>
           <button
-            onClick={() => setSelectedClassId('toan-12-all')}
+            onClick={() => setSelectedClassId('all')}
             className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex-shrink-0 cursor-pointer ${
-              selectedClassId === 'toan-12-all'
+              selectedClassId === 'all'
                 ? 'bg-blue-900 text-white shadow-sm'
                 : 'bg-white text-slate-700 hover:bg-slate-200'
             }`}
           >
-            Toán 12 Cơ Bản (64 em)
+            Tất Cả Các Lớp ({totalCenterStudents} em)
+          </button>
+          <button
+            onClick={() => setSelectedClassId('toan-12-cb')}
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex-shrink-0 cursor-pointer flex items-center gap-1.5 ${
+              selectedClassId === 'toan-12-cb'
+                ? 'bg-blue-900 text-white shadow-sm'
+                : 'bg-white text-blue-950 hover:bg-blue-50 border border-blue-200'
+            }`}
+          >
+            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>Toán 12 Cơ Bản (75 em • Đang mở)</span>
           </button>
           <button
             onClick={() => setSelectedClassId('toan-12-nc')}
@@ -374,35 +235,14 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
           </button>
           <button
             onClick={() => setSelectedClassId('toan-11-cb')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex-shrink-0 cursor-pointer ${
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex-shrink-0 cursor-pointer flex items-center gap-1.5 ${
               selectedClassId === 'toan-11-cb'
-                ? 'bg-rose-700 text-white shadow-sm'
-                : 'bg-white text-rose-900 hover:bg-rose-50 border border-rose-200'
-            }`}
-          >
-            Toán 11 - Lớp 1 (19 em • Đã đầy)
-          </button>
-          <button
-            onClick={() => setSelectedClassId('toan-11-nc')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex-shrink-0 cursor-pointer flex items-center gap-1.5 ${
-              selectedClassId === 'toan-11-nc'
-                ? 'bg-blue-800 text-white shadow-sm'
-                : 'bg-white text-blue-950 hover:bg-blue-50 border border-blue-300'
+                ? 'bg-indigo-900 text-white shadow-sm'
+                : 'bg-white text-indigo-950 hover:bg-indigo-50 border border-indigo-200'
             }`}
           >
             <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>Toán 11 - Lớp 2 (15 em • Đang mở)</span>
-          </button>
-          <button
-            onClick={() => setSelectedClassId('toan-10-cb')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex-shrink-0 cursor-pointer flex items-center gap-1.5 ${
-              selectedClassId === 'toan-10-cb'
-                ? 'bg-emerald-800 text-white shadow-sm'
-                : 'bg-white text-emerald-950 hover:bg-emerald-50 border border-emerald-300'
-            }`}
-          >
-            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>Toán 10 (Đang mở lớp)</span>
+            <span>Toán 11 (34 em • Đang mở)</span>
           </button>
           <button
             onClick={() => setSelectedClassId('cntt-active')}
@@ -416,656 +256,739 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
             <span>CNTT & Kỹ Năng Số (18 em • Đang mở)</span>
           </button>
           <button
-            onClick={() => setSelectedClassId('toan-12-cb1')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex-shrink-0 cursor-pointer ${
-              selectedClassId === 'toan-12-cb1'
-                ? 'bg-rose-700 text-white shadow-sm'
-                : 'bg-white text-rose-900 hover:bg-rose-50 border border-rose-200'
-            }`}
-          >
-            Lớp 1 (CB 1: 23 em • Đã đầy)
-          </button>
-          <button
-            onClick={() => setSelectedClassId('toan-12-cb2')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex-shrink-0 cursor-pointer ${
-              selectedClassId === 'toan-12-cb2'
-                ? 'bg-rose-700 text-white shadow-sm'
-                : 'bg-white text-rose-900 hover:bg-rose-50 border border-rose-200'
-            }`}
-          >
-            Lớp 2 (CB 2: 19 em • Đã đầy)
-          </button>
-          <button
-            onClick={() => setSelectedClassId('toan-12-cb3')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex-shrink-0 cursor-pointer ${
-              selectedClassId === 'toan-12-cb3'
-                ? 'bg-rose-700 text-white shadow-sm'
-                : 'bg-white text-rose-900 hover:bg-rose-50 border border-rose-200'
-            }`}
-          >
-            Lớp 3 (CB 3: 22 em • Đã đầy)
-          </button>
-          <button
-            onClick={() => setSelectedClassId('toan-12-cb4')}
+            onClick={() => setSelectedClassId('toan-10-cb')}
             className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex-shrink-0 cursor-pointer flex items-center gap-1.5 ${
-              selectedClassId === 'toan-12-cb4'
-                ? 'bg-emerald-700 text-white shadow-sm'
+              selectedClassId === 'toan-10-cb'
+                ? 'bg-emerald-800 text-white shadow-sm'
                 : 'bg-white text-emerald-950 hover:bg-emerald-50 border border-emerald-300'
             }`}
           >
             <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>Lớp 4 (CB 4 • Đang mở)</span>
+            <span>Toán 10 (Đang mở lớp)</span>
           </button>
-          <button
-            onClick={() => setSelectedClassId('both-separate')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex-shrink-0 cursor-pointer ${
-              selectedClassId === 'both-separate'
-                ? 'bg-blue-900 text-white shadow-sm'
-                : 'bg-white text-slate-700 hover:bg-slate-200'
-            }`}
-          >
-            Xem song song 3 lớp CB
-          </button>
-          {otherClassData && !['toan-12-all', 'toan-12-nc', 'toan-11-cb', 'toan-11-nc', 'toan-10-cb', 'cntt-active', 'toan-12-cb1', 'toan-12-cb2', 'toan-12-cb3', 'toan-12-cb4', 'both-separate'].includes(selectedClassId) && (
-            <button
-              onClick={() => setSelectedClassId(otherClassData.id)}
-              className="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex-shrink-0 bg-blue-900 text-white shadow-sm border border-blue-700 cursor-pointer"
-            >
-              {otherClassData.name}
-            </button>
-          )}
         </div>
 
-        {/* Controls: Search & Filter */}
-        <div className="p-4 sm:px-6 bg-white border-b border-slate-100 flex-shrink-0 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-          <div className="relative flex-1">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Tìm kiếm theo tên học sinh, lớp ở trường (12A5, 12A6, 12A7, 12A8, 12A9)..."
-              className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600 cursor-pointer"
-              >
-                Xóa
-              </button>
-            )}
-          </div>
-
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-700">
-              <Filter className="w-3.5 h-3.5 text-slate-500" />
-              <span className="font-medium text-slate-500">Lớp trường:</span>
-              <select
-                value={filterSchoolClass}
-                onChange={(e) => setFilterSchoolClass(e.target.value)}
-                className="bg-transparent font-bold text-blue-900 focus:outline-none cursor-pointer"
-              >
-                <option value="all">Tất cả (A1 &rarr; A9)</option>
-                {schoolClasses.map((sc) => (
-                  <option key={sc} value={sc}>
-                    {sc}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <button
-              onClick={handlePrint}
-              className="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl transition-colors cursor-pointer flex-shrink-0"
-              title="In danh sách này"
-            >
-              <Printer className="w-3.5 h-3.5 text-slate-600" />
-              <span className="hidden sm:inline">In Danh Sách</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Scrollable Area */}
+        {/* Scrollable Content Area */}
         <div className="flex-grow overflow-y-auto p-4 sm:p-6 bg-slate-50 space-y-6">
-          {/* VIEW 1: TOÀN THỂ LỚP (TẤT CẢ 64 HỌC SINH TRONG 1 BẢNG DUY NHẤT) */}
-          {selectedClassId === 'toan-12-all' && (
-            <UniformStudentTable
-              students={filteredAll}
-              title="Bảng Danh Sách Toàn Thể Học Sinh Lớp Toán 12 (Cơ Bản)"
-              subtitle={`Tổng số: ${filteredAll.length} / 64 học sinh (Lớp 1: 23 em • Lớp 2: 19 em • Lớp 3: 22 em)`}
-              badgeText={`Tổng sĩ số: ${filteredAll.length} em`}
-              badgeColorClass="bg-slate-900 text-white"
-            />
-          )}
-
-          {/* VIEW 2: LỚP 1 (CB 1: 23 HỌC SINH - ĐÃ ĐẦY SĨ SỐ) */}
-          {selectedClassId === 'toan-12-cb1' && (
-            <div className="space-y-4">
-              <div className="p-4 bg-rose-50 border border-rose-300 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-rose-950 shadow-xs">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-rose-600 text-white flex items-center justify-center flex-shrink-0 font-bold shadow-xs">
-                    <AlertCircle className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <h4 className="font-black text-sm text-rose-900">
-                      THÔNG BÁO: LỚP 1 (CB 1) ĐÃ ĐẦY SĨ SỐ (23/23 HỌC SINH)
-                    </h4>
-                    <p className="text-xs text-slate-700 mt-0.5">
-                      Lớp 1 gồm 23 học sinh lớp 12A9 THPT Lưu Nhân Chú đã chốt danh sách. Phụ huynh & học sinh vui lòng đăng ký sang <strong className="text-emerald-800">Lớp 4 (CB 4)</strong> đang mở tuyển sinh!
-                    </p>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setSelectedClassId('toan-12-cb4')}
-                  className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex-shrink-0 cursor-pointer"
-                >
-                  Xem Lớp 4 đang mở &rarr;
-                </button>
-              </div>
-
-              <UniformStudentTable
-                students={filteredCb1}
-                title="Bảng Danh Sách Thành Viên: Lớp 1 (Lớp CB 1 - ĐÃ ĐẦY)"
-                subtitle={`Sĩ số: ${filteredCb1.length} / 23 học sinh (100% học sinh 12A9 - THPT Lưu Nhân Chú)`}
-                badgeText={`Lớp 1: ${filteredCb1.length} em • ĐÃ ĐẦY`}
-                badgeColorClass="bg-rose-950 text-white"
-              />
-            </div>
-          )}
-
-          {/* VIEW 3: LỚP 2 (CB 2: 19 HỌC SINH - ĐÃ ĐẦY SĨ SỐ) */}
-          {selectedClassId === 'toan-12-cb2' && (
-            <div className="space-y-4">
-              <div className="p-4 bg-rose-50 border border-rose-300 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-rose-950 shadow-xs">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-rose-600 text-white flex items-center justify-center flex-shrink-0 font-bold shadow-xs">
-                    <AlertCircle className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <h4 className="font-black text-sm text-rose-900">
-                      THÔNG BÁO: LỚP 2 (CB 2) ĐÃ ĐẦY SĨ SỐ (19/19 HỌC SINH)
-                    </h4>
-                    <p className="text-xs text-slate-700 mt-0.5">
-                      Lớp 2 gồm 19 học sinh lớp 12A6 THPT Lưu Nhân Chú đã chốt danh sách. Phụ huynh & học sinh vui lòng đăng ký sang <strong className="text-emerald-800">Lớp 4 (CB 4)</strong> đang mở tuyển sinh!
-                    </p>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setSelectedClassId('toan-12-cb4')}
-                  className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex-shrink-0 cursor-pointer"
-                >
-                  Xem Lớp 4 đang mở &rarr;
-                </button>
-              </div>
-
-              <UniformStudentTable
-                students={filteredCb2}
-                title="Bảng Danh Sách Thành Viên: Lớp 2 (Lớp CB 2 - ĐÃ ĐẦY)"
-                subtitle={`Sĩ số: ${filteredCb2.length} / 19 học sinh (100% học sinh 12A6 - THPT Lưu Nhân Chú)`}
-                badgeText={`Lớp 2: ${filteredCb2.length} em • ĐÃ ĐẦY`}
-                badgeColorClass="bg-rose-950 text-white"
-              />
-            </div>
-          )}
-
-          {/* VIEW 4: LỚP 3 (CB 3: 22 HỌC SINH - ĐÃ ĐẦY SĨ SỐ) */}
-          {selectedClassId === 'toan-12-cb3' && (
-            <div className="space-y-4">
-              <div className="p-4 bg-rose-50 border border-rose-300 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-rose-950 shadow-xs">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-rose-600 text-white flex items-center justify-center flex-shrink-0 font-bold shadow-xs">
-                    <AlertCircle className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <h4 className="font-black text-sm text-rose-900 flex items-center gap-2">
-                      <span>THÔNG BÁO: LỚP 3 (CB 3) ĐÃ ĐẦY SĨ SỐ (22/22 HỌC SINH)</span>
-                      <span className="px-2 py-0.5 text-[10px] font-black rounded-full bg-rose-200 text-rose-900 border border-rose-300">
-                        ĐÃ ĐẦY SĨ SỐ
-                      </span>
-                    </h4>
-                    <p className="text-xs text-slate-700 mt-0.5">
-                      Lớp 3 gồm 22 học sinh (12A5: 2 em, 12A7: 2 em, 12A8: 10 em, 12A9: 7 em THPT Lưu Nhân Chú và THPT Đội Cấn: 1 em) đã chốt danh sách. Quý phụ huynh & học sinh vui lòng đăng ký sang <strong className="text-emerald-800">Lớp 4 (CB 4)</strong> đang mở tuyển sinh!
-                    </p>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setSelectedClassId('toan-12-cb4')}
-                  className="px-4 py-2 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex-shrink-0 cursor-pointer"
-                >
-                  Xem Lớp 4 đang mở &rarr;
-                </button>
-              </div>
-
-              <UniformStudentTable
-                students={filteredCb3}
-                title="Bảng Danh Sách Thành Viên: Lớp 3 (Lớp CB 3 - ĐÃ ĐẦY SĨ SỐ)"
-                subtitle={`Sĩ số: ${filteredCb3.length} / 22 học sinh (12A5: 2 em, 12A7: 2 em, 12A8: 10 em, 12A9: 7 em - THPT Lưu Nhân Chú và THPT Đội Cấn: 1 em)`}
-                badgeText={`Lớp 3: ${filteredCb3.length} em • ĐÃ ĐẦY`}
-                badgeColorClass="bg-rose-950 text-white"
-              />
-            </div>
-          )}
-
-          {/* VIEW: LỚP TOÁN 12 CƠ BẢN - LỚP 4 (CB 4 - ĐANG MỞ LỚP & TIẾP NHẬN HỌC SINH) */}
-          {selectedClassId === 'toan-12-cb4' && (
-            <div className="space-y-4">
-              <div className="p-4 bg-emerald-50 border border-emerald-300 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-emerald-950 shadow-xs">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 font-bold shadow-xs">
-                    <Sparkles className="w-5 h-5 text-emerald-100" />
-                  </div>
-                  <div>
-                    <h4 className="font-black text-sm text-emerald-900 flex items-center gap-2">
-                      <span>LỚP TOÁN 12 CƠ BẢN - LỚP 4 (CB 4) - ĐANG MỞ LỚP & TIẾP NHẬN HỌC SINH</span>
-                      <span className="px-2 py-0.5 text-[10px] font-black rounded-full bg-emerald-200 text-emerald-900 border border-emerald-300">
-                        ĐANG MỞ LỚP
-                      </span>
-                    </h4>
-                    <p className="text-xs text-slate-700 mt-0.5">
-                      Sau khi 3 phân lớp (Lớp 1: 23 em, Lớp 2: 19 em, Lớp 3: 22 em - tổng cộng 64 học sinh) đã chốt đầy sĩ số, trung tâm chính thức mở tiếp nhận hồ sơ đăng ký cho <strong>Lớp Toán 12 Cơ Bản - Lớp 4 (CB 4)</strong>!
-                    </p>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    onClose();
-                    onOpenConsultationModal('12');
-                  }}
-                  className="px-4 py-2 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex-shrink-0 cursor-pointer"
-                >
-                  Đăng ký vào Lớp 4 (CB 4) ngay
-                </button>
-              </div>
-
-              <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 text-center shadow-xs space-y-4">
-                <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-800 mx-auto flex items-center justify-center font-bold">
-                  <Sparkles className="w-7 h-7 text-emerald-600" />
-                </div>
-                <div>
-                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-900 inline-flex items-center gap-1.5 mb-2 border border-emerald-200">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-                    <span>ĐANG MỞ LỚP • TIẾP NHẬN ĐĂNG KÝ HỌC VIÊN MỚI</span>
-                  </span>
-                  <h3 className="text-xl font-black text-slate-900">
-                    Lớp Toán 12 (Cơ Bản) - Lớp 4 (CB 4)
-                  </h3>
-                </div>
-                <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-200 text-xs text-emerald-950 text-left space-y-2">
-                  <p className="font-bold flex items-center gap-1.5 text-emerald-900">
-                    <Sparkles className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                    <span>Kế hoạch tuyển sinh & Xếp lớp:</span>
-                  </p>
-                  <p className="text-slate-700 leading-relaxed">
-                    Trung tâm chính thức tiếp nhận đăng ký cho <strong>Lớp Toán 12 Cơ Bản - Lớp 4 (CB 4)</strong>. Học sinh đăng ký sẽ được tham gia bài kiểm tra phân loại năng lực đầu vào miễn phí, sắp xếp lịch học tối ưu, bám sát cấu trúc đề thi tốt nghiệp THPT Quốc Gia mới.
-                  </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 text-slate-800">
-                    <div className="bg-white p-2.5 rounded-xl border border-emerald-100">
-                      <strong>Trọng tâm:</strong> Củng cố Hàm số, Hình không gian Oxyz, Tích phân & Xác suất
-                    </div>
-                    <div className="bg-white p-2.5 rounded-xl border border-emerald-100">
-                      <strong>Quyền lợi:</strong> Test thử miễn phí, tặng tài liệu hệ thống công thức giải nhanh độc quyền
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-2.5 justify-center pt-2">
-                  <button
-                    onClick={() => {
-                      onClose();
-                      onOpenConsultationModal('12');
-                    }}
-                    className="px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-black text-xs rounded-xl shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
-                  >
-                    <Sparkles className="w-4 h-4 text-white" />
-                    <span>Đăng ký tham gia Lớp 4 (CB 4) ngay</span>
-                  </button>
-                  <button
-                    onClick={() => setSelectedClassId('toan-12-all')}
-                    className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl cursor-pointer"
-                  >
-                    Xem danh sách 3 lớp đã chốt (64 học sinh)
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* VIEW: LỚP TOÁN 12 NÂNG CAO (5 HỌC SINH - ĐANG MỞ LỚP) */}
-          {selectedClassId === 'toan-12-nc' && (
-            <div className="space-y-4">
-              <div className="p-4 bg-purple-50 border border-purple-300 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-purple-950 shadow-xs">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-purple-700 text-white flex items-center justify-center flex-shrink-0 font-bold shadow-xs">
-                    <Sparkles className="w-5 h-5 text-purple-100" />
-                  </div>
-                  <div>
-                    <h4 className="font-black text-sm text-purple-900 flex items-center gap-2">
-                      <span>LỚP TOÁN 12 NÂNG CAO (MỤC TIÊU 8.5+ & THI THPTQG)</span>
-                      <span className="px-2 py-0.5 text-[10px] font-black rounded-full bg-emerald-200 text-emerald-900 border border-emerald-300">
-                        ĐANG MỞ LỚP
-                      </span>
-                    </h4>
-                    <p className="text-xs text-slate-700 mt-0.5">
-                      Hiện có <strong>5 học sinh (12A6: 2 em, 12A8: 1 em, 12A9: 2 em - THPT Lưu Nhân Chú)</strong> đã xếp lớp. Lớp chuyên sâu vận dụng cao 8.5+, 9.0+, rèn luyện đề chuẩn Bộ GD&ĐT và đang tiếp tục nhận đăng ký bổ sung!
-                    </p>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    onClose();
-                    onOpenConsultationModal('12');
-                  }}
-                  className="px-4 py-2 bg-gradient-to-r from-purple-700 to-indigo-700 hover:from-purple-800 hover:to-indigo-800 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex-shrink-0 cursor-pointer"
-                >
-                  Đăng ký vào Lớp 12 NC ngay
-                </button>
-              </div>
-
-              <UniformStudentTable
-                students={filteredNc12}
-                title="Bảng Danh Sách Học Sinh: Lớp Toán 12 Nâng Cao (Vận Dụng Cao 8.5+)"
-                subtitle={`Sĩ số: ${filteredNc12.length} / 5 học sinh (12A6: 2 em, 12A8: 1 em, 12A9: 2 em - THPT Lưu Nhân Chú)`}
-                badgeText={`Toán 12 NC: ${filteredNc12.length} em • ĐANG MỞ`}
-                badgeColorClass="bg-purple-900 text-white"
-              />
-            </div>
-          )}
-
-          {/* VIEW: LỚP TOÁN 11 - LỚP 1 (19 HỌC SINH - ĐÃ ĐẦY SĨ SỐ) */}
-          {selectedClassId === 'toan-11-cb' && (
-            <div className="space-y-4">
-              <div className="p-4 bg-rose-50 border border-rose-300 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-rose-950 shadow-xs">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-rose-600 text-white flex items-center justify-center flex-shrink-0 font-bold shadow-xs">
-                    <AlertCircle className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <h4 className="font-black text-sm text-rose-900 flex items-center gap-2">
-                      <span>THÔNG BÁO: LỚP TOÁN 11 - LỚP 1 ĐÃ ĐẦY SĨ SỐ (19/19 HỌC SINH)</span>
-                      <span className="px-2 py-0.5 text-[10px] font-black rounded-full bg-rose-200 text-rose-900 border border-rose-300">
-                        ĐÃ ĐẦY SĨ SỐ
-                      </span>
-                    </h4>
-                    <p className="text-xs text-slate-700 mt-0.5">
-                      Hiện có <strong>19 học sinh (11A1: 3 em, 11A2: 7 em, 11A4: 2 em, 11A5: 1 em, 11A8: 1 em, 11A9: 3 em, 11A10: 2 em - 100% THPT Lưu Nhân Chú)</strong> đã chốt danh sách. Quý phụ huynh & học sinh vui lòng đăng ký sang <strong className="text-blue-900">Lớp Toán 11 - Lớp 2</strong> đang mở tiếp nhận học sinh!
-                    </p>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setSelectedClassId('toan-11-nc')}
-                  className="px-4 py-2 bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-800 hover:to-indigo-800 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex-shrink-0 cursor-pointer"
-                >
-                  Xem danh sách Lớp 2 (15 em) &rarr;
-                </button>
-              </div>
-
-              <UniformStudentTable
-                students={filteredCb11}
-                title="Bảng Danh Sách Học Sinh: Lớp Toán 11 - Lớp 1 (CB 1)"
-                subtitle={`Sĩ số: ${filteredCb11.length} / 19 học sinh (11A1: 3 em, 11A2: 7 em, 11A4: 2 em, 11A5: 1 em, 11A8: 1 em, 11A9: 3 em, 11A10: 2 em - THPT Lưu Nhân Chú)`}
-                badgeText={`Toán 11 - Lớp 1: ${filteredCb11.length} em • ĐÃ ĐẦY`}
-                badgeColorClass="bg-rose-950 text-white"
-              />
-            </div>
-          )}
-
-          {/* VIEW: LỚP TOÁN 11 - LỚP 2 (15 HỌC SINH - ĐANG MỞ LỚP) */}
-          {selectedClassId === 'toan-11-nc' && (
-            <div className="space-y-4">
-              <div className="p-4 bg-blue-50 border border-blue-300 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-blue-950 shadow-xs">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-blue-800 text-white flex items-center justify-center flex-shrink-0 font-bold shadow-xs">
-                    <Sparkles className="w-5 h-5 text-blue-100" />
-                  </div>
-                  <div>
-                    <h4 className="font-black text-sm text-blue-900 flex items-center gap-2">
-                      <span>LỚP TOÁN 11 - LỚP 2 (CB 2) • ĐANG MỞ LỚP & TIẾP NHẬN HỌC SINH</span>
-                      <span className="px-2 py-0.5 text-[10px] font-black rounded-full bg-emerald-200 text-emerald-900 border border-emerald-300">
-                        ĐANG MỞ LỚP
-                      </span>
-                    </h4>
-                    <p className="text-xs text-slate-700 mt-0.5">
-                      Lớp Toán 11 - Lớp 2 hiện đã có <strong>15 học sinh chính thức (11A2: 2 em, 11A3: 4 em, 11A4: 1 em, 11A7: 2 em, 11A9: 5 em, 11A10: 1 em - 100% THPT Lưu Nhân Chú)</strong>. Bám sát chương trình GDPT mới, củng cố Lượng giác, Cấp số cộng/nhân, Giới hạn và Hình học không gian 11, đang tiếp tục nhận đăng ký bổ sung!
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      onClose();
-                      onOpenConsultationModal('11');
-                    }}
-                    className="px-4 py-2 bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-800 hover:to-indigo-800 text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer"
-                  >
-                    Đăng ký vào Lớp 11 - Lớp 2 ngay
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setSelectedClassId('toan-11-cb')}
-                    className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all cursor-pointer"
-                  >
-                    Xem Lớp 1 (19 em)
-                  </button>
-                </div>
-              </div>
-
-              <UniformStudentTable
-                students={filteredCb11Lop2}
-                title="Bảng Danh Sách Học Sinh: Lớp Toán 11 - Lớp 2 (CB 2)"
-                subtitle={`Sĩ số hiện tại: ${filteredCb11Lop2.length} / 15 học sinh (11A2: 2 em, 11A3: 4 em, 11A4: 1 em, 11A7: 2 em, 11A9: 5 em, 11A10: 1 em - THPT Lưu Nhân Chú)`}
-                badgeText={`Toán 11 - Lớp 2: ${filteredCb11Lop2.length} em • ĐANG MỞ`}
-                badgeColorClass="bg-blue-800 text-white"
-              />
-            </div>
-          )}
-
-          {/* VIEW: LỚP CÔNG NGHỆ THÔNG TIN & KỸ NĂNG SỐ (14 HỌC SINH - ĐANG MỞ LỚP) */}
-          {selectedClassId === 'cntt-active' && (
-            <div className="space-y-4">
-              <div className="p-4 bg-cyan-50 border border-cyan-300 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-cyan-950 shadow-xs">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-cyan-700 text-white flex items-center justify-center flex-shrink-0 font-bold shadow-xs">
-                    <Laptop className="w-5 h-5 text-cyan-100" />
-                  </div>
-                  <div>
-                    <h4 className="font-black text-sm text-cyan-900 flex items-center gap-2">
-                      <span>LỚP CÔNG NGHỆ THÔNG TIN & KỸ NĂNG SỐ - ĐANG MỞ LỚP</span>
-                      <span className="px-2 py-0.5 text-[10px] font-black rounded-full bg-emerald-200 text-emerald-900 border border-emerald-300">
-                        ĐANG MỞ LỚP
-                      </span>
-                    </h4>
-                    <p className="text-xs text-slate-700 mt-0.5">
-                      Hiện có <strong>18 học sinh (TH Vạn Phú: 10 em, THCS Vạn Phú: 6 em, THCS Nguyễn Tất Thành: 1 em, TH Văn Yên: 1 em)</strong> đã đăng ký. Đào tạo tư duy máy tính, kỹ năng số 4.0, tin học văn phòng thực chiến, lập trình căn bản và an toàn mạng. Lớp đang mở và tiếp tục nhận đăng ký bổ sung!
-                    </p>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    onClose();
-                    onOpenConsultationModal('cntt');
-                  }}
-                  className="px-4 py-2 bg-gradient-to-r from-cyan-700 to-blue-700 hover:from-cyan-800 hover:to-blue-800 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex-shrink-0 cursor-pointer"
-                >
-                  Đăng ký vào Lớp CNTT ngay
-                </button>
-              </div>
-
-              <UniformStudentTable
-                students={filteredCntt}
-                title="Bảng Danh Sách Học Sinh: Lớp Công Nghệ Thông Tin & Kỹ Năng Số"
-                subtitle={`Sĩ số: ${filteredCntt.length} / 18 học sinh (TH Vạn Phú: 10 em, THCS Vạn Phú: 6 em, THCS Nguyễn Tất Thành: 1 em, TH Văn Yên: 1 em)`}
-                badgeText={`CNTT: ${filteredCntt.length} em • ĐANG MỞ`}
-                badgeColorClass="bg-cyan-800 text-white"
-              />
-            </div>
-          )}
-
-          {/* VIEW 5: SONG SONG 3 LỚP VỚI CÙNG THIẾT KẾ BẢNG ĐỒNG BỘ */}
-          {selectedClassId === 'both-separate' && (
+          {/* VIEW: TẤT CẢ CÁC LỚP (BẢNG TỔNG HỢP SĨ SỐ) */}
+          {selectedClassId === 'all' && (
             <div className="space-y-6">
-              <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-900 flex items-center justify-between">
-                <span>Tổng hợp cả 3 phân lớp Toán 12 Cơ Bản đã chốt: <strong>64 học sinh</strong> (Cả 3 lớp Lớp 1, Lớp 2, Lớp 3 đều đã chốt đầy sĩ số • Lớp 4 đang mở tuyển sinh)</span>
-                <span className="font-semibold text-[11px]">Cơ sở Vạn Phú - Đại Từ</span>
+              {/* Stat Summary Boxes */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="bg-gradient-to-br from-blue-900 to-indigo-900 text-white p-4 rounded-2xl shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-blue-200 uppercase tracking-wider">Tổng Học Sinh Đang Học</span>
+                    <Users className="w-5 h-5 text-amber-300" />
+                  </div>
+                  <div className="text-3xl font-black mt-2 text-white">{totalCenterStudents} <span className="text-sm font-semibold text-blue-200">em</span></div>
+                  <p className="text-[11px] text-blue-200 mt-1">Đã đăng ký và xếp lớp chính thức</p>
+                </div>
+
+                <div className="bg-gradient-to-br from-indigo-800 to-indigo-950 text-white p-4 rounded-2xl shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-indigo-200 uppercase tracking-wider">Toán THPT (Khối 11 & 12)</span>
+                    <CheckCircle2 className="w-5 h-5 text-emerald-300" />
+                  </div>
+                  <div className="text-3xl font-black mt-2 text-white">114 <span className="text-sm font-semibold text-indigo-200">em</span></div>
+                  <p className="text-[11px] text-indigo-200 mt-1">Toán 12 CB (75 em) • Toán 12 NC (5 em) • Toán 11 (34 em)</p>
+                </div>
+
+                <div className="bg-gradient-to-br from-emerald-800 to-teal-950 text-white p-4 rounded-2xl shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-emerald-200 uppercase tracking-wider">Lớp Đang Tuyển Sinh Mới</span>
+                    <Sparkles className="w-5 h-5 text-emerald-300" />
+                  </div>
+                  <div className="text-3xl font-black mt-2 text-white">100% <span className="text-sm font-semibold text-emerald-200">mở lớp</span></div>
+                  <p className="text-[11px] text-emerald-200 mt-1">Nhận học viên liên tục các khối môn</p>
+                </div>
               </div>
 
-              <UniformStudentTable
-                students={filteredCb1}
-                title="1. Lớp 1 (Lớp CB 1 - ĐÃ ĐẦY SĨ SỐ)"
-                subtitle={`Sĩ số: ${filteredCb1.length} / 23 học sinh (12A9 - THPT Lưu Nhân Chú)`}
-                badgeText={`Lớp 1: ${filteredCb1.length} em • ĐÃ ĐẦY`}
-                badgeColorClass="bg-rose-950 text-white"
-              />
-              <UniformStudentTable
-                students={filteredCb2}
-                title="2. Lớp 2 (Lớp CB 2 - ĐÃ ĐẦY SĨ SỐ)"
-                subtitle={`Sĩ số: ${filteredCb2.length} / 19 học sinh (12A6 - THPT Lưu Nhân Chú)`}
-                badgeText={`Lớp 2: ${filteredCb2.length} em • ĐÃ ĐẦY`}
-                badgeColorClass="bg-rose-950 text-white"
-              />
-              <UniformStudentTable
-                students={filteredCb3}
-                title="3. Lớp 3 (Lớp CB 3 - ĐÃ ĐẦY SĨ SỐ)"
-                subtitle={`Sĩ số: ${filteredCb3.length} / 22 học sinh (12A5: 2 em, 12A7: 2 em, 12A8: 10 em, 12A9: 7 em - THPT Lưu Nhân Chú và THPT Đội Cấn: 1 em)`}
-                badgeText={`Lớp 3: ${filteredCb3.length} em • ĐÃ ĐẦY`}
-                badgeColorClass="bg-rose-950 text-white"
-              />
+              {/* Master Summary Table */}
+              <div className="bg-white rounded-2xl shadow-xs border border-slate-200 overflow-hidden">
+                <div className="p-4 bg-slate-900 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div>
+                    <h3 className="font-black text-sm uppercase tracking-wide flex items-center gap-2">
+                      <BookOpen className="w-4 h-4 text-amber-400" />
+                      <span>Bảng Thống Kê Tổng Sĩ Số Từng Lớp Học</span>
+                    </h3>
+                    <p className="text-xs text-slate-300 mt-0.5">
+                      Hiển thị số lượng học sinh theo từng lớp. Để xem chi tiết danh sách học sinh, vui lòng chọn lớp và nhập mật khẩu bảo mật.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => window.print()}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-bold text-white transition-colors cursor-pointer self-start sm:self-auto"
+                  >
+                    <Printer className="w-3.5 h-3.5" />
+                    <span>In bảng thống kê</span>
+                  </button>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse text-xs sm:text-sm">
+                    <thead>
+                      <tr className="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
+                        <th className="py-3 px-3 sm:px-4 text-center w-12">STT</th>
+                        <th className="py-3 px-3 sm:px-4">Tên Lớp Học</th>
+                        <th className="py-3 px-3 sm:px-4 text-center">Khối Lớp</th>
+                        <th className="py-3 px-3 sm:px-4 text-center">Trình Độ</th>
+                        <th className="py-3 px-3 sm:px-4 text-center">Tổng Sĩ Số</th>
+                        <th className="py-3 px-3 sm:px-4 text-center">Trạng Thái</th>
+                        <th className="py-3 px-3 sm:px-4 text-right">Chi Tiết</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {ACTIVE_CLASSES.map((cls, idx) => {
+                        const count = cls.studentCount ?? 0;
+                        const isOpen = cls.isOpen || cls.status === 'enrolling';
+
+                        return (
+                          <tr
+                            key={cls.id}
+                            className="hover:bg-blue-50/50 transition-colors bg-emerald-50/15"
+                          >
+                            <td className="py-3.5 px-3 sm:px-4 text-center font-bold text-slate-500">
+                              {idx + 1}
+                            </td>
+                            <td className="py-3.5 px-3 sm:px-4">
+                              <div className="font-extrabold text-slate-900">{cls.name}</div>
+                              {cls.note && (
+                                <div className="text-[11px] text-slate-500 line-clamp-1 mt-0.5">{cls.note}</div>
+                              )}
+                            </td>
+                            <td className="py-3.5 px-3 sm:px-4 text-center font-semibold text-slate-700">
+                              {cls.grade === 'cntt' ? 'CNTT' : cls.grade === 'van-chu-dep' ? 'Chữ Đẹp' : `Lớp ${cls.grade}`}
+                            </td>
+                            <td className="py-3.5 px-3 sm:px-4 text-center">
+                              <span
+                                className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                                  cls.level === 'Nâng Cao'
+                                    ? 'bg-purple-100 text-purple-900 border border-purple-200'
+                                    : cls.level === 'Cơ Bản'
+                                    ? 'bg-blue-100 text-blue-900 border border-blue-200'
+                                    : 'bg-emerald-100 text-emerald-900 border border-emerald-200'
+                                }`}
+                              >
+                                {cls.level}
+                              </span>
+                            </td>
+                            <td className="py-3.5 px-3 sm:px-4 text-center">
+                              {count > 0 ? (
+                                <span className="inline-block px-3 py-1 rounded-full text-xs font-black shadow-2xs bg-emerald-600 text-white">
+                                  {count} học sinh
+                                </span>
+                              ) : (
+                                <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                                  Đang nhận hồ sơ
+                                </span>
+                              )}
+                            </td>
+                            <td className="py-3.5 px-3 sm:px-4 text-center">
+                              {isOpen || count > 0 ? (
+                                <span className="px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-100 text-emerald-900 border border-emerald-200 flex items-center justify-center gap-1">
+                                  <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                                  <span>Đang mở lớp</span>
+                                </span>
+                              ) : (
+                                <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-900 border border-amber-200 flex items-center justify-center gap-1">
+                                  <Clock className="w-3 h-3 text-amber-600" />
+                                  <span>Sắp mở lớp</span>
+                                </span>
+                              )}
+                            </td>
+                            <td className="py-3.5 px-3 sm:px-4 text-right">
+                              <button
+                                onClick={() => setSelectedClassId(cls.id)}
+                                className="px-3 py-1.5 rounded-lg bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs transition-colors cursor-pointer inline-flex items-center gap-1"
+                              >
+                                <span>Xem</span>
+                                <ChevronRight className="w-3.5 h-3.5" />
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           )}
 
-          {/* VIEW 6: LỚP HỌC ĐANG CHỌN KHÁC */}
-          {selectedClassId !== 'toan-12-all' &&
-            selectedClassId !== 'toan-12-nc' &&
-            selectedClassId !== 'toan-11-cb' &&
-            selectedClassId !== 'toan-11-nc' &&
-            selectedClassId !== 'cntt-active' &&
-            selectedClassId !== 'toan-12-cb1' &&
-            selectedClassId !== 'toan-12-cb2' &&
-            selectedClassId !== 'toan-12-cb3' &&
-            selectedClassId !== 'toan-12-cb4' &&
-            selectedClassId !== 'both-separate' && (
-              otherClassData?.students && otherClassData.students.length > 0 ? (
-                <UniformStudentTable
-                  students={filterStudents(sortStudentsByClassAndName(otherClassData.students))}
-                  title={`Bảng Danh Sách Học Sinh: ${otherClassData.name}`}
-                  subtitle={`Sĩ số: ${otherClassData.students.length} học sinh`}
-                  badgeText={`${otherClassData.students.length} học sinh`}
-                  badgeColorClass="bg-blue-900 text-white"
-                />
-              ) : otherClassData?.isOpen || otherClassData?.status === 'enrolling' ? (
-                <div className="bg-white rounded-3xl p-8 sm:p-10 border-2 border-emerald-400 ring-2 ring-emerald-100 text-center shadow-md max-w-xl mx-auto space-y-4">
-                  <div className="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-800 mx-auto flex items-center justify-center font-bold shadow-xs">
-                    <CheckCircle2 className="w-7 h-7 text-emerald-600" />
+          {/* VIEW: CHI TIẾT TỪNG LỚP HỌC */}
+          {selectedClassId !== 'all' && selectedClass && (
+            <div className="space-y-6">
+              {/* Prominent Header Banner */}
+              <div className="p-5 rounded-3xl border shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-emerald-50/80 border-emerald-300 text-emerald-950">
+                <div className="flex items-start gap-4">
+                  <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 font-bold shadow-xs bg-emerald-600 text-white">
+                    <CheckCircle2 className="w-7 h-7 text-white" />
                   </div>
                   <div>
-                    <span className="px-3 py-1 rounded-full text-xs font-black bg-emerald-600 text-white inline-flex items-center gap-1.5 mb-2 shadow-xs">
-                      <span className="w-2 h-2 rounded-full bg-white animate-ping"></span>
-                      <span>ĐANG MỞ LỚP • NHẬN ĐĂNG KÝ HỌC NGAY</span>
-                    </span>
-                    <h3 className="text-xl font-black text-slate-900">
-                      {otherClassData?.name || 'Lớp Học'}
+                    <div className="flex flex-wrap items-center gap-2 mb-1">
+                      <span className="text-xs font-black uppercase px-2.5 py-0.5 rounded-full bg-white/80 border">
+                        {selectedClass.subject} • {selectedClass.grade === 'cntt' ? 'Khối CNTT' : selectedClass.grade === 'van-chu-dep' ? 'Khối Chữ Đẹp' : `Khối ${selectedClass.grade}`}
+                      </span>
+                      <span className="text-xs font-black uppercase px-2.5 py-0.5 rounded-full bg-emerald-200 text-emerald-900 border border-emerald-300">
+                        {selectedClass.statusLabel}
+                      </span>
+                    </div>
+                    <h3 className="text-xl sm:text-2xl font-black text-slate-900">
+                      {selectedClass.name}
                     </h3>
-                  </div>
-                  <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-200 text-xs text-emerald-950 text-left space-y-1.5">
-                    <p className="font-bold flex items-center gap-1.5 text-emerald-900">
-                      <Sparkles className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                      <span>Thông báo mở lớp & Tiếp nhận học sinh:</span>
+                    <p className="text-xs sm:text-sm text-slate-700 mt-1 leading-relaxed">
+                      {selectedClass.note}
                     </p>
-                    <p className="text-slate-700 leading-relaxed">
-                      Lớp học này đang <strong>chính thức mở tiếp nhận đăng ký học viên mới</strong>. Sau khi phụ huynh/học sinh đăng ký, các em sẽ được tham gia bài kiểm tra đánh giá năng lực đầu vào miễn phí để xếp ca học và phân loại nhóm năng lực phù hợp nhất.
-                    </p>
-                  </div>
-                  <div className="flex flex-col sm:flex-row gap-2.5 justify-center pt-2">
-                    <button
-                      onClick={() => {
-                        onClose();
-                        onOpenConsultationModal(otherClassData?.grade as GradeLevel);
-                      }}
-                      className="px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-black text-xs rounded-xl shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
-                    >
-                      <Sparkles className="w-4 h-4 text-emerald-100" />
-                      <span>Đăng ký tham gia vào lớp này ngay</span>
-                    </button>
-                    <button
-                      onClick={() => setSelectedClassId('toan-12-all')}
-                      className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl cursor-pointer"
-                    >
-                      Xem danh sách lớp Toán 12 (64 học sinh)
-                    </button>
                   </div>
                 </div>
-              ) : (
-                <div className="bg-white rounded-3xl p-8 sm:p-10 border border-slate-200 text-center shadow-xs max-w-xl mx-auto space-y-4">
-                  <div className="w-14 h-14 rounded-2xl bg-amber-50 text-amber-800 mx-auto flex items-center justify-center font-bold">
-                    <Sparkles className="w-7 h-7 text-amber-600" />
-                  </div>
-                  <div>
-                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900 inline-block mb-2 border border-amber-200">
-                      Trạng thái: Sắp mở lớp
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    onOpenConsultationModal(selectedClass.grade);
+                  }}
+                  className="px-5 py-3 rounded-2xl font-black text-xs sm:text-sm text-white shadow-md transition-all flex-shrink-0 cursor-pointer bg-emerald-700 hover:bg-emerald-800"
+                >
+                  Đăng ký xếp lớp ngay
+                </button>
+              </div>
+
+              {/* Sĩ số Highlight Card */}
+              <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="p-5 rounded-2xl bg-blue-50 border border-blue-200 text-center">
+                    <span className="text-xs font-bold text-blue-800 uppercase tracking-wider block mb-1">
+                      Tổng Số Học Sinh
                     </span>
-                    <h3 className="text-lg font-black text-slate-900">
-                      {otherClassData?.name || 'Lớp Học'}
-                    </h3>
+                    <div className="text-4xl font-black text-blue-950">
+                      {selectedClass.studentCount ? selectedClass.studentCount : 0}{' '}
+                      <span className="text-base font-bold text-slate-600">học sinh</span>
+                    </div>
+                    <span className="inline-block mt-2 px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-900">
+                      {selectedClass.statusLabel}
+                    </span>
                   </div>
-                  <div className="p-4 bg-amber-50/70 rounded-2xl border border-amber-200 text-xs text-amber-900 text-left space-y-1.5">
-                    <p className="font-bold flex items-center gap-1.5 text-amber-950">
-                      <Clock className="w-4 h-4 text-amber-600" />
-                      <span>Sắp mở lớp & Đang tiếp nhận đăng ký:</span>
-                    </p>
-                    <p className="text-slate-700 leading-relaxed">
-                      Lớp học này hiện <strong>chưa có danh sách học sinh chính thức</strong> vì đang trong giai đoạn tiếp nhận học sinh đăng ký mở lớp mới. Sau khi các em tham gia buổi kiểm tra đánh giá năng lực đầu vào miễn phí, trung tâm sẽ xếp lớp và công bố danh sách chính thức.
+
+                  <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 text-center">
+                    <span className="text-xs font-bold text-slate-600 uppercase tracking-wider block mb-1">
+                      Trình Độ & Định Hướng
+                    </span>
+                    <div className="text-xl font-black text-slate-900 mt-2">
+                      Lớp {selectedClass.level}
+                    </div>
+                    <p className="text-xs text-slate-600 mt-1">
+                      {selectedClass.level === 'Nâng Cao'
+                        ? 'Vận dụng cao 8.5+, 9+, Chuyên & HSG'
+                        : 'Vững nền tảng, chống liệt, thi tốt nghiệp 7-8+'}
                     </p>
                   </div>
-                  <div className="flex flex-col sm:flex-row gap-2.5 justify-center pt-2">
-                    <button
-                      onClick={() => {
-                        onClose();
-                        onOpenConsultationModal(otherClassData?.grade as GradeLevel);
-                      }}
-                      className="px-5 py-2.5 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-bold text-xs rounded-xl shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
-                    >
-                      <Sparkles className="w-4 h-4 text-amber-200" />
-                      <span>Đăng ký tham gia lớp này</span>
-                    </button>
-                    <button
-                      onClick={() => setSelectedClassId('toan-12-all')}
-                      className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl cursor-pointer"
-                    >
-                      Xem danh sách lớp Toán 12 (64 học sinh)
-                    </button>
+
+                  <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 text-center">
+                    <span className="text-xs font-bold text-slate-600 uppercase tracking-wider block mb-1">
+                      Địa Điểm Học Tập
+                    </span>
+                    <div className="text-sm font-black text-slate-900 mt-2">
+                      Khu Đô Thị Vạn Phú
+                    </div>
+                    <p className="text-xs text-slate-600 mt-1">
+                      Cơ sở chính tại Vạn Phú - Thái Nguyên
+                    </p>
                   </div>
                 </div>
-              )
-            )}
+
+                {/* Sĩ số chi tiết theo phân lớp đối với Toán 12 Cơ bản - THÔNG BÁO ĐÃ ĐẦY CẢ 3 LỚP */}
+                {selectedClass.id === 'toan-12-cb' && (
+                  <div className="p-4 sm:p-5 bg-gradient-to-br from-rose-50 via-amber-50/60 to-blue-50/50 rounded-2xl border-2 border-rose-300 shadow-xs space-y-3">
+                    {/* Banner Thông báo Lớp đã đầy cả 3 lớp */}
+                    <div className="flex items-start sm:items-center gap-3 p-3 bg-gradient-to-r from-rose-600 to-red-600 text-white rounded-xl shadow-xs">
+                      <div className="p-1.5 rounded-lg bg-white/20 text-white flex-shrink-0">
+                        <AlertCircle className="w-5 h-5 animate-pulse" />
+                      </div>
+                      <div className="text-xs">
+                        <span className="font-black uppercase tracking-wider block text-white text-xs sm:text-sm">
+                          THÔNG BÁO: ĐÃ ĐẦY SĨ SỐ CẢ 3 PHÂN LỚP TOÁN 12 CƠ BẢN (75/75 HỌC SINH)
+                        </span>
+                        <p className="text-[11px] sm:text-xs text-rose-100 mt-0.5 leading-relaxed">
+                          Hiện tại cả 3 phân lớp (<strong>CB1</strong>: 29 em, <strong>CB2</strong>: 23 em, <strong>CB3</strong>: 23 em) đều đã đạt 100% sĩ số và tạm ngừng nhận thêm học sinh mới để đảm bảo chất lượng giảng dạy tốt nhất.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-1">
+                      <span className="text-xs font-black text-slate-800 uppercase tracking-wide flex items-center gap-1.5">
+                        <Users className="w-4 h-4 text-rose-600" />
+                        <span>Sĩ Số Chi Tiết Từng Phân Lớp (ĐÃ ĐẦY CẢ 3 LỚP):</span>
+                      </span>
+                      <span className="px-2.5 py-0.5 rounded-full text-[11px] font-black bg-rose-100 text-rose-800 border border-rose-300 flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-rose-600"></span>
+                        <span>Đã đủ sĩ số 100%</span>
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
+                      <div className="bg-white p-3.5 rounded-xl border-2 border-rose-200 text-center relative shadow-xs overflow-hidden">
+                        <span className="absolute top-2 right-2 px-1.5 py-0.5 rounded text-[10px] font-black bg-rose-600 text-white uppercase tracking-wider shadow-xs">
+                          ĐÃ ĐẦY
+                        </span>
+                        <span className="font-bold text-blue-900 block pr-12 text-left">Lớp CB 1 (GV: Cô Hường)</span>
+                        <strong className="text-xl font-black text-slate-900 block my-1">29 học sinh</strong>
+                        <span className="text-[11px] text-slate-500 block">100% 12A9 THPT Lưu Nhân Chú</span>
+                        <span className="inline-block mt-2 px-2 py-0.5 rounded-md text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                          Khóa tuyển sinh
+                        </span>
+                      </div>
+
+                      <div className="bg-white p-3.5 rounded-xl border-2 border-rose-200 text-center relative shadow-xs overflow-hidden">
+                        <span className="absolute top-2 right-2 px-1.5 py-0.5 rounded text-[10px] font-black bg-rose-600 text-white uppercase tracking-wider shadow-xs">
+                          ĐÃ ĐẦY
+                        </span>
+                        <span className="font-bold text-purple-900 block pr-12 text-left">Lớp CB 2 (GV: Cô Hân)</span>
+                        <strong className="text-xl font-black text-slate-900 block my-1">23 học sinh</strong>
+                        <span className="text-[11px] text-slate-500 block">12A6, 12A7, THPT Đội Cấn</span>
+                        <span className="inline-block mt-2 px-2 py-0.5 rounded-md text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                          Khóa tuyển sinh
+                        </span>
+                      </div>
+
+                      <div className="bg-white p-3.5 rounded-xl border-2 border-rose-200 text-center relative shadow-xs overflow-hidden">
+                        <span className="absolute top-2 right-2 px-1.5 py-0.5 rounded text-[10px] font-black bg-rose-600 text-white uppercase tracking-wider shadow-xs">
+                          ĐÃ ĐẦY
+                        </span>
+                        <span className="font-bold text-emerald-900 block pr-12 text-left">Lớp CB 3 (GV: Cô Hường)</span>
+                        <strong className="text-xl font-black text-slate-900 block my-1">23 học sinh</strong>
+                        <span className="text-[11px] text-slate-500 block">12A8, 12A5 Lưu Nhân Chú</span>
+                        <span className="inline-block mt-2 px-2 py-0.5 rounded-md text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                          Khóa tuyển sinh
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Sĩ số chi tiết đối với Toán 11 */}
+                {selectedClass.id === 'toan-11-cb' && (
+                  <div className="p-4 bg-indigo-50/80 rounded-2xl border border-indigo-200 space-y-2">
+                    <span className="text-xs font-bold text-indigo-900 uppercase tracking-wide block">
+                      Thống Kê Sĩ Số 2 Phân Lớp Toán 11:
+                    </span>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                      <div className="bg-white p-3 rounded-xl border border-indigo-100 text-center">
+                        <span className="font-bold text-indigo-900 block">Phân lớp CB 1</span>
+                        <strong className="text-base font-black text-indigo-950">19 học sinh</strong>
+                      </div>
+                      <div className="bg-white p-3 rounded-xl border border-indigo-100 text-center">
+                        <span className="font-bold text-indigo-900 block">Phân lớp CB 2</span>
+                        <strong className="text-base font-black text-indigo-950">15 học sinh</strong>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* PHẦN XÁC THỰC MẬT KHẨU / XEM DANH SÁCH CHI TIẾT */}
+                {selectedClass.students && selectedClass.students.length > 0 ? (
+                  <div className="pt-2">
+                    {!isUnlocked ? (
+                      /* KHỐI NHẬP MẬT KHẨU ĐỂ MỞ KHÓA DANH SÁCH */
+                      <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-blue-950 text-white rounded-3xl p-6 sm:p-8 border border-slate-700 shadow-lg">
+                        <div className="max-w-xl mx-auto text-center space-y-4">
+                          <div className="w-14 h-14 rounded-2xl bg-amber-400/20 text-amber-400 mx-auto flex items-center justify-center font-bold shadow-inner">
+                            <Lock className="w-7 h-7" />
+                          </div>
+
+                          <div>
+                            <h4 className="text-lg sm:text-xl font-black text-white uppercase tracking-wide">
+                              Xem Danh Sách Học Sinh Chi Tiết
+                            </h4>
+                            <p className="text-xs sm:text-sm text-slate-300 mt-1 leading-relaxed">
+                              Khu vực bảo mật thông tin học sinh. Vui lòng nhập mật khẩu xác thực để mở khóa và xem danh sách chi tiết (phân định rõ ai ở lớp 1, 2 hay 3).
+                            </p>
+                          </div>
+
+                          <form onSubmit={handleVerifyPassword} className="space-y-3 pt-2">
+                            <div className="flex flex-col sm:flex-row gap-2.5 justify-center items-stretch max-w-md mx-auto">
+                              <div className="relative flex-1">
+                                <input
+                                  type={showPassword ? 'text' : 'password'}
+                                  value={passwordInput}
+                                  onChange={(e) => {
+                                    setPasswordInput(e.target.value);
+                                    if (authError) setAuthError('');
+                                  }}
+                                  placeholder="Nhập mật khẩu xác thực..."
+                                  className="w-full px-4 py-3 rounded-xl bg-slate-950/80 border border-slate-600 text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => setShowPassword(!showPassword)}
+                                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white cursor-pointer"
+                                  aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+                                >
+                                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                </button>
+                              </div>
+
+                              <button
+                                type="submit"
+                                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer flex-shrink-0"
+                              >
+                                <Lock className="w-4 h-4" />
+                                <span>Mở Khóa</span>
+                              </button>
+                            </div>
+
+                            {authError && (
+                              <div className="text-xs font-bold text-rose-400 flex items-center justify-center gap-1.5 animate-bounce">
+                                <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                                <span>{authError}</span>
+                              </div>
+                            )}
+                          </form>
+                        </div>
+                      </div>
+                    ) : (
+                      /* DANH SÁCH HỌC SINH ĐÃ ĐƯỢC MỞ KHÓA THÀNH CÔNG */
+                      <div className="space-y-4 pt-2">
+                        {/* Thanh trạng thái mở khóa */}
+                        <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-emerald-950">
+                          <div className="flex items-center gap-2.5">
+                            <ShieldCheck className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+                            <div>
+                              <span className="font-extrabold text-xs text-emerald-900 block">
+                                ĐÃ XÁC THỰC THÀNH CÔNG • MỞ KHÓA DANH SÁCH HỌC SINH
+                              </span>
+                              <span className="text-[11px] text-slate-600">
+                                Sắp xếp chuẩn: Lớp trường 12A5 &rarr; 12A9 &rarr; THPT Đội Cấn, tên học sinh sắp xếp A &rarr; Z
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2 w-full sm:w-auto">
+                            <button
+                              onClick={() => window.print()}
+                              className="px-3 py-1.5 rounded-lg bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-xs transition-colors flex items-center gap-1 cursor-pointer"
+                            >
+                              <Printer className="w-3.5 h-3.5" />
+                              <span>In danh sách</span>
+                            </button>
+                            <button
+                              onClick={handleLockAgain}
+                              className="px-3 py-1.5 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs transition-colors flex items-center gap-1 cursor-pointer"
+                            >
+                              <Lock className="w-3.5 h-3.5" />
+                              <span>Khóa lại</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Bộ lọc phân lớp (cho Toán 12 Cơ bản), Bộ sắp xếp & Ô tìm kiếm */}
+                        <div className="flex flex-col gap-3 bg-slate-50 p-3 sm:p-4 rounded-2xl border border-slate-200">
+                          <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
+                            {selectedClass.id === 'toan-12-cb' && (
+                              <div className="flex flex-wrap items-center gap-1.5">
+                                <span className="text-xs font-bold text-slate-500 mr-1">Xem:</span>
+                                <button
+                                  onClick={() => setSubClassFilter('all')}
+                                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                                    subClassFilter === 'all'
+                                      ? 'bg-blue-900 text-white shadow-xs'
+                                      : 'bg-white text-slate-700 hover:bg-slate-200 border border-slate-200'
+                                  }`}
+                                >
+                                  Tất cả (75 em • ĐÃ ĐẦY CẢ 3 LỚP)
+                                </button>
+                                <button
+                                  onClick={() => setSubClassFilter('cb1')}
+                                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                                    subClassFilter === 'cb1'
+                                      ? 'bg-blue-700 text-white shadow-xs'
+                                      : 'bg-white text-blue-900 hover:bg-blue-50 border border-blue-200'
+                                  }`}
+                                >
+                                  Lớp CB1 - Cô Hường (29 em • ĐÃ ĐẦY)
+                                </button>
+                                <button
+                                  onClick={() => setSubClassFilter('cb2')}
+                                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                                    subClassFilter === 'cb2'
+                                      ? 'bg-purple-700 text-white shadow-xs'
+                                      : 'bg-white text-purple-900 hover:bg-purple-50 border border-purple-200'
+                                  }`}
+                                >
+                                  Lớp CB2 - Cô Hân (23 em • ĐÃ ĐẦY)
+                                </button>
+                                <button
+                                  onClick={() => setSubClassFilter('cb3')}
+                                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                                    subClassFilter === 'cb3'
+                                      ? 'bg-emerald-700 text-white shadow-xs'
+                                      : 'bg-white text-emerald-900 hover:bg-emerald-50 border border-emerald-200'
+                                  }`}
+                                >
+                                  Lớp CB3 - Cô Hường (23 em • ĐÃ ĐẦY)
+                                </button>
+                              </div>
+                            )}
+
+                            <div className="relative flex-1 max-w-md">
+                              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                              <input
+                                type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder="Tìm theo tên học sinh, lớp trường (12A5, 12A6...)..."
+                                className="w-full pl-9 pr-3 py-1.5 rounded-xl bg-white border border-slate-300 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              />
+                              {searchQuery && (
+                                <button
+                                  onClick={() => setSearchQuery('')}
+                                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs"
+                                >
+                                  &times;
+                                </button>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Tùy chọn sắp xếp thứ tự: Phân lớp học, Lớp trường, Tên A-Z */}
+                          <div className="flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-slate-200/80 text-xs">
+                            <div className="flex flex-wrap items-center gap-1.5">
+                              <span className="font-bold text-slate-600 flex items-center gap-1 mr-1">
+                                <ArrowUpDown className="w-3.5 h-3.5 text-blue-600" />
+                                <span>Sắp xếp:</span>
+                              </span>
+                              <button
+                                onClick={() => setSortBy('assignedClass')}
+                                className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                                  sortBy === 'assignedClass'
+                                    ? 'bg-blue-600 text-white shadow-xs'
+                                    : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+                                }`}
+                              >
+                                <span>Thứ tự Phân lớp (CB1 ➔ CB2 ➔ CB3)</span>
+                              </button>
+                              <button
+                                onClick={() => setSortBy('schoolClass')}
+                                className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                                  sortBy === 'schoolClass'
+                                    ? 'bg-blue-600 text-white shadow-xs'
+                                    : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+                                }`}
+                              >
+                                <span>Lớp trường (A1 ➔ A9)</span>
+                              </button>
+                              <button
+                                onClick={() => setSortBy('name')}
+                                className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                                  sortBy === 'name'
+                                    ? 'bg-blue-600 text-white shadow-xs'
+                                    : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+                                }`}
+                              >
+                                <span>Tên học sinh (A ➔ Z)</span>
+                              </button>
+                            </div>
+
+                            <div className="text-[11px] text-slate-500 italic">
+                              {sortBy === 'assignedClass' && 'Ưu tiên: Phân lớp CB1 ➔ CB2 ➔ CB3, tiếp đến Lớp trường A1-A9, sau đó Tên A-Z'}
+                              {sortBy === 'schoolClass' && 'Ưu tiên: Lớp trường A1 ➔ A9, tiếp đến Phân lớp, sau đó Tên A-Z'}
+                              {sortBy === 'name' && 'Ưu tiên: Bảng chữ cái họ tên học sinh A ➔ Z theo chuẩn tiếng Việt'}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* BẢNG DANH SÁCH HỌC SINH CHI TIẾT */}
+                        <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+                          <div className="p-3.5 bg-slate-900 text-white flex flex-wrap items-center justify-between gap-2 text-xs">
+                            <span className="font-bold flex items-center gap-1.5">
+                              <Users className="w-4 h-4 text-amber-400" />
+                              <span>
+                                Danh Sách Học Sinh: {displayedStudents.length} học sinh
+                                {selectedClass.id === 'toan-12-cb' && (
+                                  <span className="ml-2 px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-600 text-white uppercase tracking-wider">
+                                    ĐÃ ĐẦY CẢ 3 LỚP
+                                  </span>
+                                )}
+                                {selectedClass.id === 'toan-12-cb' && subClassFilter !== 'all' && (
+                                  <span className="ml-1 text-amber-300 font-extrabold">
+                                    ({subClassFilter.toUpperCase()})
+                                  </span>
+                                )}
+                              </span>
+                            </span>
+                            <span className="text-slate-300 text-[11px] flex items-center gap-1.5">
+                              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                              {sortBy === 'assignedClass' && 'Sắp xếp: Phân lớp (CB1 ➔ CB2 ➔ CB3) & Lớp trường (A1 ➔ A9) & Tên A - Z'}
+                              {sortBy === 'schoolClass' && 'Sắp xếp: Lớp trường (A1 ➔ A9) & Phân lớp & Tên A - Z'}
+                              {sortBy === 'name' && 'Sắp xếp: Tên học sinh A - Z (chuẩn tiếng Việt)'}
+                            </span>
+                          </div>
+
+                          <div className="overflow-x-auto max-h-[460px]">
+                            <table className="w-full text-left border-collapse text-xs sm:text-sm">
+                              <thead className="sticky top-0 bg-slate-100 text-slate-700 font-bold border-b border-slate-200 shadow-xs z-10">
+                                <tr>
+                                  <th className="py-2.5 px-3 sm:px-4 text-center w-12">STT</th>
+                                  <th
+                                    onClick={() => setSortBy('name')}
+                                    className="py-2.5 px-3 sm:px-4 cursor-pointer hover:bg-slate-200 transition-colors select-none"
+                                    title="Nhấn để sắp xếp theo Tên học sinh A - Z"
+                                  >
+                                    <div className="flex items-center gap-1">
+                                      <span>Họ và tên</span>
+                                      {sortBy === 'name' && <ArrowUpDown className="w-3 h-3 text-blue-600" />}
+                                    </div>
+                                  </th>
+                                  <th
+                                    onClick={() => setSortBy('schoolClass')}
+                                    className="py-2.5 px-3 sm:px-4 text-center cursor-pointer hover:bg-slate-200 transition-colors select-none"
+                                    title="Nhấn để sắp xếp theo Lớp trường A1 - A9"
+                                  >
+                                    <div className="flex items-center justify-center gap-1">
+                                      <span>Lớp trường</span>
+                                      {sortBy === 'schoolClass' && <ArrowUpDown className="w-3 h-3 text-blue-600" />}
+                                    </div>
+                                  </th>
+                                  <th className="py-2.5 px-3 sm:px-4">Trường</th>
+                                  <th
+                                    onClick={() => setSortBy('assignedClass')}
+                                    className="py-2.5 px-3 sm:px-4 text-center cursor-pointer hover:bg-slate-200 transition-colors select-none"
+                                    title="Nhấn để sắp xếp theo Thứ tự phân lớp CB1 -> CB2 -> CB3"
+                                  >
+                                    <div className="flex items-center justify-center gap-1">
+                                      <span>Phân lớp học</span>
+                                      {sortBy === 'assignedClass' && <ArrowUpDown className="w-3 h-3 text-blue-600" />}
+                                    </div>
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-slate-100">
+                                {displayedStudents.length === 0 ? (
+                                  <tr>
+                                    <td colSpan={5} className="py-8 text-center text-slate-500">
+                                      Không tìm thấy học sinh phù hợp với từ khóa tìm kiếm.
+                                    </td>
+                                  </tr>
+                                ) : (
+                                  displayedStudents.map((student, idx) => {
+                                    // Tô màu huy hiệu phân lớp để phân biệt rõ CB1, CB2, CB3
+                                    const isCB1 = student.assignedClass.includes('CB1');
+                                    const isCB2 = student.assignedClass.includes('CB2');
+                                    const isCB3 = student.assignedClass.includes('CB3');
+
+                                    return (
+                                      <tr
+                                        key={student.id || idx}
+                                        className="hover:bg-blue-50/60 transition-colors"
+                                      >
+                                        <td className="py-2.5 px-3 sm:px-4 text-center font-bold text-slate-500">
+                                          {idx + 1}
+                                        </td>
+                                        <td className="py-2.5 px-3 sm:px-4 font-black text-slate-900">
+                                          {student.name}
+                                        </td>
+                                        <td className="py-2.5 px-3 sm:px-4 text-center">
+                                          <span className="inline-block px-2.5 py-0.5 rounded-md font-extrabold text-xs bg-slate-100 text-slate-800 border border-slate-200">
+                                            {student.schoolClass}
+                                          </span>
+                                        </td>
+                                        <td className="py-2.5 px-3 sm:px-4 text-slate-700">
+                                          {student.schoolName}
+                                        </td>
+                                        <td className="py-2.5 px-3 sm:px-4 text-center">
+                                          <span
+                                            className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-black border ${
+                                              isCB1
+                                                ? 'bg-blue-100 text-blue-900 border-blue-300'
+                                                : isCB2
+                                                ? 'bg-purple-100 text-purple-900 border-purple-300'
+                                                : isCB3
+                                                ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
+                                                : 'bg-indigo-100 text-indigo-900 border-indigo-300'
+                                            }`}
+                                          >
+                                            {student.assignedClass}
+                                          </span>
+                                        </td>
+                                      </tr>
+                                    );
+                                  })
+                                )}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 text-center text-xs text-slate-500">
+                    Lớp đang mở tuyển sinh học viên mới. Danh sách sẽ được cập nhật sau khi học sinh hoàn tất đăng ký.
+                  </div>
+                )}
+
+                {/* Additional Information details */}
+                <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                  <h4 className="text-sm font-black text-slate-900 flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-amber-500" />
+                    <span>Thông Tin Chi Tiết Lớp Học:</span>
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                    <div className="bg-white p-3 rounded-xl border border-slate-100">
+                      <span className="font-bold text-slate-500 block">Giáo viên phụ trách:</span>
+                      <span className="font-extrabold text-slate-900">{selectedClass.teacher || 'Tổ bộ môn phụ trách'}</span>
+                    </div>
+                    <div className="bg-white p-3 rounded-xl border border-slate-100">
+                      <span className="font-bold text-slate-500 block">Lịch học / Phòng học:</span>
+                      <span className="font-extrabold text-slate-900">{selectedClass.schedule || 'Sắp xếp theo thời khóa biểu học sinh'}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bottom navigation buttons */}
+                <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+                  <button
+                    onClick={() => {
+                      onClose();
+                      onOpenConsultationModal(selectedClass.grade);
+                    }}
+                    className="px-6 py-3 bg-gradient-to-r from-blue-900 to-indigo-900 hover:from-blue-800 hover:to-indigo-800 text-white font-black text-xs sm:text-sm rounded-xl shadow-md cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <Sparkles className="w-4 h-4 text-amber-300" />
+                    <span>Đăng Ký Tư Vấn & Đánh Giá Năng Lực Miễn Phí</span>
+                  </button>
+                  <button
+                    onClick={() => setSelectedClassId('all')}
+                    className="px-5 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs sm:text-sm rounded-xl cursor-pointer"
+                  >
+                    Xem tất cả các lớp khác ({totalCenterStudents} em)
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Footer Actions */}
         <div className="p-4 sm:px-6 bg-white border-t border-slate-200 flex-shrink-0 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="text-xs text-slate-500 text-center sm:text-left">
-            Tổng cộng: <strong className="text-slate-900">{filteredAll.length} học sinh</strong> thuộc 3 phân lớp Toán 12 Cơ Bản
+          <div className="text-xs text-slate-600 flex items-center gap-2">
+            <School className="w-4 h-4 text-blue-800" />
+            <span>Trung Tâm Bồi Dưỡng Kiến Thức Văn Hóa & Ôn Luyện Thi Vạn Phú - Thái Nguyên</span>
           </div>
 
-          <div className="flex items-center gap-2.5 w-full sm:w-auto">
+          <div className="flex items-center gap-3 w-full sm:w-auto">
             <button
               onClick={() => {
                 onClose();
-                onOpenConsultationModal('12');
+                onOpenConsultationModal();
               }}
-              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all cursor-pointer"
+              className="flex-1 sm:flex-none px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white font-black text-xs rounded-xl shadow-sm cursor-pointer transition-colors"
             >
-              <span>Đăng Ký Xếp Lớp & Tư Vấn</span>
-              <ChevronRight className="w-4 h-4" />
+              Đăng ký xếp lớp mới
             </button>
             <button
               onClick={onClose}
-              className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs sm:text-sm rounded-xl transition-colors cursor-pointer"
+              className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl cursor-pointer"
             >
               Đóng
             </button>

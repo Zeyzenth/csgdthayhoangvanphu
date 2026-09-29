@@ -68,7 +68,7 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
   ];
 
   const totalActiveStudents = useMemo(() => {
-    return ACTIVE_CLASSES.reduce((acc, c) => acc + (c.students?.length || 0), 0);
+    return ACTIVE_CLASSES.reduce((acc, c) => acc + (c.studentCount ?? c.students?.length ?? 0), 0);
   }, []);
 
   // Filter classes by 3-level hierarchy & push open/active classes before upcoming classes
@@ -79,11 +79,11 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
       const matchLevel = selectedLevel === 'all' || c.level === selectedLevel || c.grade === '11';
       return matchSubject && matchGrade && matchLevel;
     }).sort((a, b) => {
-      // Thứ tự sắp xếp theo yêu cầu: 1. Lớp đầy sĩ số -> 2. Lớp đang mở -> 3. Lớp sắp mở
+      // Thứ tự sắp xếp: 1. Lớp đang mở & lớp đang hoạt động -> 2. Lớp sắp mở
       const getPriority = (cls: typeof a) => {
-        if (cls.status === 'full' || cls.isFull) return 1;
-        if (cls.status === 'enrolling' || cls.isOpen) return 2;
-        return 3; // upcoming (sắp mở lớp)
+        if (cls.isFull || cls.status === 'full') return 1;
+        if (cls.status === 'enrolling' || cls.isOpen) return 1;
+        return 2; // upcoming (sắp mở lớp)
       };
       return getPriority(a) - getPriority(b);
     });
@@ -298,16 +298,16 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
                 </span>
               </h3>
               <p className="text-xs sm:text-sm text-slate-500">
-                Phân rõ Lớp 1, Lớp 2, phân loại Cơ bản và Nâng cao cho từng bộ môn
+                Phân chia theo môn học và trình độ Cơ bản / Nâng cao theo chuẩn bộ môn
               </p>
             </div>
 
             <button
-              onClick={() => onOpenRosterModal('toan-12-all')}
+              onClick={() => onOpenRosterModal('all')}
               className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 font-bold text-xs transition-colors cursor-pointer self-start sm:self-auto shadow-2xs"
             >
               <Eye className="w-4 h-4 text-blue-800" />
-              <span>Xem danh sách học sinh hiện có ({totalActiveStudents} em)</span>
+              <span>Xem tổng quan sĩ số các lớp ({totalActiveStudents} em)</span>
             </button>
           </div>
 
@@ -334,9 +334,10 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredClasses.map((cls) => {
-                const hasStudents = cls.students && cls.students.length > 0;
+                const studentCount = cls.studentCount ?? cls.students?.length ?? 0;
+                const hasStudents = studentCount > 0;
                 const isClassFull = cls.isFull || cls.status === 'full';
-                const isClassOpen = cls.isOpen || cls.status === 'enrolling';
+                const isClassOpen = !isClassFull && (cls.isOpen || cls.status === 'enrolling');
 
                 return (
                   <div
@@ -346,7 +347,7 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
                     }}
                     className={`rounded-3xl p-6 transition-all flex flex-col justify-between relative group cursor-pointer ${
                       isClassFull
-                        ? 'bg-white border-2 border-rose-300 ring-2 ring-rose-100 shadow-sm hover:shadow-lg hover:border-rose-400'
+                        ? 'bg-gradient-to-b from-rose-50/50 via-white to-rose-50/20 border-2 border-rose-400 ring-2 ring-rose-200/40 shadow-sm hover:shadow-xl hover:-translate-y-0.5 hover:border-rose-500'
                         : isClassOpen
                         ? 'bg-gradient-to-b from-emerald-50/70 via-white to-emerald-50/30 border-2 border-emerald-500 ring-2 ring-emerald-400/20 shadow-md hover:shadow-xl hover:-translate-y-0.5 hover:border-emerald-600'
                         : 'bg-white border border-slate-200/80 shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:border-amber-400'
@@ -361,8 +362,8 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
 
                         {isClassFull ? (
                           <span className="px-3 py-1 rounded-full text-xs font-black bg-rose-600 text-white flex items-center gap-1.5 shadow-xs">
-                            <AlertCircle className="w-3.5 h-3.5" />
-                            <span>ĐÃ ĐẦY SĨ SỐ</span>
+                            <span className="w-2 h-2 rounded-full bg-white"></span>
+                            <span>{cls.id === 'toan-12-cb' ? 'ĐÃ ĐẦY CẢ 3 LỚP' : 'ĐÃ ĐỦ SĨ SỐ'}</span>
                           </span>
                         ) : isClassOpen ? (
                           <span className="px-3 py-1 rounded-full text-xs font-black bg-emerald-600 text-white flex items-center gap-1.5 shadow-xs">
@@ -383,22 +384,24 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
                         </span>
                         <span
                           className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
-                            cls.level === 'Nâng Cao'
+                            isClassFull
+                              ? 'bg-rose-100 text-rose-900 border border-rose-300'
+                              : cls.level === 'Nâng Cao'
                               ? 'bg-purple-50 text-purple-900 border border-purple-200'
                               : 'bg-emerald-50 text-emerald-900 border border-emerald-200'
                           }`}
                         >
-                          {cls.level}
+                          {isClassFull ? 'Đã Đầy Sĩ Số' : cls.level}
                         </span>
                       </div>
 
                       {/* Class Title */}
                       <h4
                         className={`text-lg font-black leading-snug transition-colors ${
-                          isClassOpen
-                            ? 'text-slate-900 group-hover:text-emerald-800'
-                            : isClassFull
+                          isClassFull
                             ? 'text-slate-900 group-hover:text-rose-900'
+                            : isClassOpen
+                            ? 'text-slate-900 group-hover:text-emerald-800'
                             : 'text-slate-900 group-hover:text-blue-900'
                         }`}
                       >
@@ -406,21 +409,21 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
                       </h4>
 
                       {/* Prominent Notification Banner for Status */}
-                      {isClassFull && (
-                        <div className="mt-3 flex items-start gap-2.5 p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-950">
+                      {isClassFull ? (
+                        <div className="mt-3 flex items-start gap-2.5 p-3 rounded-2xl bg-rose-50 border border-rose-300 text-rose-950">
                           <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0 mt-0.5" />
                           <div className="text-xs">
                             <span className="font-black text-rose-900 uppercase">
-                              Thông báo: Đã đầy sĩ số
+                              {cls.id === 'toan-12-cb' ? 'ĐÃ ĐẦY CẢ 3 PHÂN LỚP (75 HỌC SINH)' : 'LỚP ĐÃ ĐỦ SĨ SỐ'}
                             </span>
-                            <p className="text-[11px] text-slate-600 mt-0.5">
-                              Lớp đã đủ {cls.students.length} học sinh (chốt danh sách). Vui lòng đăng ký vào các lớp còn mở.
+                            <p className="text-[11px] text-slate-700 mt-0.5 leading-relaxed">
+                              {cls.id === 'toan-12-cb'
+                                ? 'Hiện tại cả 3 phân lớp (CB1: 29 em, CB2: 23 em, CB3: 23 em) đều đã đạt 100% sĩ số và tạm ngừng nhận thêm học viên mới.'
+                                : 'Lớp đã đủ số lượng học viên theo quy định.'}
                             </p>
                           </div>
                         </div>
-                      )}
-
-                      {isClassOpen && (
+                      ) : isClassOpen ? (
                         <div className="mt-3 flex items-start gap-2.5 p-3 rounded-2xl bg-emerald-50 border border-emerald-300 text-emerald-950">
                           <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
                           <div className="text-xs">
@@ -428,33 +431,31 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
                               Lớp đang mở • Nhận đăng ký học ngay
                             </span>
                             <p className="text-[11px] text-slate-600 mt-0.5">
-                              {cls.students.length > 0
-                                ? `Đã có ${cls.students.length} học sinh xếp lớp • Đang tiếp nhận bổ sung học sinh.`
+                              {studentCount > 0
+                                ? `Đã có ${studentCount} học sinh xếp lớp • Đang tiếp nhận bổ sung học sinh.`
                                 : 'Đang mở tiếp nhận đăng ký học sinh, kiểm tra năng lực đầu vào và xếp lịch học.'}
                             </p>
                           </div>
                         </div>
-                      )}
+                      ) : null}
 
                       {/* Details List */}
                       <div className="space-y-2 my-4 text-xs text-slate-600">
                         {/* Sĩ số / Trạng thái row */}
                         <div
                           className={`flex items-center justify-between gap-2 p-2 rounded-xl border transition-colors ${
-                            isClassOpen
+                            isClassFull
+                              ? 'bg-rose-50/70 border-rose-200'
+                              : isClassOpen
                               ? 'bg-emerald-50/60 border-emerald-200'
-                              : isClassFull
-                              ? 'bg-rose-50/50 border-rose-200'
                               : 'bg-slate-50 border-slate-100 group-hover:border-blue-200'
                           }`}
                         >
                           <div className="flex items-center gap-2">
-                            {hasStudents ? (
-                              <Users
-                                className={`w-4 h-4 flex-shrink-0 ${
-                                  isClassFull ? 'text-rose-600' : 'text-emerald-600'
-                                }`}
-                              />
+                            {isClassFull ? (
+                              <Users className="w-4 h-4 flex-shrink-0 text-rose-600" />
+                            ) : hasStudents ? (
+                              <Users className="w-4 h-4 flex-shrink-0 text-emerald-600" />
                             ) : isClassOpen ? (
                               <Sparkles className="w-4 h-4 text-emerald-600 flex-shrink-0" />
                             ) : (
@@ -464,11 +465,10 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
                               {hasStudents ? 'Sĩ số:' : 'Trạng thái:'}{' '}
                               {hasStudents ? (
                                 <strong className="text-slate-900">
-                                  {cls.students.length} học sinh
-                                  {isClassFull && (
-                                    <span className="ml-1 text-rose-600 font-extrabold">(Đã đầy)</span>
-                                  )}
-                                  {isClassOpen && (
+                                  {studentCount} học sinh
+                                  {isClassFull ? (
+                                    <span className="ml-1 text-rose-700 font-extrabold">(Đã đầy cả 3 lớp)</span>
+                                  ) : (
                                     <span className="ml-1 text-emerald-700 font-extrabold">(Đang mở)</span>
                                   )}
                                 </strong>
@@ -500,7 +500,7 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
                               }`}
                             >
                               <Eye className="w-3 h-3" />
-                              <span>Xem DS</span>
+                              <span>Xem Sĩ Số</span>
                             </button>
                           ) : isClassOpen ? (
                             <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md border border-emerald-300 flex items-center gap-1">
@@ -532,10 +532,10 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
                               e.stopPropagation();
                               onOpenRosterModal(cls.id);
                             }}
-                            className="w-full py-2.5 px-4 bg-slate-900 hover:bg-black text-white font-bold text-xs rounded-xl shadow-xs hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer"
+                            className="w-full py-2.5 px-4 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white font-black text-xs rounded-xl shadow-xs hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer"
                           >
-                            <Eye className="w-4 h-4 text-rose-300" />
-                            <span>Xem Danh Sách Đã Đầy ({cls.students.length} em)</span>
+                            <Users className="w-4 h-4 text-rose-100" />
+                            <span>{cls.id === 'toan-12-cb' ? 'Đã Đầy Cả 3 Lớp • Xem Danh Sách (75 em)' : 'Đã Đầy Sĩ Số • Xem Danh Sách'}</span>
                           </button>
 
                           <button
@@ -544,9 +544,9 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
                               e.stopPropagation();
                               onOpenConsultationModal(cls.grade);
                             }}
-                            className="w-full py-2 px-3 bg-rose-50 hover:bg-rose-100 text-rose-800 font-bold text-xs rounded-xl border border-rose-200 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                            className="w-full py-2 px-3 bg-rose-50 hover:bg-rose-100 text-rose-900 font-extrabold text-xs rounded-xl border border-rose-200 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                           >
-                            <span>Đăng ký danh sách chờ hoặc chuyển lớp</span>
+                            <span>Đăng ký danh sách chờ đợt mới</span>
                             <ChevronRight className="w-3.5 h-3.5" />
                           </button>
                         </>
@@ -562,7 +562,11 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
                               className="w-full py-2.5 px-4 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-black text-xs rounded-xl shadow-xs hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer"
                             >
                               <Eye className="w-4 h-4 text-emerald-100" />
-                              <span>Xem Danh Sách Học Sinh Hiện Có ({cls.students.length} em)</span>
+                              <span>
+                                {cls.id === 'toan-12-cb'
+                                  ? `Xem Danh Sách & Phân Lớp (${studentCount} em)`
+                                  : `Xem Sĩ Số & Chi Tiết Lớp (${studentCount} em)`}
+                              </span>
                             </button>
                           ) : (
                             <button
@@ -631,15 +635,15 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
             Cần kiểm tra xếp lớp cho học sinh hoặc tư vấn chọn nhóm lớp phù hợp?
           </h4>
           <p className="text-xs sm:text-sm text-slate-600 mb-5 max-w-xl mx-auto">
-            Học sinh được làm bài kiểm tra đánh giá năng lực đầu vào hoàn toàn miễn phí để xếp đúng vào Lớp 1 hoặc Lớp 2 (Cơ bản / Nâng cao) theo đúng tốc độ học.
+            Học sinh được làm bài kiểm tra đánh giá năng lực đầu vào hoàn toàn miễn phí để xếp đúng lớp (Cơ bản / Nâng cao) theo đúng tốc độ học.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
             <button
-              onClick={() => onOpenRosterModal('toan-12-all')}
+              onClick={() => onOpenRosterModal('all')}
               className="px-5 py-3 bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md cursor-pointer inline-flex items-center gap-2"
             >
               <Eye className="w-4 h-4 text-amber-300" />
-              <span>Xem Danh Sách Toàn Bộ Học Sinh ({totalActiveStudents} em)</span>
+              <span>Xem Tổng Quan Sĩ Số Các Lớp ({totalActiveStudents} em)</span>
             </button>
             <button
               onClick={() => onOpenConsultationModal()}

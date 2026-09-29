@@ -31,7 +31,7 @@ export default function App() {
 
   // Open Roster Modal for a specific class or default
   const handleOpenRosterModal = (classId?: string) => {
-    setSelectedClassIdForRoster(classId || 'toan-12-all');
+    setSelectedClassIdForRoster(classId || 'all');
     setIsRosterModalOpen(true);
   };
 

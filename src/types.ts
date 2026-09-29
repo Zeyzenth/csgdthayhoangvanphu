@@ -95,6 +95,7 @@ export interface ActiveClass {
   statusLabel: string;
   isOpen?: boolean;
   isFull?: boolean;
+  studentCount?: number;
   students: Student[];
   note?: string;
 }
