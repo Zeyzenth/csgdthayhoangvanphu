@@ -232,7 +232,7 @@ export const STUDENTS_TOAN_11_CB1: Student[] = [
 // Lớp Toán 11 - Phân lớp CB 2 (22 học sinh - GV: Cô Vũ Hằng - Đã sắp xếp theo thứ tự lớp ở trường & tên A-Z)
 export const STUDENTS_TOAN_11_CB2: Student[] = [
   // Lớp 11A2 (8 học sinh)
-  { id: 'cb11_2-1', stt: 1, name: 'Nguyễn Thị Thu Hiền', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
+  { id: 'cb11_2-1', stt: 1, name: 'Nguyễn Thị Thu Hiền', schoolClass: '11A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
   { id: 'cb11_2-2', stt: 2, name: 'Khương Thị Bích Ngọc', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
   { id: 'cb11_2-3', stt: 3, name: 'Đặng Thị Hồng Nhung', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
   { id: 'cb11_2-4', stt: 4, name: 'Lại Thị Khai Tâm', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
