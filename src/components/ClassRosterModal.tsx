@@ -16,7 +16,15 @@ import {
   EyeOff,
   Search,
   ShieldCheck,
-  ArrowUpDown
+  ArrowUpDown,
+  Download,
+  LayoutGrid,
+  Table as TableIcon,
+  Copy,
+  Check,
+  CheckSquare,
+  FileSpreadsheet,
+  GraduationCap
 } from 'lucide-react';
 import { Student, GradeLevel } from '../types';
 import {
@@ -42,23 +50,33 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
   onOpenConsultationModal,
 }) => {
   const [selectedClassId, setSelectedClassId] = useState<string>('all');
-  const [isUnlocked, setIsUnlocked] = useState<boolean>(() => {
-    return sessionStorage.getItem('thvp_roster_auth') === 'true';
-  });
+  // Mặc định cho phép học sinh & phụ huynh xem ngay danh sách công khai
+  const [isUnlocked, setIsUnlocked] = useState<boolean>(true);
   const [passwordInput, setPasswordInput] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [authError, setAuthError] = useState<string>('');
   const [subClassFilter, setSubClassFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortBy, setSortBy] = useState<'assignedClass' | 'schoolClass' | 'name'>('assignedClass');
+  const [viewMode, setViewMode] = useState<'table' | 'cards'>('table');
+  const [copiedSuccess, setCopiedSuccess] = useState<boolean>(false);
+  const [checkedAttendance, setCheckedAttendance] = useState<Record<string, boolean>>({});
 
   // Sync initialClassId if provided
   useEffect(() => {
     if (initialClassId) {
       if (initialClassId === 'toan-12-all' || initialClassId === 'all' || initialClassId === 'both-separate') {
         setSelectedClassId('all');
-      } else if (initialClassId === 'toan-12-cb1' || initialClassId === 'toan-12-cb2' || initialClassId === 'toan-12-cb3' || initialClassId === 'toan-12-cb4') {
+      } else if (
+        initialClassId === 'toan-12-cb1' ||
+        initialClassId === 'toan-12-cb2' ||
+        initialClassId === 'toan-12-cb3' ||
+        initialClassId === 'toan-12-cb4'
+      ) {
         setSelectedClassId('toan-12-cb');
+        if (initialClassId === 'toan-12-cb1') setSubClassFilter('cb1');
+        else if (initialClassId === 'toan-12-cb2') setSubClassFilter('cb2');
+        else if (initialClassId === 'toan-12-cb3') setSubClassFilter('cb3');
       } else if (initialClassId === 'toan-11-nc') {
         setSelectedClassId('toan-11-cb');
       } else {
@@ -71,7 +89,9 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
 
   // Reset filter when switching class
   useEffect(() => {
-    setSubClassFilter('all');
+    if (!initialClassId || (initialClassId !== 'toan-12-cb1' && initialClassId !== 'toan-12-cb2' && initialClassId !== 'toan-12-cb3')) {
+      setSubClassFilter('all');
+    }
     setSearchQuery('');
   }, [selectedClassId]);
 
@@ -85,7 +105,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
     return ACTIVE_CLASSES.find((c) => c.id === selectedClassId) || null;
   }, [selectedClassId]);
 
-  // Xác thực mật khẩu THVP2026
+  // Xác thực mật khẩu THVP2026 (nếu người dùng bấm Khóa bảo mật)
   const handleVerifyPassword = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (passwordInput.trim() === 'THVP2026') {
@@ -94,7 +114,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
       sessionStorage.setItem('thvp_roster_auth', 'true');
       setPasswordInput('');
     } else {
-      setAuthError('Mật khẩu không chính xác. Vui lòng kiểm tra lại!');
+      setAuthError('Mật khẩu không chính xác (Gợi ý: THVP2026). Vui lòng thử lại!');
     }
   };
 
@@ -105,7 +125,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
     setAuthError('');
   };
 
-  // Danh sách học sinh theo phân lớp và tìm kiếm (được sắp xếp A1 -> A9, rồi A -> Z)
+  // Danh sách học sinh theo phân lớp và tìm kiếm
   const displayedStudents = useMemo(() => {
     if (!selectedClass || !selectedClass.students) return [];
 
@@ -124,7 +144,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
       }
     }
 
-    // Sắp xếp linh hoạt theo tùy chọn (mặc định: Phân lớp CB1 -> CB2 -> CB3, sau đó đến Lớp trường A1-A9, rồi đến Tên A-Z)
+    // Sắp xếp linh hoạt theo tùy chọn
     const sorted = sortStudentsByClassAndName(list, sortBy);
 
     // Lọc theo tìm kiếm
@@ -138,150 +158,224 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
       const matchAssigned = s.assignedClass?.toLowerCase().includes(q);
       return matchName || matchClass || matchSchool || matchAssigned;
     });
-  }, [selectedClass, subClassFilter, searchQuery]);
+  }, [selectedClass, subClassFilter, searchQuery, sortBy]);
+
+  // Thống kê số lượng học sinh theo lớp trường đối với Toán 12 Cơ bản
+  const schoolClassStats = useMemo(() => {
+    if (selectedClass?.id !== 'toan-12-cb') return [];
+    const counts: Record<string, number> = {};
+    STUDENTS_TOAN_12_CO_BAN.forEach((s) => {
+      const cls = s.schoolClass || 'Khác';
+      counts[cls] = (counts[cls] || 0) + 1;
+    });
+    return Object.entries(counts).sort((a, b) => b[1] - a[1]);
+  }, [selectedClass]);
+
+  // Xuất file CSV / Excel chuẩn UTF-8 có dấu
+  const handleExportExcel = () => {
+    if (!displayedStudents.length) return;
+
+    const className = selectedClass ? selectedClass.name : 'DanhSachHocSinh';
+    const subName = subClassFilter !== 'all' ? `_${subClassFilter.toUpperCase()}` : '';
+    const filename = `${className.replace(/\s+/g, '_')}${subName}.csv`;
+
+    const headers = ['STT', 'Họ và Tên', 'Lớp Trường', 'Trường Học', 'Phân Lớp Đào Tạo', 'Giáo Viên'];
+    const rows = displayedStudents.map((s, idx) => {
+      const teacher = s.assignedClass?.includes('Cô Hường')
+        ? 'Cô Hường'
+        : s.assignedClass?.includes('Cô Hân')
+        ? 'Cô Hân'
+        : selectedClass?.teacher || '';
+      return [
+        idx + 1,
+        `"${s.name}"`,
+        `"${s.schoolClass || ''}"`,
+        `"${s.schoolName || ''}"`,
+        `"${s.assignedClass || ''}"`,
+        `"${teacher}"`,
+      ];
+    });
+
+    const csvContent = '\uFEFF' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  // Sao chép danh sách học sinh vào bộ nhớ tạm
+  const handleCopyList = () => {
+    if (!displayedStudents.length) return;
+    const text = displayedStudents
+      .map((s, idx) => `${idx + 1}. ${s.name} - ${s.schoolClass || ''} (${s.schoolName || ''}) - ${s.assignedClass || ''}`)
+      .join('\n');
+
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedSuccess(true);
+      setTimeout(() => setCopiedSuccess(false), 2000);
+    });
+  };
+
+  // Toggle điểm danh nhanh cho từng học sinh
+  const toggleAttendance = (id: string) => {
+    setCheckedAttendance((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-950/80 backdrop-blur-sm animate-fadeIn">
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[92vh] flex flex-col overflow-hidden border border-slate-200">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-blue-950 via-slate-900 to-blue-900 text-white p-4 sm:p-6 flex-shrink-0 relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/80 backdrop-blur-sm animate-fadeIn">
+      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-6xl max-h-[94vh] flex flex-col overflow-hidden border border-slate-200">
+        
+        {/* ============================================================== */}
+        {/* MODAL HEADER: TRANG TRỌNG THEO PHONG CÁCH GIÁO DỤC CHÍNH QUY */}
+        {/* ============================================================== */}
+        <div className="bg-gradient-to-r from-blue-950 via-slate-900 to-indigo-950 text-white p-4 sm:p-5 flex-shrink-0 relative border-b border-slate-800">
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 sm:top-5 sm:right-5 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white/90 transition-colors cursor-pointer"
+            className="absolute top-4 right-4 text-slate-400 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors cursor-pointer z-10"
             aria-label="Đóng"
           >
             <X className="w-5 h-5" />
           </button>
 
-          <div className="flex flex-wrap items-center gap-2 mb-2">
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-black bg-amber-400 text-slate-950 flex items-center gap-1">
-              <Users className="w-3.5 h-3.5" />
-              <span>THỐNG KÊ SĨ SỐ & THÔNG TIN LỚP HỌC</span>
-            </span>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/15 text-blue-100 border border-white/20">
-              Tổng số học sinh đang học: <strong className="text-amber-300 ml-1">{totalCenterStudents} em</strong>
-            </span>
-            {isUnlocked ? (
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 flex items-center gap-1">
-                <Unlock className="w-3 h-3 text-emerald-400" />
-                <span>Đã mở khóa danh sách</span>
-              </span>
-            ) : (
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-200 border border-amber-400/30 flex items-center gap-1">
-                <Lock className="w-3 h-3 text-amber-300" />
-                <span>Bảo mật danh sách</span>
-              </span>
-            )}
-          </div>
-
-          <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white uppercase">
-            {selectedClassId === 'all'
-              ? `BẢNG TỔNG HỢP SĨ SỐ CÁC LỚP HỌC (${totalCenterStudents} HỌC SINH)`
-              : selectedClass?.name
-              ? `${selectedClass.name.toUpperCase()} - ${selectedClass.studentCount ? `${selectedClass.studentCount} HỌC SINH` : selectedClass.statusLabel}`
-              : 'THÔNG TIN SĨ SỐ LỚP HỌC'}
-          </h2>
-
-          <div className="flex flex-wrap items-center gap-y-1 gap-x-4 text-xs sm:text-sm text-blue-200 mt-2">
-            <div className="flex items-center gap-1.5">
-              <School className="w-4 h-4 text-emerald-300" />
-              <span>Cơ sở: <strong className="text-white">Khu Đô Thị Vạn Phú - Thái Nguyên</strong></span>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pr-10">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-black tracking-wider uppercase bg-amber-400 text-slate-950 flex items-center gap-1 shadow-xs">
+                  <GraduationCap className="w-3.5 h-3.5" />
+                  <span>Sổ Quản Lý Học Sinh</span>
+                </span>
+                <span className="text-xs text-blue-200 hidden sm:inline">•</span>
+                <span className="text-xs text-blue-200 hidden sm:inline">Năm Học 2025 - 2026</span>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-black text-white flex items-center gap-2">
+                <span>BẢNG DANH SÁCH HỌC SINH PHÂN LỚP</span>
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-300 mt-0.5">
+                Cơ Sở Giáo Dục Thầy Hoàng - Vạn Phú (Đại Từ - Thái Nguyên)
+              </p>
             </div>
-            <div className="flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-amber-400" />
-              <span>Tất cả các lớp đang mở tiếp nhận học sinh</span>
+
+            <div className="flex items-center gap-2">
+              <div className="bg-white/10 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-white/15 text-right">
+                <span className="text-[11px] text-blue-200 block uppercase font-bold">Tổng Sĩ Số Toàn Cơ Sở</span>
+                <span className="text-lg font-black text-amber-300">
+                  {totalCenterStudents} <span className="text-xs font-semibold text-white">học sinh</span>
+                </span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Tab Switcher */}
-        <div className="bg-slate-100 p-2 sm:px-6 border-b border-slate-200 flex-shrink-0 flex items-center gap-2 overflow-x-auto">
-          <span className="text-xs font-bold text-slate-500 hidden sm:inline flex-shrink-0">
-            Xem lớp:
+        {/* ============================================================== */}
+        {/* QUICK CLASS SELECTOR TABS (THANH CHỌN LỚP NHANH) */}
+        {/* ============================================================== */}
+        <div className="bg-slate-100 px-3 sm:px-6 py-2.5 border-b border-slate-200 flex-shrink-0 flex items-center gap-2 overflow-x-auto scrollbar-thin">
+          <span className="text-xs font-bold text-slate-600 hidden sm:inline flex-shrink-0 flex items-center gap-1">
+            <BookOpen className="w-3.5 h-3.5 text-blue-800" />
+            <span>Chọn bảng lớp:</span>
           </span>
+          
           <button
             onClick={() => setSelectedClassId('all')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex-shrink-0 cursor-pointer ${
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex-shrink-0 cursor-pointer flex items-center gap-1.5 ${
               selectedClassId === 'all'
-                ? 'bg-blue-900 text-white shadow-sm'
-                : 'bg-white text-slate-700 hover:bg-slate-200'
+                ? 'bg-blue-900 text-white shadow-sm ring-2 ring-blue-900/20'
+                : 'bg-white text-slate-700 hover:bg-slate-200 border border-slate-200'
             }`}
           >
-            Tất Cả Các Lớp ({totalCenterStudents} em)
+            <span>Tổng Hợp Tất Cả Các Lớp ({totalCenterStudents} em)</span>
           </button>
+
           <button
             onClick={() => setSelectedClassId('toan-12-cb')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex-shrink-0 cursor-pointer flex items-center gap-1.5 ${
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex-shrink-0 cursor-pointer flex items-center gap-1.5 ${
               selectedClassId === 'toan-12-cb'
-                ? 'bg-blue-900 text-white shadow-sm'
+                ? 'bg-blue-900 text-white shadow-sm ring-2 ring-blue-900/20'
                 : 'bg-white text-blue-950 hover:bg-blue-50 border border-blue-200'
             }`}
           >
-            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>Toán 12 Cơ Bản (75 em • Đang mở)</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Toán 12 Cơ Bản (75 em • 3 phân lớp)</span>
           </button>
+
           <button
             onClick={() => setSelectedClassId('toan-12-nc')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex-shrink-0 cursor-pointer flex items-center gap-1.5 ${
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex-shrink-0 cursor-pointer flex items-center gap-1.5 ${
               selectedClassId === 'toan-12-nc'
-                ? 'bg-purple-900 text-white shadow-sm'
+                ? 'bg-purple-900 text-white shadow-sm ring-2 ring-purple-900/20'
                 : 'bg-white text-purple-950 hover:bg-purple-50 border border-purple-300'
             }`}
           >
-            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>Toán 12 Nâng Cao (5 em • Đang mở)</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+            <span>Toán 12 Nâng Cao (5 em)</span>
           </button>
+
           <button
             onClick={() => setSelectedClassId('toan-11-cb')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex-shrink-0 cursor-pointer flex items-center gap-1.5 ${
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex-shrink-0 cursor-pointer flex items-center gap-1.5 ${
               selectedClassId === 'toan-11-cb'
-                ? 'bg-indigo-900 text-white shadow-sm'
+                ? 'bg-indigo-900 text-white shadow-sm ring-2 ring-indigo-900/20'
                 : 'bg-white text-indigo-950 hover:bg-indigo-50 border border-indigo-200'
             }`}
           >
-            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>Toán 11 (34 em • Đang mở)</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+            <span>Toán 11 (34 em • 2 phân lớp)</span>
           </button>
+
           <button
             onClick={() => setSelectedClassId('cntt-active')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex-shrink-0 cursor-pointer flex items-center gap-1.5 ${
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex-shrink-0 cursor-pointer flex items-center gap-1.5 ${
               selectedClassId === 'cntt-active'
-                ? 'bg-cyan-800 text-white shadow-sm'
+                ? 'bg-cyan-800 text-white shadow-sm ring-2 ring-cyan-800/20'
                 : 'bg-white text-cyan-950 hover:bg-cyan-50 border border-cyan-300'
             }`}
           >
-            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>CNTT & Kỹ Năng Số (18 em • Đang mở)</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+            <span>CNTT & Kỹ Năng Số (18 em)</span>
           </button>
+
           <button
             onClick={() => setSelectedClassId('toan-10-cb')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex-shrink-0 cursor-pointer flex items-center gap-1.5 ${
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex-shrink-0 cursor-pointer flex items-center gap-1.5 ${
               selectedClassId === 'toan-10-cb'
-                ? 'bg-emerald-800 text-white shadow-sm'
+                ? 'bg-emerald-800 text-white shadow-sm ring-2 ring-emerald-800/20'
                 : 'bg-white text-emerald-950 hover:bg-emerald-50 border border-emerald-300'
             }`}
           >
-            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
             <span>Toán 10 (Đang mở lớp)</span>
           </button>
         </div>
 
-        {/* Scrollable Content Area */}
-        <div className="flex-grow overflow-y-auto p-4 sm:p-6 bg-slate-50 space-y-6">
-          {/* VIEW: TẤT CẢ CÁC LỚP (BẢNG TỔNG HỢP SĨ SỐ) */}
+        {/* ============================================================== */}
+        {/* NỘI DUNG CUỘN CHÍNH */}
+        {/* ============================================================== */}
+        <div className="flex-grow overflow-y-auto p-3 sm:p-6 bg-slate-50 space-y-5">
+          
+          {/* ============================================================== */}
+          {/* VIEW: TẤT CẢ CÁC LỚP (BẢNG THỐNG KÊ TỔNG THỂ) */}
+          {/* ============================================================== */}
           {selectedClassId === 'all' && (
-            <div className="space-y-6">
-              {/* Stat Summary Boxes */}
+            <div className="space-y-5">
+              {/* Thống kê 3 hộp */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="bg-gradient-to-br from-blue-900 to-indigo-900 text-white p-4 rounded-2xl shadow-sm">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-blue-200 uppercase tracking-wider">Tổng Học Sinh Đang Học</span>
+                    <span className="text-xs font-bold text-blue-200 uppercase tracking-wider">Tổng Học Sinh Hiện Tại</span>
                     <Users className="w-5 h-5 text-amber-300" />
                   </div>
                   <div className="text-3xl font-black mt-2 text-white">{totalCenterStudents} <span className="text-sm font-semibold text-blue-200">em</span></div>
-                  <p className="text-[11px] text-blue-200 mt-1">Đã đăng ký và xếp lớp chính thức</p>
+                  <p className="text-[11px] text-blue-200 mt-1">Đã hoàn tất thủ tục và xếp lớp</p>
                 </div>
 
                 <div className="bg-gradient-to-br from-indigo-800 to-indigo-950 text-white p-4 rounded-2xl shadow-sm">
@@ -295,24 +389,24 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
 
                 <div className="bg-gradient-to-br from-emerald-800 to-teal-950 text-white p-4 rounded-2xl shadow-sm">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-emerald-200 uppercase tracking-wider">Lớp Đang Tuyển Sinh Mới</span>
+                    <span className="text-xs font-bold text-emerald-200 uppercase tracking-wider">Tình Trạng Mở Lớp</span>
                     <Sparkles className="w-5 h-5 text-emerald-300" />
                   </div>
-                  <div className="text-3xl font-black mt-2 text-white">100% <span className="text-sm font-semibold text-emerald-200">mở lớp</span></div>
-                  <p className="text-[11px] text-emerald-200 mt-1">Nhận học viên liên tục các khối môn</p>
+                  <div className="text-3xl font-black mt-2 text-white">100% <span className="text-sm font-semibold text-emerald-200">Đang Mở</span></div>
+                  <p className="text-[11px] text-emerald-200 mt-1">Đang tiếp nhận đăng ký các môn học</p>
                 </div>
               </div>
 
-              {/* Master Summary Table */}
+              {/* Bảng tổng hợp các lớp */}
               <div className="bg-white rounded-2xl shadow-xs border border-slate-200 overflow-hidden">
                 <div className="p-4 bg-slate-900 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div>
                     <h3 className="font-black text-sm uppercase tracking-wide flex items-center gap-2">
-                      <BookOpen className="w-4 h-4 text-amber-400" />
-                      <span>Bảng Thống Kê Tổng Sĩ Số Từng Lớp Học</span>
+                      <FileSpreadsheet className="w-4 h-4 text-amber-400" />
+                      <span>Bảng Tổng Hợp Danh Sách & Sĩ Số Toàn Bộ Các Lớp</span>
                     </h3>
                     <p className="text-xs text-slate-300 mt-0.5">
-                      Hiển thị số lượng học sinh theo từng lớp. Để xem chi tiết danh sách học sinh, vui lòng chọn lớp và nhập mật khẩu bảo mật.
+                      Nhấn vào từng lớp để xem bảng danh sách học sinh chi tiết được phân theo từng phân lớp và lớp trường.
                     </p>
                   </div>
                   <button
@@ -330,11 +424,11 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                       <tr className="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
                         <th className="py-3 px-3 sm:px-4 text-center w-12">STT</th>
                         <th className="py-3 px-3 sm:px-4">Tên Lớp Học</th>
-                        <th className="py-3 px-3 sm:px-4 text-center">Khối Lớp</th>
+                        <th className="py-3 px-3 sm:px-4 text-center">Khối</th>
                         <th className="py-3 px-3 sm:px-4 text-center">Trình Độ</th>
                         <th className="py-3 px-3 sm:px-4 text-center">Tổng Sĩ Số</th>
                         <th className="py-3 px-3 sm:px-4 text-center">Trạng Thái</th>
-                        <th className="py-3 px-3 sm:px-4 text-right">Chi Tiết</th>
+                        <th className="py-3 px-3 sm:px-4 text-right">Thao Tác</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
@@ -345,7 +439,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                         return (
                           <tr
                             key={cls.id}
-                            className="hover:bg-blue-50/50 transition-colors bg-emerald-50/15"
+                            className="hover:bg-blue-50/50 transition-colors"
                           >
                             <td className="py-3.5 px-3 sm:px-4 text-center font-bold text-slate-500">
                               {idx + 1}
@@ -374,7 +468,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                             </td>
                             <td className="py-3.5 px-3 sm:px-4 text-center">
                               {count > 0 ? (
-                                <span className="inline-block px-3 py-1 rounded-full text-xs font-black shadow-2xs bg-emerald-600 text-white">
+                                <span className="inline-block px-3 py-1 rounded-full text-xs font-black bg-emerald-600 text-white shadow-2xs">
                                   {count} học sinh
                                 </span>
                               ) : (
@@ -385,12 +479,12 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                             </td>
                             <td className="py-3.5 px-3 sm:px-4 text-center">
                               {isOpen || count > 0 ? (
-                                <span className="px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-100 text-emerald-900 border border-emerald-200 flex items-center justify-center gap-1">
+                                <span className="px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-100 text-emerald-900 border border-emerald-200 inline-flex items-center justify-center gap-1">
                                   <CheckCircle2 className="w-3 h-3 text-emerald-600" />
                                   <span>Đang mở lớp</span>
                                 </span>
                               ) : (
-                                <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-900 border border-amber-200 flex items-center justify-center gap-1">
+                                <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-900 border border-amber-200 inline-flex items-center justify-center gap-1">
                                   <Clock className="w-3 h-3 text-amber-600" />
                                   <span>Sắp mở lớp</span>
                                 </span>
@@ -399,9 +493,9 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                             <td className="py-3.5 px-3 sm:px-4 text-right">
                               <button
                                 onClick={() => setSelectedClassId(cls.id)}
-                                className="px-3 py-1.5 rounded-lg bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs transition-colors cursor-pointer inline-flex items-center gap-1"
+                                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-900 hover:bg-blue-600 hover:text-white font-bold text-xs transition-colors cursor-pointer border border-blue-200"
                               >
-                                <span>Xem</span>
+                                <span>Xem danh sách</span>
                                 <ChevronRight className="w-3.5 h-3.5" />
                               </button>
                             </td>
@@ -415,576 +509,688 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
             </div>
           )}
 
-          {/* VIEW: CHI TIẾT TỪNG LỚP HỌC */}
-          {selectedClassId !== 'all' && selectedClass && (
-            <div className="space-y-6">
-              {/* Prominent Header Banner */}
-              <div className="p-5 rounded-3xl border shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-emerald-50/80 border-emerald-300 text-emerald-950">
-                <div className="flex items-start gap-4">
-                  <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 font-bold shadow-xs bg-emerald-600 text-white">
-                    <CheckCircle2 className="w-7 h-7 text-white" />
-                  </div>
+          {/* ============================================================== */}
+          {/* VIEW: CHI TIẾT TỪNG LỚP HỌC (ĐẶC BIỆT: TOÁN 12 CƠ BẢN) */}
+          {/* ============================================================== */}
+          {selectedClass && (
+            <div className="space-y-4">
+              
+              {/* ============================================================== */}
+              {/* BẢNG THÔNG TIN HEADER CHÍNH THỨC CỦA LỚP */}
+              {/* ============================================================== */}
+              <div className="bg-white rounded-2xl border-2 border-slate-200 shadow-xs p-4 sm:p-5 relative overflow-hidden">
+                {/* Viền trang trí kiểu văn bản trường học */}
+                <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-700 via-indigo-600 to-purple-600"></div>
+
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                   <div>
-                    <div className="flex flex-wrap items-center gap-2 mb-1">
-                      <span className="text-xs font-black uppercase px-2.5 py-0.5 rounded-full bg-white/80 border">
-                        {selectedClass.subject} • {selectedClass.grade === 'cntt' ? 'Khối CNTT' : selectedClass.grade === 'van-chu-dep' ? 'Khối Chữ Đẹp' : `Khối ${selectedClass.grade}`}
+                    <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                      <span className="px-2.5 py-0.5 rounded-md text-[11px] font-black uppercase tracking-wide bg-blue-900 text-white">
+                        {selectedClass.grade === 'cntt' ? 'CNTT' : `Khối ${selectedClass.grade}`}
                       </span>
-                      <span className="text-xs font-black uppercase px-2.5 py-0.5 rounded-full bg-emerald-200 text-emerald-900 border border-emerald-300">
-                        {selectedClass.statusLabel}
+                      <span className="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-slate-100 text-slate-800 border border-slate-200">
+                        {selectedClass.subject} • {selectedClass.level}
                       </span>
+                      {selectedClass.id === 'toan-12-cb' && (
+                        <span className="px-2.5 py-0.5 rounded-md text-[11px] font-extrabold bg-emerald-100 text-emerald-900 border border-emerald-300 flex items-center gap-1">
+                          <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                          <span>Đang mở lớp • Chia 3 phân lớp (CB1, CB2, CB3)</span>
+                        </span>
+                      )}
                     </div>
-                    <h3 className="text-xl sm:text-2xl font-black text-slate-900">
+
+                    <h3 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
                       {selectedClass.name}
                     </h3>
-                    <p className="text-xs sm:text-sm text-slate-700 mt-1 leading-relaxed">
-                      {selectedClass.note}
+                    <p className="text-xs sm:text-sm text-slate-600 mt-1 flex flex-wrap items-center gap-x-4 gap-y-1">
+                      <span><strong>Giáo viên:</strong> {selectedClass.teacher || 'Tổ bộ môn'}</span>
+                      <span>•</span>
+                      <span><strong>Tổng học sinh:</strong> <span className="font-extrabold text-blue-900">{selectedClass.studentCount} em</span></span>
+                      <span>•</span>
+                      <span><strong>Địa điểm:</strong> Cơ sở Vạn Phú - Đại Từ - Thái Nguyên</span>
                     </p>
+                  </div>
+
+                  {/* Nút thao tác nhanh trên header */}
+                  <div className="flex flex-wrap items-center gap-2 self-start lg:self-center">
+                    <button
+                      onClick={handleExportExcel}
+                      className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+                      title="Tải bảng danh sách định dạng Excel"
+                    >
+                      <Download className="w-4 h-4" />
+                      <span>Xuất Excel (.csv)</span>
+                    </button>
+                    
+                    <button
+                      onClick={() => window.print()}
+                      className="px-3.5 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+                      title="In bảng danh sách học sinh khổ A4"
+                    >
+                      <Printer className="w-4 h-4" />
+                      <span>In danh sách</span>
+                    </button>
+
+                    <button
+                      onClick={handleCopyList}
+                      className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer border border-slate-200"
+                      title="Sao chép danh sách học sinh"
+                    >
+                      {copiedSuccess ? (
+                        <>
+                          <Check className="w-4 h-4 text-emerald-600" />
+                          <span className="text-emerald-700 font-bold">Đã sao chép!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-4 h-4" />
+                          <span>Sao chép</span>
+                        </>
+                      )}
+                    </button>
                   </div>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    onClose();
-                    onOpenConsultationModal(selectedClass.grade);
-                  }}
-                  className="px-5 py-3 rounded-2xl font-black text-xs sm:text-sm text-white shadow-md transition-all flex-shrink-0 cursor-pointer bg-emerald-700 hover:bg-emerald-800"
-                >
-                  Đăng ký xếp lớp ngay
-                </button>
+                {/* THỐNG KÊ CƠ CẤU HỌC SINH THEO LỚP TRƯỜNG (Đối với Toán 12 Cơ bản) */}
+                {selectedClass.id === 'toan-12-cb' && schoolClassStats.length > 0 && (
+                  <div className="mt-4 pt-3.5 border-t border-slate-100 flex flex-wrap items-center gap-2 text-xs">
+                    <span className="font-extrabold text-slate-700 flex items-center gap-1">
+                      <School className="w-3.5 h-3.5 text-blue-700" />
+                      <span>Cơ cấu lớp trường:</span>
+                    </span>
+                    {schoolClassStats.map(([clsName, count]) => (
+                      <span
+                        key={clsName}
+                        className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-800 border border-slate-200 font-bold flex items-center gap-1"
+                      >
+                        <span className="text-blue-900 font-black">{clsName}:</span>
+                        <span>{count} em</span>
+                      </span>
+                    ))}
+                    <span className="text-[11px] text-slate-500 italic ml-1">
+                      (Chủ yếu trường THPT Lưu Nhân Chú & Đội Cấn)
+                    </span>
+                  </div>
+                )}
               </div>
 
-              {/* Sĩ số Highlight Card */}
-              <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="p-5 rounded-2xl bg-blue-50 border border-blue-200 text-center">
-                    <span className="text-xs font-bold text-blue-800 uppercase tracking-wider block mb-1">
-                      Tổng Số Học Sinh
-                    </span>
-                    <div className="text-4xl font-black text-blue-950">
-                      {selectedClass.studentCount ? selectedClass.studentCount : 0}{' '}
-                      <span className="text-base font-bold text-slate-600">học sinh</span>
-                    </div>
-                    <span className="inline-block mt-2 px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-900">
-                      {selectedClass.statusLabel}
-                    </span>
-                  </div>
-
-                  <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 text-center">
-                    <span className="text-xs font-bold text-slate-600 uppercase tracking-wider block mb-1">
-                      Trình Độ & Định Hướng
-                    </span>
-                    <div className="text-xl font-black text-slate-900 mt-2">
-                      Lớp {selectedClass.level}
-                    </div>
-                    <p className="text-xs text-slate-600 mt-1">
-                      {selectedClass.level === 'Nâng Cao'
-                        ? 'Vận dụng cao 8.5+, 9+, Chuyên & HSG'
-                        : 'Vững nền tảng, chống liệt, thi tốt nghiệp 7-8+'}
-                    </p>
-                  </div>
-
-                  <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 text-center">
-                    <span className="text-xs font-bold text-slate-600 uppercase tracking-wider block mb-1">
-                      Địa Điểm Học Tập
-                    </span>
-                    <div className="text-sm font-black text-slate-900 mt-2">
-                      Khu Đô Thị Vạn Phú
-                    </div>
-                    <p className="text-xs text-slate-600 mt-1">
-                      Cơ sở chính tại Vạn Phú - Thái Nguyên
-                    </p>
-                  </div>
-                </div>
-
-                {/* Sĩ số chi tiết theo phân lớp đối với Toán 12 Cơ bản - THÔNG BÁO ĐÃ ĐẦY CẢ 3 LỚP */}
-                {selectedClass.id === 'toan-12-cb' && (
-                  <div className="p-4 sm:p-5 bg-gradient-to-br from-rose-50 via-amber-50/60 to-blue-50/50 rounded-2xl border-2 border-rose-300 shadow-xs space-y-3">
-                    {/* Banner Thông báo Lớp đã đầy cả 3 lớp */}
-                    <div className="flex items-start sm:items-center gap-3 p-3 bg-gradient-to-r from-rose-600 to-red-600 text-white rounded-xl shadow-xs">
-                      <div className="p-1.5 rounded-lg bg-white/20 text-white flex-shrink-0">
-                        <AlertCircle className="w-5 h-5 animate-pulse" />
+              {/* ============================================================== */}
+              {/* THÔNG BÁO QUAN TRỌNG: CẢ 3 PHÂN LỚP TOÁN 12 CƠ BẢN ĐÃ ĐẦY */}
+              {/* ============================================================== */}
+              {selectedClass.id === 'toan-12-cb' && (
+                <div className="bg-gradient-to-r from-rose-50 via-amber-50 to-orange-50 border-2 border-rose-300 rounded-2xl p-4 shadow-xs">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <div className="flex items-start gap-3">
+                      <div className="w-9 h-9 rounded-xl bg-rose-600 text-white flex items-center justify-center font-bold flex-shrink-0 shadow-xs mt-0.5">
+                        <AlertCircle className="w-5 h-5" />
                       </div>
-                      <div className="text-xs">
-                        <span className="font-black uppercase tracking-wider block text-white text-xs sm:text-sm">
-                          THÔNG BÁO: ĐÃ ĐẦY SĨ SỐ CẢ 3 PHÂN LỚP TOÁN 12 CƠ BẢN (75/75 HỌC SINH)
-                        </span>
-                        <p className="text-[11px] sm:text-xs text-rose-100 mt-0.5 leading-relaxed">
-                          Hiện tại cả 3 phân lớp (<strong>CB1</strong>: 29 em, <strong>CB2</strong>: 23 em, <strong>CB3</strong>: 23 em) đều đã đạt 100% sĩ số và tạm ngừng nhận thêm học sinh mới để đảm bảo chất lượng giảng dạy tốt nhất.
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-black text-rose-900 text-sm uppercase tracking-wide">
+                            THÔNG BÁO PHÂN LỚP HỌC: ĐÃ ĐẦY CẢ 3 PHÂN LỚP (75 / 75 HỌC SINH)
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-700 mt-1 leading-relaxed">
+                          Hiện tại cả 3 phân lớp <strong>CB1 (29 em)</strong>, <strong>CB2 (23 em)</strong>, và <strong>CB3 (23 em)</strong> đã đủ sĩ số theo quy chuẩn đào tạo chất lượng cao. Học sinh mới đăng ký sẽ được xếp vào <strong>danh sách chờ</strong> hoặc lớp chuyên đề tiếp theo.
                         </p>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between pt-1">
-                      <span className="text-xs font-black text-slate-800 uppercase tracking-wide flex items-center gap-1.5">
-                        <Users className="w-4 h-4 text-rose-600" />
-                        <span>Sĩ Số Chi Tiết Từng Phân Lớp (ĐÃ ĐẦY CẢ 3 LỚP):</span>
+                    <button
+                      onClick={() => onOpenConsultationModal(selectedClass.grade)}
+                      className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs rounded-xl shadow-xs transition-colors flex-shrink-0 cursor-pointer"
+                    >
+                      Đăng Ký Danh Sách Chờ
+                    </button>
+                  </div>
+
+                  {/* 3 THẺ TỔNG QUAN PHÂN LỚP */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3.5 pt-3 border-t border-rose-200/80 text-xs">
+                    <div className="bg-white p-3 rounded-xl border border-blue-200 text-left shadow-2xs relative">
+                      <span className="absolute top-2 right-2 px-1.5 py-0.5 rounded text-[10px] font-black bg-rose-600 text-white">
+                        ĐÃ ĐẦY
                       </span>
-                      <span className="px-2.5 py-0.5 rounded-full text-[11px] font-black bg-rose-100 text-rose-800 border border-rose-300 flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-rose-600"></span>
-                        <span>Đã đủ sĩ số 100%</span>
-                      </span>
+                      <span className="font-black text-blue-900 block text-sm">Phân Lớp CB1</span>
+                      <div className="text-slate-600 mt-0.5">GV phụ trách: <strong>Cô Hường</strong></div>
+                      <div className="text-base font-black text-slate-900 mt-1">29 học sinh</div>
+                      <div className="text-[11px] text-slate-500">100% học sinh 12A9 Lưu Nhân Chú</div>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
-                      <div className="bg-white p-3.5 rounded-xl border-2 border-rose-200 text-center relative shadow-xs overflow-hidden">
-                        <span className="absolute top-2 right-2 px-1.5 py-0.5 rounded text-[10px] font-black bg-rose-600 text-white uppercase tracking-wider shadow-xs">
-                          ĐÃ ĐẦY
-                        </span>
-                        <span className="font-bold text-blue-900 block pr-12 text-left">Lớp CB 1 (GV: Cô Hường)</span>
-                        <strong className="text-xl font-black text-slate-900 block my-1">29 học sinh</strong>
-                        <span className="text-[11px] text-slate-500 block">100% 12A9 THPT Lưu Nhân Chú</span>
-                        <span className="inline-block mt-2 px-2 py-0.5 rounded-md text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
-                          Khóa tuyển sinh
-                        </span>
-                      </div>
+                    <div className="bg-white p-3 rounded-xl border border-purple-200 text-left shadow-2xs relative">
+                      <span className="absolute top-2 right-2 px-1.5 py-0.5 rounded text-[10px] font-black bg-rose-600 text-white">
+                        ĐÃ ĐẦY
+                      </span>
+                      <span className="font-black text-purple-900 block text-sm">Phân Lớp CB2</span>
+                      <div className="text-slate-600 mt-0.5">GV phụ trách: <strong>Cô Hân</strong></div>
+                      <div className="text-base font-black text-slate-900 mt-1">23 học sinh</div>
+                      <div className="text-[11px] text-slate-500">Gồm 12A6 (14 em), 12A7 (9 em)</div>
+                    </div>
 
-                      <div className="bg-white p-3.5 rounded-xl border-2 border-rose-200 text-center relative shadow-xs overflow-hidden">
-                        <span className="absolute top-2 right-2 px-1.5 py-0.5 rounded text-[10px] font-black bg-rose-600 text-white uppercase tracking-wider shadow-xs">
-                          ĐÃ ĐẦY
-                        </span>
-                        <span className="font-bold text-purple-900 block pr-12 text-left">Lớp CB 2 (GV: Cô Hân)</span>
-                        <strong className="text-xl font-black text-slate-900 block my-1">23 học sinh</strong>
-                        <span className="text-[11px] text-slate-500 block">12A6, 12A7, THPT Đội Cấn</span>
-                        <span className="inline-block mt-2 px-2 py-0.5 rounded-md text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
-                          Khóa tuyển sinh
-                        </span>
-                      </div>
-
-                      <div className="bg-white p-3.5 rounded-xl border-2 border-rose-200 text-center relative shadow-xs overflow-hidden">
-                        <span className="absolute top-2 right-2 px-1.5 py-0.5 rounded text-[10px] font-black bg-rose-600 text-white uppercase tracking-wider shadow-xs">
-                          ĐÃ ĐẦY
-                        </span>
-                        <span className="font-bold text-emerald-900 block pr-12 text-left">Lớp CB 3 (GV: Cô Hường)</span>
-                        <strong className="text-xl font-black text-slate-900 block my-1">23 học sinh</strong>
-                        <span className="text-[11px] text-slate-500 block">12A8, 12A5 Lưu Nhân Chú</span>
-                        <span className="inline-block mt-2 px-2 py-0.5 rounded-md text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
-                          Khóa tuyển sinh
-                        </span>
-                      </div>
+                    <div className="bg-white p-3 rounded-xl border border-emerald-200 text-left shadow-2xs relative">
+                      <span className="absolute top-2 right-2 px-1.5 py-0.5 rounded text-[10px] font-black bg-rose-600 text-white">
+                        ĐÃ ĐẦY
+                      </span>
+                      <span className="font-black text-emerald-900 block text-sm">Phân Lớp CB3</span>
+                      <div className="text-slate-600 mt-0.5">GV phụ trách: <strong>Cô Hường</strong></div>
+                      <div className="text-base font-black text-slate-900 mt-1">23 học sinh</div>
+                      <div className="text-[11px] text-slate-500">Gồm 12A8 (21 em), 12A5 (2 em)</div>
                     </div>
                   </div>
-                )}
+                </div>
+              )}
 
-                {/* Sĩ số chi tiết đối với Toán 11 */}
-                {selectedClass.id === 'toan-11-cb' && (
-                  <div className="p-4 bg-indigo-50/80 rounded-2xl border border-indigo-200 space-y-2">
-                    <span className="text-xs font-bold text-indigo-900 uppercase tracking-wide block">
-                      Thống Kê Sĩ Số 2 Phân Lớp Toán 11:
-                    </span>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                      <div className="bg-white p-3 rounded-xl border border-indigo-100 text-center">
-                        <span className="font-bold text-indigo-900 block">Phân lớp CB 1</span>
-                        <strong className="text-base font-black text-indigo-950">19 học sinh</strong>
-                      </div>
-                      <div className="bg-white p-3 rounded-xl border border-indigo-100 text-center">
-                        <span className="font-bold text-indigo-900 block">Phân lớp CB 2</span>
-                        <strong className="text-base font-black text-indigo-950">15 học sinh</strong>
-                      </div>
+              {/* ============================================================== */}
+              {/* BỘ ĐIỀU KHIỂN & BỘ LỌC DANH SÁCH (TOOLBAR) */}
+              {/* ============================================================== */}
+              <div className="bg-white p-3 sm:p-4 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+                <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
+                  
+                  {/* BỘ LỌC PHÂN LỚP (TABS KIỂU EXCEL CHO TOÁN 12 CƠ BẢN) */}
+                  {selectedClass.id === 'toan-12-cb' ? (
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className="text-xs font-bold text-slate-500 mr-1 flex items-center gap-1">
+                        <FileSpreadsheet className="w-3.5 h-3.5 text-blue-600" />
+                        <span>Xem phân lớp:</span>
+                      </span>
+
+                      <button
+                        onClick={() => setSubClassFilter('all')}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                          subClassFilter === 'all'
+                            ? 'bg-blue-900 text-white shadow-xs'
+                            : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                        }`}
+                      >
+                        Tất cả 3 lớp (75 em)
+                      </button>
+
+                      <button
+                        onClick={() => setSubClassFilter('cb1')}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                          subClassFilter === 'cb1'
+                            ? 'bg-blue-700 text-white shadow-xs'
+                            : 'bg-blue-50 text-blue-900 hover:bg-blue-100 border border-blue-200'
+                        }`}
+                      >
+                        <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                        <span>CB1 - Cô Hường (29 em)</span>
+                      </button>
+
+                      <button
+                        onClick={() => setSubClassFilter('cb2')}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                          subClassFilter === 'cb2'
+                            ? 'bg-purple-700 text-white shadow-xs'
+                            : 'bg-purple-50 text-purple-900 hover:bg-purple-100 border border-purple-200'
+                        }`}
+                      >
+                        <span className="w-2 h-2 rounded-full bg-purple-500"></span>
+                        <span>CB2 - Cô Hân (23 em)</span>
+                      </button>
+
+                      <button
+                        onClick={() => setSubClassFilter('cb3')}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                          subClassFilter === 'cb3'
+                            ? 'bg-emerald-700 text-white shadow-xs'
+                            : 'bg-emerald-50 text-emerald-900 hover:bg-emerald-100 border border-emerald-200'
+                        }`}
+                      >
+                        <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        <span>CB3 - Cô Hường (23 em)</span>
+                      </button>
                     </div>
-                  </div>
-                )}
+                  ) : (
+                    <div className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                      <Users className="w-4 h-4 text-blue-600" />
+                      <span>Danh sách học sinh chính thức: <strong>{displayedStudents.length} học sinh</strong></span>
+                    </div>
+                  )}
 
-                {/* PHẦN XÁC THỰC MẬT KHẨU / XEM DANH SÁCH CHI TIẾT */}
-                {selectedClass.students && selectedClass.students.length > 0 ? (
-                  <div className="pt-2">
-                    {!isUnlocked ? (
-                      /* KHỐI NHẬP MẬT KHẨU ĐỂ MỞ KHÓA DANH SÁCH */
-                      <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-blue-950 text-white rounded-3xl p-6 sm:p-8 border border-slate-700 shadow-lg">
-                        <div className="max-w-xl mx-auto text-center space-y-4">
-                          <div className="w-14 h-14 rounded-2xl bg-amber-400/20 text-amber-400 mx-auto flex items-center justify-center font-bold shadow-inner">
-                            <Lock className="w-7 h-7" />
-                          </div>
-
-                          <div>
-                            <h4 className="text-lg sm:text-xl font-black text-white uppercase tracking-wide">
-                              Xem Danh Sách Học Sinh Chi Tiết
-                            </h4>
-                            <p className="text-xs sm:text-sm text-slate-300 mt-1 leading-relaxed">
-                              Khu vực bảo mật thông tin học sinh. Vui lòng nhập mật khẩu xác thực để mở khóa và xem danh sách chi tiết (phân định rõ ai ở lớp 1, 2 hay 3).
-                            </p>
-                          </div>
-
-                          <form onSubmit={handleVerifyPassword} className="space-y-3 pt-2">
-                            <div className="flex flex-col sm:flex-row gap-2.5 justify-center items-stretch max-w-md mx-auto">
-                              <div className="relative flex-1">
-                                <input
-                                  type={showPassword ? 'text' : 'password'}
-                                  value={passwordInput}
-                                  onChange={(e) => {
-                                    setPasswordInput(e.target.value);
-                                    if (authError) setAuthError('');
-                                  }}
-                                  placeholder="Nhập mật khẩu xác thực..."
-                                  className="w-full px-4 py-3 rounded-xl bg-slate-950/80 border border-slate-600 text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10"
-                                />
-                                <button
-                                  type="button"
-                                  onClick={() => setShowPassword(!showPassword)}
-                                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white cursor-pointer"
-                                  aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
-                                >
-                                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                                </button>
-                              </div>
-
-                              <button
-                                type="submit"
-                                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer flex-shrink-0"
-                              >
-                                <Lock className="w-4 h-4" />
-                                <span>Mở Khóa</span>
-                              </button>
-                            </div>
-
-                            {authError && (
-                              <div className="text-xs font-bold text-rose-400 flex items-center justify-center gap-1.5 animate-bounce">
-                                <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                                <span>{authError}</span>
-                              </div>
-                            )}
-                          </form>
-                        </div>
-                      </div>
-                    ) : (
-                      /* DANH SÁCH HỌC SINH ĐÃ ĐƯỢC MỞ KHÓA THÀNH CÔNG */
-                      <div className="space-y-4 pt-2">
-                        {/* Thanh trạng thái mở khóa */}
-                        <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-emerald-950">
-                          <div className="flex items-center gap-2.5">
-                            <ShieldCheck className="w-5 h-5 text-emerald-600 flex-shrink-0" />
-                            <div>
-                              <span className="font-extrabold text-xs text-emerald-900 block">
-                                ĐÃ XÁC THỰC THÀNH CÔNG • MỞ KHÓA DANH SÁCH HỌC SINH
-                              </span>
-                              <span className="text-[11px] text-slate-600">
-                                Sắp xếp chuẩn: Lớp trường 12A5 &rarr; 12A9 &rarr; THPT Đội Cấn, tên học sinh sắp xếp A &rarr; Z
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="flex items-center gap-2 w-full sm:w-auto">
-                            <button
-                              onClick={() => window.print()}
-                              className="px-3 py-1.5 rounded-lg bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-xs transition-colors flex items-center gap-1 cursor-pointer"
-                            >
-                              <Printer className="w-3.5 h-3.5" />
-                              <span>In danh sách</span>
-                            </button>
-                            <button
-                              onClick={handleLockAgain}
-                              className="px-3 py-1.5 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs transition-colors flex items-center gap-1 cursor-pointer"
-                            >
-                              <Lock className="w-3.5 h-3.5" />
-                              <span>Khóa lại</span>
-                            </button>
-                          </div>
-                        </div>
-
-                        {/* Bộ lọc phân lớp (cho Toán 12 Cơ bản), Bộ sắp xếp & Ô tìm kiếm */}
-                        <div className="flex flex-col gap-3 bg-slate-50 p-3 sm:p-4 rounded-2xl border border-slate-200">
-                          <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
-                            {selectedClass.id === 'toan-12-cb' && (
-                              <div className="flex flex-wrap items-center gap-1.5">
-                                <span className="text-xs font-bold text-slate-500 mr-1">Xem:</span>
-                                <button
-                                  onClick={() => setSubClassFilter('all')}
-                                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                                    subClassFilter === 'all'
-                                      ? 'bg-blue-900 text-white shadow-xs'
-                                      : 'bg-white text-slate-700 hover:bg-slate-200 border border-slate-200'
-                                  }`}
-                                >
-                                  Tất cả (75 em • ĐÃ ĐẦY CẢ 3 LỚP)
-                                </button>
-                                <button
-                                  onClick={() => setSubClassFilter('cb1')}
-                                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                                    subClassFilter === 'cb1'
-                                      ? 'bg-blue-700 text-white shadow-xs'
-                                      : 'bg-white text-blue-900 hover:bg-blue-50 border border-blue-200'
-                                  }`}
-                                >
-                                  Lớp CB1 - Cô Hường (29 em • ĐÃ ĐẦY)
-                                </button>
-                                <button
-                                  onClick={() => setSubClassFilter('cb2')}
-                                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                                    subClassFilter === 'cb2'
-                                      ? 'bg-purple-700 text-white shadow-xs'
-                                      : 'bg-white text-purple-900 hover:bg-purple-50 border border-purple-200'
-                                  }`}
-                                >
-                                  Lớp CB2 - Cô Hân (23 em • ĐÃ ĐẦY)
-                                </button>
-                                <button
-                                  onClick={() => setSubClassFilter('cb3')}
-                                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                                    subClassFilter === 'cb3'
-                                      ? 'bg-emerald-700 text-white shadow-xs'
-                                      : 'bg-white text-emerald-900 hover:bg-emerald-50 border border-emerald-200'
-                                  }`}
-                                >
-                                  Lớp CB3 - Cô Hường (23 em • ĐÃ ĐẦY)
-                                </button>
-                              </div>
-                            )}
-
-                            <div className="relative flex-1 max-w-md">
-                              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                              <input
-                                type="text"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="Tìm theo tên học sinh, lớp trường (12A5, 12A6...)..."
-                                className="w-full pl-9 pr-3 py-1.5 rounded-xl bg-white border border-slate-300 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                              />
-                              {searchQuery && (
-                                <button
-                                  onClick={() => setSearchQuery('')}
-                                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs"
-                                >
-                                  &times;
-                                </button>
-                              )}
-                            </div>
-                          </div>
-
-                          {/* Tùy chọn sắp xếp thứ tự: Phân lớp học, Lớp trường, Tên A-Z */}
-                          <div className="flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-slate-200/80 text-xs">
-                            <div className="flex flex-wrap items-center gap-1.5">
-                              <span className="font-bold text-slate-600 flex items-center gap-1 mr-1">
-                                <ArrowUpDown className="w-3.5 h-3.5 text-blue-600" />
-                                <span>Sắp xếp:</span>
-                              </span>
-                              <button
-                                onClick={() => setSortBy('assignedClass')}
-                                className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer flex items-center gap-1 ${
-                                  sortBy === 'assignedClass'
-                                    ? 'bg-blue-600 text-white shadow-xs'
-                                    : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
-                                }`}
-                              >
-                                <span>Thứ tự Phân lớp (CB1 ➔ CB2 ➔ CB3)</span>
-                              </button>
-                              <button
-                                onClick={() => setSortBy('schoolClass')}
-                                className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer flex items-center gap-1 ${
-                                  sortBy === 'schoolClass'
-                                    ? 'bg-blue-600 text-white shadow-xs'
-                                    : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
-                                }`}
-                              >
-                                <span>Lớp trường (A1 ➔ A9)</span>
-                              </button>
-                              <button
-                                onClick={() => setSortBy('name')}
-                                className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer flex items-center gap-1 ${
-                                  sortBy === 'name'
-                                    ? 'bg-blue-600 text-white shadow-xs'
-                                    : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
-                                }`}
-                              >
-                                <span>Tên học sinh (A ➔ Z)</span>
-                              </button>
-                            </div>
-
-                            <div className="text-[11px] text-slate-500 italic">
-                              {sortBy === 'assignedClass' && 'Ưu tiên: Phân lớp CB1 ➔ CB2 ➔ CB3, tiếp đến Lớp trường A1-A9, sau đó Tên A-Z'}
-                              {sortBy === 'schoolClass' && 'Ưu tiên: Lớp trường A1 ➔ A9, tiếp đến Phân lớp, sau đó Tên A-Z'}
-                              {sortBy === 'name' && 'Ưu tiên: Bảng chữ cái họ tên học sinh A ➔ Z theo chuẩn tiếng Việt'}
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* BẢNG DANH SÁCH HỌC SINH CHI TIẾT */}
-                        <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-                          <div className="p-3.5 bg-slate-900 text-white flex flex-wrap items-center justify-between gap-2 text-xs">
-                            <span className="font-bold flex items-center gap-1.5">
-                              <Users className="w-4 h-4 text-amber-400" />
-                              <span>
-                                Danh Sách Học Sinh: {displayedStudents.length} học sinh
-                                {selectedClass.id === 'toan-12-cb' && (
-                                  <span className="ml-2 px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-600 text-white uppercase tracking-wider">
-                                    ĐÃ ĐẦY CẢ 3 LỚP
-                                  </span>
-                                )}
-                                {selectedClass.id === 'toan-12-cb' && subClassFilter !== 'all' && (
-                                  <span className="ml-1 text-amber-300 font-extrabold">
-                                    ({subClassFilter.toUpperCase()})
-                                  </span>
-                                )}
-                              </span>
-                            </span>
-                            <span className="text-slate-300 text-[11px] flex items-center gap-1.5">
-                              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                              {sortBy === 'assignedClass' && 'Sắp xếp: Phân lớp (CB1 ➔ CB2 ➔ CB3) & Lớp trường (A1 ➔ A9) & Tên A - Z'}
-                              {sortBy === 'schoolClass' && 'Sắp xếp: Lớp trường (A1 ➔ A9) & Phân lớp & Tên A - Z'}
-                              {sortBy === 'name' && 'Sắp xếp: Tên học sinh A - Z (chuẩn tiếng Việt)'}
-                            </span>
-                          </div>
-
-                          <div className="overflow-x-auto max-h-[460px]">
-                            <table className="w-full text-left border-collapse text-xs sm:text-sm">
-                              <thead className="sticky top-0 bg-slate-100 text-slate-700 font-bold border-b border-slate-200 shadow-xs z-10">
-                                <tr>
-                                  <th className="py-2.5 px-3 sm:px-4 text-center w-12">STT</th>
-                                  <th
-                                    onClick={() => setSortBy('name')}
-                                    className="py-2.5 px-3 sm:px-4 cursor-pointer hover:bg-slate-200 transition-colors select-none"
-                                    title="Nhấn để sắp xếp theo Tên học sinh A - Z"
-                                  >
-                                    <div className="flex items-center gap-1">
-                                      <span>Họ và tên</span>
-                                      {sortBy === 'name' && <ArrowUpDown className="w-3 h-3 text-blue-600" />}
-                                    </div>
-                                  </th>
-                                  <th
-                                    onClick={() => setSortBy('schoolClass')}
-                                    className="py-2.5 px-3 sm:px-4 text-center cursor-pointer hover:bg-slate-200 transition-colors select-none"
-                                    title="Nhấn để sắp xếp theo Lớp trường A1 - A9"
-                                  >
-                                    <div className="flex items-center justify-center gap-1">
-                                      <span>Lớp trường</span>
-                                      {sortBy === 'schoolClass' && <ArrowUpDown className="w-3 h-3 text-blue-600" />}
-                                    </div>
-                                  </th>
-                                  <th className="py-2.5 px-3 sm:px-4">Trường</th>
-                                  <th
-                                    onClick={() => setSortBy('assignedClass')}
-                                    className="py-2.5 px-3 sm:px-4 text-center cursor-pointer hover:bg-slate-200 transition-colors select-none"
-                                    title="Nhấn để sắp xếp theo Thứ tự phân lớp CB1 -> CB2 -> CB3"
-                                  >
-                                    <div className="flex items-center justify-center gap-1">
-                                      <span>Phân lớp học</span>
-                                      {sortBy === 'assignedClass' && <ArrowUpDown className="w-3 h-3 text-blue-600" />}
-                                    </div>
-                                  </th>
-                                </tr>
-                              </thead>
-                              <tbody className="divide-y divide-slate-100">
-                                {displayedStudents.length === 0 ? (
-                                  <tr>
-                                    <td colSpan={5} className="py-8 text-center text-slate-500">
-                                      Không tìm thấy học sinh phù hợp với từ khóa tìm kiếm.
-                                    </td>
-                                  </tr>
-                                ) : (
-                                  displayedStudents.map((student, idx) => {
-                                    // Tô màu huy hiệu phân lớp để phân biệt rõ CB1, CB2, CB3
-                                    const isCB1 = student.assignedClass.includes('CB1');
-                                    const isCB2 = student.assignedClass.includes('CB2');
-                                    const isCB3 = student.assignedClass.includes('CB3');
-
-                                    return (
-                                      <tr
-                                        key={student.id || idx}
-                                        className="hover:bg-blue-50/60 transition-colors"
-                                      >
-                                        <td className="py-2.5 px-3 sm:px-4 text-center font-bold text-slate-500">
-                                          {idx + 1}
-                                        </td>
-                                        <td className="py-2.5 px-3 sm:px-4 font-black text-slate-900">
-                                          {student.name}
-                                        </td>
-                                        <td className="py-2.5 px-3 sm:px-4 text-center">
-                                          <span className="inline-block px-2.5 py-0.5 rounded-md font-extrabold text-xs bg-slate-100 text-slate-800 border border-slate-200">
-                                            {student.schoolClass}
-                                          </span>
-                                        </td>
-                                        <td className="py-2.5 px-3 sm:px-4 text-slate-700">
-                                          {student.schoolName}
-                                        </td>
-                                        <td className="py-2.5 px-3 sm:px-4 text-center">
-                                          <span
-                                            className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-black border ${
-                                              isCB1
-                                                ? 'bg-blue-100 text-blue-900 border-blue-300'
-                                                : isCB2
-                                                ? 'bg-purple-100 text-purple-900 border-purple-300'
-                                                : isCB3
-                                                ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
-                                                : 'bg-indigo-100 text-indigo-900 border-indigo-300'
-                                            }`}
-                                          >
-                                            {student.assignedClass}
-                                          </span>
-                                        </td>
-                                      </tr>
-                                    );
-                                  })
-                                )}
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-                      </div>
+                  {/* Ô TÌM KIẾM TỨC THÌ */}
+                  <div className="relative flex-1 max-w-md">
+                    <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Tìm theo họ tên, lớp trường (12A9, 12A8...)..."
+                      className="w-full pl-9 pr-8 py-2 rounded-xl bg-slate-50 border border-slate-300 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                    />
+                    {searchQuery && (
+                      <button
+                        onClick={() => setSearchQuery('')}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-sm font-bold p-1 cursor-pointer"
+                        title="Xóa tìm kiếm"
+                      >
+                        &times;
+                      </button>
                     )}
                   </div>
-                ) : (
-                  <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 text-center text-xs text-slate-500">
-                    Lớp đang mở tuyển sinh học viên mới. Danh sách sẽ được cập nhật sau khi học sinh hoàn tất đăng ký.
-                  </div>
-                )}
+                </div>
 
-                {/* Additional Information details */}
-                <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
-                  <h4 className="text-sm font-black text-slate-900 flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-amber-500" />
-                    <span>Thông Tin Chi Tiết Lớp Học:</span>
-                  </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                    <div className="bg-white p-3 rounded-xl border border-slate-100">
-                      <span className="font-bold text-slate-500 block">Giáo viên phụ trách:</span>
-                      <span className="font-extrabold text-slate-900">{selectedClass.teacher || 'Tổ bộ môn phụ trách'}</span>
+                {/* HÀNG DƯỚI: NÚT SẮP XẾP & CHUYỂN CHẾ ĐỘ XEM (BẢNG TÍNH / THẺ) */}
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-2.5 border-t border-slate-100 text-xs">
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <span className="font-bold text-slate-600 flex items-center gap-1 mr-1">
+                      <ArrowUpDown className="w-3.5 h-3.5 text-blue-600" />
+                      <span>Sắp xếp theo:</span>
+                    </span>
+
+                    <button
+                      onClick={() => setSortBy('assignedClass')}
+                      className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer ${
+                        sortBy === 'assignedClass'
+                          ? 'bg-blue-600 text-white shadow-xs'
+                          : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                      }`}
+                    >
+                      Phân lớp (CB1 ➔ CB2 ➔ CB3)
+                    </button>
+
+                    <button
+                      onClick={() => setSortBy('schoolClass')}
+                      className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer ${
+                        sortBy === 'schoolClass'
+                          ? 'bg-blue-600 text-white shadow-xs'
+                          : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                      }`}
+                    >
+                      Lớp trường (12A5 ➔ 12A9)
+                    </button>
+
+                    <button
+                      onClick={() => setSortBy('name')}
+                      className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer ${
+                        sortBy === 'name'
+                          ? 'bg-blue-600 text-white shadow-xs'
+                          : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                      }`}
+                    >
+                      Tên học sinh (A ➔ Z)
+                    </button>
+                  </div>
+
+                  {/* Nút chuyển chế độ xem: Bảng tính (Table) hoặc Thẻ (Cards) */}
+                  <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
+                    <button
+                      onClick={() => setViewMode('table')}
+                      className={`px-2.5 py-1 rounded-lg font-bold text-xs transition-all flex items-center gap-1 cursor-pointer ${
+                        viewMode === 'table'
+                          ? 'bg-white text-blue-900 shadow-xs'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                      title="Xem dạng bảng tính Excel"
+                    >
+                      <TableIcon className="w-3.5 h-3.5" />
+                      <span>Dạng bảng tính</span>
+                    </button>
+
+                    <button
+                      onClick={() => setViewMode('cards')}
+                      className={`px-2.5 py-1 rounded-lg font-bold text-xs transition-all flex items-center gap-1 cursor-pointer ${
+                        viewMode === 'cards'
+                          ? 'bg-white text-blue-900 shadow-xs'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                      title="Xem dạng thẻ học sinh"
+                    >
+                      <LayoutGrid className="w-3.5 h-3.5" />
+                      <span>Dạng thẻ</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* ============================================================== */}
+              {/* GIAO DIỆN BẢNG DANH SÁCH HỌC SINH (CHẾ ĐỘ BẢNG TÍNH EXCEL) */}
+              {/* ============================================================== */}
+              {viewMode === 'table' ? (
+                <div className="bg-white rounded-2xl border-2 border-slate-300 shadow-sm overflow-hidden">
+                  
+                  {/* THANH TIÊU ĐỀ BẢNG TÍNH */}
+                  <div className="bg-slate-900 text-white p-3 sm:px-4 flex flex-wrap items-center justify-between gap-2 text-xs">
+                    <div className="flex items-center gap-2">
+                      <FileSpreadsheet className="w-4 h-4 text-emerald-400" />
+                      <span className="font-black uppercase tracking-wide">
+                        {selectedClass.name} • {displayedStudents.length} học sinh
+                      </span>
+                      {selectedClass.id === 'toan-12-cb' && (
+                        <span className="px-2 py-0.5 rounded text-[10px] font-black bg-rose-600 text-white uppercase">
+                          ĐÃ ĐỦ SĨ SỐ
+                        </span>
+                      )}
                     </div>
-                    <div className="bg-white p-3 rounded-xl border border-slate-100">
-                      <span className="font-bold text-slate-500 block">Lịch học / Phòng học:</span>
-                      <span className="font-extrabold text-slate-900">{selectedClass.schedule || 'Sắp xếp theo thời khóa biểu học sinh'}</span>
+
+                    <div className="text-slate-300 text-[11px] flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                      <span>
+                        {sortBy === 'assignedClass' && 'Đang xếp: Phân lớp ➔ Lớp trường ➔ Tên A-Z'}
+                        {sortBy === 'schoolClass' && 'Đang xếp: Lớp trường ➔ Phân lớp ➔ Tên A-Z'}
+                        {sortBy === 'name' && 'Đang xếp: Họ tên A ➔ Z (tiếng Việt)'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* TABLE CONTAINER VỚI HEADER CỐ ĐỊNH & VIỀN BẢNG RÕ NÉT */}
+                  <div className="overflow-x-auto max-h-[520px] scrollbar-thin">
+                    <table className="w-full text-left border-collapse text-xs sm:text-sm">
+                      <thead className="sticky top-0 bg-slate-100 text-slate-800 font-extrabold border-b-2 border-slate-300 shadow-2xs z-10">
+                        <tr>
+                          <th className="py-3 px-3 text-center w-14 border-r border-slate-200">STT</th>
+                          <th
+                            onClick={() => setSortBy('name')}
+                            className="py-3 px-4 border-r border-slate-200 cursor-pointer hover:bg-slate-200 transition-colors select-none"
+                            title="Bấm để sắp xếp theo Tên A - Z"
+                          >
+                            <div className="flex items-center gap-1.5">
+                              <span>Họ và Tên Học Sinh</span>
+                              {sortBy === 'name' && <ArrowUpDown className="w-3 h-3 text-blue-600" />}
+                            </div>
+                          </th>
+                          <th
+                            onClick={() => setSortBy('schoolClass')}
+                            className="py-3 px-3 text-center w-28 border-r border-slate-200 cursor-pointer hover:bg-slate-200 transition-colors select-none"
+                            title="Bấm để sắp xếp theo Lớp trường"
+                          >
+                            <div className="flex items-center justify-center gap-1">
+                              <span>Lớp Trường</span>
+                              {sortBy === 'schoolClass' && <ArrowUpDown className="w-3 h-3 text-blue-600" />}
+                            </div>
+                          </th>
+                          <th className="py-3 px-4 border-r border-slate-200">
+                            <span>Trường Học</span>
+                          </th>
+                          <th
+                            onClick={() => setSortBy('assignedClass')}
+                            className="py-3 px-4 border-r border-slate-200 cursor-pointer hover:bg-slate-200 transition-colors select-none"
+                            title="Bấm để sắp xếp theo Phân lớp"
+                          >
+                            <div className="flex items-center gap-1.5">
+                              <span>Phân Lớp Đào Tạo & Giáo Viên</span>
+                              {sortBy === 'assignedClass' && <ArrowUpDown className="w-3 h-3 text-blue-600" />}
+                            </div>
+                          </th>
+                          <th className="py-3 px-3 text-center w-28">
+                            <span>Điểm Danh</span>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-200">
+                        {displayedStudents.length === 0 ? (
+                          <tr>
+                            <td colSpan={6} className="py-12 text-center text-slate-500">
+                              <AlertCircle className="w-6 h-6 text-slate-400 mx-auto mb-2" />
+                              <span>Không tìm thấy học sinh nào phù hợp với bộ lọc tìm kiếm.</span>
+                            </td>
+                          </tr>
+                        ) : (
+                          displayedStudents.map((student, idx) => {
+                            const isCB1 = student.assignedClass.includes('CB1');
+                            const isCB2 = student.assignedClass.includes('CB2');
+                            const isCB3 = student.assignedClass.includes('CB3');
+                            const studentKey = student.id || `st-${idx}`;
+                            const isChecked = !!checkedAttendance[studentKey];
+
+                            return (
+                              <tr
+                                key={studentKey}
+                                className={`transition-colors hover:bg-blue-50/70 ${
+                                  idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/60'
+                                } ${isChecked ? 'bg-emerald-50/50' : ''}`}
+                              >
+                                {/* STT */}
+                                <td className="py-3 px-3 text-center font-bold text-slate-500 border-r border-slate-200">
+                                  {idx + 1}
+                                </td>
+
+                                {/* Họ và Tên */}
+                                <td className="py-3 px-4 font-black text-slate-900 border-r border-slate-200">
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-sm sm:text-base">{student.name}</span>
+                                    {isChecked && (
+                                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+                                    )}
+                                  </div>
+                                </td>
+
+                                {/* Lớp trường */}
+                                <td className="py-3 px-3 text-center border-r border-slate-200">
+                                  <span className="inline-block px-2.5 py-1 rounded-md font-black text-xs bg-slate-100 text-slate-800 border border-slate-300 shadow-2xs">
+                                    {student.schoolClass}
+                                  </span>
+                                </td>
+
+                                {/* Trường học */}
+                                <td className="py-3 px-4 text-slate-700 font-medium border-r border-slate-200">
+                                  {student.schoolName || 'THPT Lưu Nhân Chú'}
+                                </td>
+
+                                {/* Phân lớp & Giáo viên */}
+                                <td className="py-3 px-4 border-r border-slate-200">
+                                  <span
+                                    className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black border shadow-2xs ${
+                                      isCB1
+                                        ? 'bg-blue-100 text-blue-950 border-blue-300'
+                                        : isCB2
+                                        ? 'bg-purple-100 text-purple-950 border-purple-300'
+                                        : isCB3
+                                        ? 'bg-emerald-100 text-emerald-950 border-emerald-300'
+                                        : 'bg-indigo-100 text-indigo-950 border-indigo-300'
+                                    }`}
+                                  >
+                                    <span
+                                      className={`w-2 h-2 rounded-full ${
+                                        isCB1
+                                          ? 'bg-blue-600'
+                                          : isCB2
+                                          ? 'bg-purple-600'
+                                          : isCB3
+                                          ? 'bg-emerald-600'
+                                          : 'bg-indigo-600'
+                                      }`}
+                                    ></span>
+                                    <span>{student.assignedClass}</span>
+                                  </span>
+                                </td>
+
+                                {/* Điểm danh / Ký nhận */}
+                                <td className="py-3 px-3 text-center">
+                                  <button
+                                    onClick={() => toggleAttendance(studentKey)}
+                                    className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1 mx-auto ${
+                                      isChecked
+                                        ? 'bg-emerald-600 text-white shadow-xs'
+                                        : 'bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-200'
+                                    }`}
+                                    title="Tích điểm danh học sinh"
+                                  >
+                                    {isChecked ? (
+                                      <>
+                                        <Check className="w-3 h-3" />
+                                        <span>Có mặt</span>
+                                      </>
+                                    ) : (
+                                      <span>Điểm danh</span>
+                                    )}
+                                  </button>
+                                </td>
+                              </tr>
+                            );
+                          })
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* THỐNG KÊ CUỐI BẢNG TÍNH */}
+                  <div className="bg-slate-100 p-3 sm:px-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-700">
+                    <span className="font-extrabold">
+                      Tổng số: <span className="text-blue-900">{displayedStudents.length} học sinh</span> trong bảng hiển thị
+                    </span>
+                    <div className="flex items-center gap-3">
+                      <span className="text-slate-500">
+                        Đã điểm danh: <strong>{Object.values(checkedAttendance).filter(Boolean).length}</strong> em
+                      </span>
+                      <span>•</span>
+                      <button
+                        onClick={handleExportExcel}
+                        className="text-blue-800 hover:underline font-bold flex items-center gap-1 cursor-pointer"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        <span>Tải file Excel đầy đủ</span>
+                      </button>
                     </div>
                   </div>
                 </div>
+              ) : (
+                /* ============================================================== */
+                /* GIAO DIỆN DẠNG THẺ HỌC SINH (CARDS VIEW) */
+                /* ============================================================== */
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {displayedStudents.map((student, idx) => {
+                    const isCB1 = student.assignedClass.includes('CB1');
+                    const isCB2 = student.assignedClass.includes('CB2');
+                    const isCB3 = student.assignedClass.includes('CB3');
+                    const studentKey = student.id || `st-${idx}`;
+                    const isChecked = !!checkedAttendance[studentKey];
 
-                {/* Bottom navigation buttons */}
-                <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-                  <button
-                    onClick={() => {
-                      onClose();
-                      onOpenConsultationModal(selectedClass.grade);
-                    }}
-                    className="px-6 py-3 bg-gradient-to-r from-blue-900 to-indigo-900 hover:from-blue-800 hover:to-indigo-800 text-white font-black text-xs sm:text-sm rounded-xl shadow-md cursor-pointer flex items-center justify-center gap-2"
-                  >
-                    <Sparkles className="w-4 h-4 text-amber-300" />
-                    <span>Đăng Ký Tư Vấn & Đánh Giá Năng Lực Miễn Phí</span>
-                  </button>
-                  <button
-                    onClick={() => setSelectedClassId('all')}
-                    className="px-5 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs sm:text-sm rounded-xl cursor-pointer"
-                  >
-                    Xem tất cả các lớp khác ({totalCenterStudents} em)
-                  </button>
+                    return (
+                      <div
+                        key={studentKey}
+                        className={`bg-white p-3.5 rounded-2xl border-2 transition-all shadow-xs relative ${
+                          isChecked
+                            ? 'border-emerald-400 bg-emerald-50/20'
+                            : 'border-slate-200 hover:border-blue-300'
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex items-center gap-2">
+                            <span className="w-6 h-6 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center text-xs font-black">
+                              {idx + 1}
+                            </span>
+                            <div>
+                              <h4 className="font-black text-slate-900 text-sm">
+                                {student.name}
+                              </h4>
+                              <span className="text-[11px] text-slate-500">
+                                {student.schoolName || 'THPT Lưu Nhân Chú'}
+                              </span>
+                            </div>
+                          </div>
+
+                          <span className="px-2 py-0.5 rounded-md font-black text-xs bg-slate-100 text-slate-800 border border-slate-300">
+                            {student.schoolClass}
+                          </span>
+                        </div>
+
+                        <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between gap-2">
+                          <span
+                            className={`px-2.5 py-0.5 rounded-full text-[11px] font-black border ${
+                              isCB1
+                                ? 'bg-blue-100 text-blue-900 border-blue-300'
+                                : isCB2
+                                ? 'bg-purple-100 text-purple-900 border-purple-300'
+                                : isCB3
+                                ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
+                                : 'bg-indigo-100 text-indigo-900 border-indigo-300'
+                            }`}
+                          >
+                            {student.assignedClass}
+                          </span>
+
+                          <button
+                            onClick={() => toggleAttendance(studentKey)}
+                            className={`px-2 py-0.5 rounded-md text-[11px] font-bold cursor-pointer transition-colors ${
+                              isChecked
+                                ? 'bg-emerald-600 text-white'
+                                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                            }`}
+                          >
+                            {isChecked ? '✓ Có mặt' : 'Điểm danh'}
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
+              )}
+
+              {/* ============================================================== */}
+              {/* KHỐI THÔNG TIN CHI TIẾT BỔ TRỢ (GIÁO VIÊN & LỊCH HỌC) */}
+              {/* ============================================================== */}
+              <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-3">
+                <h4 className="text-sm font-black text-slate-900 flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-amber-500" />
+                  <span>Kế Hoạch & Thông Tin Giảng Dạy:</span>
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                  <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                    <span className="font-bold text-slate-500 block mb-1">Đội ngũ giáo viên phụ trách:</span>
+                    <span className="font-extrabold text-slate-900 block text-sm">
+                      {selectedClass.teacher || 'Tổ bộ môn Toán phụ trách'}
+                    </span>
+                    <span className="text-[11px] text-slate-500 mt-1 block">
+                      Cô Hường phụ trách lớp CB1 & CB3 • Cô Hân phụ trách lớp CB2
+                    </span>
+                  </div>
+
+                  <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                    <span className="font-bold text-slate-500 block mb-1">Lịch học & phòng học:</span>
+                    <span className="font-extrabold text-slate-900 block text-sm">
+                      {selectedClass.schedule || 'Sắp xếp theo thời khóa biểu học sinh'}
+                    </span>
+                    <span className="text-[11px] text-slate-500 mt-1 block">
+                      Phòng học tiêu chuẩn máy lạnh, máy chiếu, bảng trượt hiện đại
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Nút hành động chân trang */}
+              <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+                <button
+                  onClick={() => {
+                    onClose();
+                    onOpenConsultationModal(selectedClass.grade);
+                  }}
+                  className="px-6 py-3 bg-gradient-to-r from-blue-900 to-indigo-900 hover:from-blue-800 hover:to-indigo-800 text-white font-black text-xs sm:text-sm rounded-xl shadow-md cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <Sparkles className="w-4 h-4 text-amber-300" />
+                  <span>Đăng Ký Tư Vấn & Xếp Lớp Mới</span>
+                </button>
+
+                <button
+                  onClick={() => setSelectedClassId('all')}
+                  className="px-5 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs sm:text-sm rounded-xl cursor-pointer"
+                >
+                  Xem tổng hợp các lớp khác ({totalCenterStudents} em)
+                </button>
               </div>
             </div>
           )}
         </div>
 
-        {/* Footer Actions */}
-        <div className="p-4 sm:px-6 bg-white border-t border-slate-200 flex-shrink-0 flex flex-col sm:flex-row items-center justify-between gap-3">
+        {/* ============================================================== */}
+        {/* MODAL FOOTER */}
+        {/* ============================================================== */}
+        <div className="p-3.5 sm:px-6 bg-white border-t border-slate-200 flex-shrink-0 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="text-xs text-slate-600 flex items-center gap-2">
-            <School className="w-4 h-4 text-blue-800" />
-            <span>Trung Tâm Bồi Dưỡng Kiến Thức Văn Hóa & Ôn Luyện Thi Vạn Phú - Thái Nguyên</span>
+            <School className="w-4 h-4 text-blue-800 flex-shrink-0" />
+            <span className="truncate">
+              Cơ Sở Giáo Dục Thầy Hoàng - Vạn Phú (Đại Từ - Thái Nguyên)
+            </span>
           </div>
 
-          <div className="flex items-center gap-3 w-full sm:w-auto">
+          <div className="flex items-center gap-2.5 w-full sm:w-auto">
             <button
               onClick={() => {
                 onClose();
                 onOpenConsultationModal();
               }}
-              className="flex-1 sm:flex-none px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white font-black text-xs rounded-xl shadow-sm cursor-pointer transition-colors"
+              className="flex-1 sm:flex-none px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white font-black text-xs rounded-xl shadow-xs cursor-pointer transition-colors"
             >
-              Đăng ký xếp lớp mới
+              Đăng Ký Xếp Lớp
             </button>
             <button
               onClick={onClose}
@@ -994,6 +1200,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
             </button>
           </div>
         </div>
+
       </div>
     </div>
   );
