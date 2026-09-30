@@ -414,11 +414,11 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
                           <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0 mt-0.5" />
                           <div className="text-xs">
                             <span className="font-black text-rose-900 uppercase">
-                              {cls.id === 'toan-12-cb' ? 'ĐÃ ĐẦY CẢ 3 PHÂN LỚP (75 HỌC SINH)' : 'LỚP ĐÃ ĐỦ SĨ SỐ'}
+                              {cls.id === 'toan-12-cb' ? `ĐÃ ĐẦY CẢ 3 PHÂN LỚP (${studentCount} HỌC SINH)` : 'LỚP ĐÃ ĐỦ SĨ SỐ'}
                             </span>
                             <p className="text-[11px] text-slate-700 mt-0.5 leading-relaxed">
                               {cls.id === 'toan-12-cb'
-                                ? 'Hiện tại cả 3 phân lớp (CB1: 29 em, CB2: 23 em, CB3: 23 em) đều đã đạt 100% sĩ số và tạm ngừng nhận thêm học viên mới.'
+                                ? 'Hiện tại cả 3 phân lớp (CB1: 29 em, CB2: 23 em, CB3: 24 em) đều đã đạt 100% sĩ số và tạm ngừng nhận thêm học viên mới.'
                                 : 'Lớp đã đủ số lượng học viên theo quy định.'}
                             </p>
                           </div>
@@ -535,7 +535,7 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
                             className="w-full py-2.5 px-4 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white font-black text-xs rounded-xl shadow-xs hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer"
                           >
                             <Users className="w-4 h-4 text-rose-100" />
-                            <span>{cls.id === 'toan-12-cb' ? 'Đã Đầy Cả 3 Lớp • Xem Danh Sách (75 em)' : 'Đã Đầy Sĩ Số • Xem Danh Sách'}</span>
+                            <span>{cls.id === 'toan-12-cb' ? `Đã Đầy Cả 3 Lớp • Xem Danh Sách (${studentCount} em)` : 'Đã Đầy Sĩ Số • Xem Danh Sách'}</span>
                           </button>
 
                           <button

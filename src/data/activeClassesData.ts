@@ -103,37 +103,37 @@ export const sortStudentsByAssignedClassAndSchoolClass = sortStudentsByClassAndN
 // DANH SÁCH 3 PHÂN LỚP TOÁN 12 CƠ BẢN
 // ==========================================
 
-// LỚP TOÁN 12 - CƠ BẢN 1 (GV: Cô Hường) - 29 học sinh (100% 12A9 THPT Lưu Nhân Chú - Cập nhật mới nhất & chuẩn A - Z)
+// LỚP TOÁN 12 - CƠ BẢN 1 (GV: Cô Hường) - 29 học sinh (100% 12A9 THPT Lưu Nhân Chú - Cập nhật chính xác theo danh sách mới)
 export const STUDENTS_TOAN_12_CB1: Student[] = [
   { id: '12cb1-1', stt: 1, name: 'Dương Thế Anh', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
   { id: '12cb1-2', stt: 2, name: 'Lê Khánh Chi', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
   { id: '12cb1-3', stt: 3, name: 'Đặng Xuân Chiều', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
-  { id: '12cb1-4', stt: 4, name: 'Lê Quỳnh Diễm', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
-  { id: '12cb1-5', stt: 5, name: 'Triệu Ngọc Duy', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
-  { id: '12cb1-6', stt: 6, name: 'Nguyễn Viết Dương', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
-  { id: '12cb1-7', stt: 7, name: 'Nguyễn Văn Đại', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
-  { id: '12cb1-8', stt: 8, name: 'Lê Đăng Đức', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
-  { id: '12cb1-9', stt: 9, name: 'Trần Đặng Phương Hiếu', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
-  { id: '12cb1-10', stt: 10, name: 'Dương Chí Huy', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
-  { id: '12cb1-11', stt: 11, name: 'Nguyễn Quang Huyên', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
-  { id: '12cb1-12', stt: 12, name: 'Dương Hồng Lê', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
+  { id: '12cb1-4', stt: 4, name: 'Nguyễn Văn Đại', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
+  { id: '12cb1-5', stt: 5, name: 'Lê Đăng Đức', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
+  { id: '12cb1-6', stt: 6, name: 'Lê Quỳnh Diễm', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
+  { id: '12cb1-7', stt: 7, name: 'Nguyễn Viết Dương', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
+  { id: '12cb1-8', stt: 8, name: 'Trần Đặng Phương Hiếu', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
+  { id: '12cb1-9', stt: 9, name: 'Dương Chí Huy', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
+  { id: '12cb1-10', stt: 10, name: 'Nguyễn Quang Huyên', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
+  { id: '12cb1-11', stt: 11, name: 'Dương Hồng Lê', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
+  { id: '12cb1-12', stt: 12, name: 'Lưu Quang Linh', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
   { id: '12cb1-13', stt: 13, name: 'Đỗ Thị Mỹ Linh', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
-  { id: '12cb1-14', stt: 14, name: 'Lưu Quang Linh', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
-  { id: '12cb1-15', stt: 15, name: 'Đào Thùy Loan', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
-  { id: '12cb1-16', stt: 16, name: 'Vũ Gia Long', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
-  { id: '12cb1-17', stt: 17, name: 'Vũ Ngọc Cẩm Ly', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
-  { id: '12cb1-18', stt: 18, name: 'Lê Hồng Minh', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
-  { id: '12cb1-19', stt: 19, name: 'Ngô Kiều Mỹ', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
-  { id: '12cb1-20', stt: 20, name: 'Trần Bảo Ngọc', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
-  { id: '12cb1-21', stt: 21, name: 'Nguyễn Hồng Nhung', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
-  { id: '12cb1-22', stt: 22, name: 'Đào Anh Tài', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
-  { id: '12cb1-23', stt: 23, name: 'Đặng Thuỳ Trang', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
+  { id: '12cb1-14', stt: 14, name: 'Đào Thùy Loan', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
+  { id: '12cb1-15', stt: 15, name: 'Vũ Gia Long', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
+  { id: '12cb1-16', stt: 16, name: 'Vũ Ngọc Cẩm Ly', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
+  { id: '12cb1-17', stt: 17, name: 'Ngô Kiều Mỹ', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
+  { id: '12cb1-18', stt: 18, name: 'Trần Bảo Ngọc', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
+  { id: '12cb1-19', stt: 19, name: 'Nguyễn Hồng Nhung', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
+  { id: '12cb1-20', stt: 20, name: 'Đặng Thuỳ Trang', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
+  { id: '12cb1-21', stt: 21, name: 'Nguyễn Thị Cẩm Tú', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
+  { id: '12cb1-22', stt: 22, name: 'Phạm Thế Vinh', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
+  { id: '12cb1-23', stt: 23, name: 'Nguyễn Văn Xuân', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
   { id: '12cb1-24', stt: 24, name: 'Nguyễn Thị Thùy Trang', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
-  { id: '12cb1-25', stt: 25, name: 'Nguyễn Thị Cẩm Tú', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
-  { id: '12cb1-26', stt: 26, name: 'Dương Tuấn Vinh', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
-  { id: '12cb1-27', stt: 27, name: 'Phạm Thế Vinh', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
-  { id: '12cb1-28', stt: 28, name: 'Bùi Khánh Vy', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
-  { id: '12cb1-29', stt: 29, name: 'Nguyễn Văn Xuân', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
+  { id: '12cb1-25', stt: 25, name: 'Bùi Khánh Vy', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
+  { id: '12cb1-26', stt: 26, name: 'Triệu Ngọc Duy', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
+  { id: '12cb1-27', stt: 27, name: 'Đào Anh Tài', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
+  { id: '12cb1-28', stt: 28, name: 'Lê Hồng Minh', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
+  { id: '12cb1-29', stt: 29, name: 'Dương Tuấn Vinh', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB1 - Toán 12 (GV: Cô Hường)' },
 ];
 
 // LỚP TOÁN 12 - CƠ BẢN 2 (GV: Cô Hân) - 23 học sinh (12A6: 19 em, 12A7: 2 em, THPT Đội Cấn: 2 em)
@@ -163,7 +163,7 @@ export const STUDENTS_TOAN_12_CB2: Student[] = [
   { id: '12cb2-23', stt: 23, name: 'Nguyễn Thị Hiền Trang', schoolClass: '12', schoolName: 'THPT Đội Cấn', assignedClass: 'CB2 - Toán 12 (GV: Cô Hân)' },
 ];
 
-// LỚP TOÁN 12 - CƠ BẢN 3 (GV: Cô Hường) - 23 học sinh (12A8: 21 em, 12A5: 2 em)
+// LỚP TOÁN 12 - CƠ BẢN 3 (GV: Cô Hường) - 24 học sinh (12A8: 22 em, 12A5: 2 em)
 export const STUDENTS_TOAN_12_CB3: Student[] = [
   { id: '12cb3-1', stt: 1, name: 'Ngô Thị Minh Thư', schoolClass: '12A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB3 - Toán 12 (GV: Cô Hường)' },
   { id: '12cb3-2', stt: 2, name: 'Ngô Trần Hoàng Linh', schoolClass: '12A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB3 - Toán 12 (GV: Cô Hường)' },
@@ -186,11 +186,12 @@ export const STUDENTS_TOAN_12_CB3: Student[] = [
   { id: '12cb3-19', stt: 19, name: 'Ngô Gia Mỹ', schoolClass: '12A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB3 - Toán 12 (GV: Cô Hường)' },
   { id: '12cb3-20', stt: 20, name: 'Nguyễn Khánh Ly', schoolClass: '12A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB3 - Toán 12 (GV: Cô Hường)' },
   { id: '12cb3-21', stt: 21, name: 'Lưu Minh Vũ', schoolClass: '12A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB3 - Toán 12 (GV: Cô Hường)' },
-  { id: '12cb3-22', stt: 22, name: 'Dương Thị Thảo', schoolClass: '12A5', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB3 - Toán 12 (GV: Cô Hường)' },
-  { id: '12cb3-23', stt: 23, name: 'Hoàng Thanh Thương', schoolClass: '12A5', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB3 - Toán 12 (GV: Cô Hường)' },
+  { id: '12cb3-22', stt: 22, name: 'Nguyễn Quốc Khánh', schoolClass: '12A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB3 - Toán 12 (GV: Cô Hường)' },
+  { id: '12cb3-23', stt: 23, name: 'Dương Thị Thảo', schoolClass: '12A5', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB3 - Toán 12 (GV: Cô Hường)' },
+  { id: '12cb3-24', stt: 24, name: 'Hoàng Thanh Thương', schoolClass: '12A5', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB3 - Toán 12 (GV: Cô Hường)' },
 ];
 
-// Tổng hợp 75 học sinh của cả 3 phân lớp Toán 12 Cơ bản (CB1: 29 em, CB2: 23 em, CB3: 23 em - ĐÃ ĐẦY CẢ 3 LỚP)
+// Tổng hợp 76 học sinh của cả 3 phân lớp Toán 12 Cơ bản (CB1: 29 em, CB2: 23 em, CB3: 24 em - ĐÃ ĐẦY CẢ 3 LỚP)
 export const STUDENTS_TOAN_12_CO_BAN: Student[] = [
   ...STUDENTS_TOAN_12_CB1,
   ...STUDENTS_TOAN_12_CB2,
@@ -231,31 +232,31 @@ export const STUDENTS_TOAN_11_CB1: Student[] = [
 
 // Lớp Toán 11 - Phân lớp CB 2 (22 học sinh - GV: Cô Vũ Hằng - Đã sắp xếp theo thứ tự lớp ở trường & tên A-Z)
 export const STUDENTS_TOAN_11_CB2: Student[] = [
-  // Lớp 11A2 (8 học sinh)
-  { id: 'cb11_2-1', stt: 1, name: 'Nguyễn Thị Thu Hiền', schoolClass: '11A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
-  { id: 'cb11_2-2', stt: 2, name: 'Khương Thị Bích Ngọc', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
-  { id: 'cb11_2-3', stt: 3, name: 'Đặng Thị Hồng Nhung', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
-  { id: 'cb11_2-4', stt: 4, name: 'Lại Thị Khai Tâm', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
-  { id: 'cb11_2-5', stt: 5, name: 'Phạm Minh Trang', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
-  { id: 'cb11_2-6', stt: 6, name: 'Lương Thanh Trúc', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
-  { id: 'cb11_2-7', stt: 7, name: 'Trương Phương Uyên', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
-  { id: 'cb11_2-8', stt: 8, name: 'Trần Luân Hà Vy', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
+  // Lớp 11A2 (7 học sinh)
+  { id: 'cb11_2-1', stt: 1, name: 'Khương Thị Bích Ngọc', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
+  { id: 'cb11_2-2', stt: 2, name: 'Đặng Thị Hồng Nhung', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
+  { id: 'cb11_2-3', stt: 3, name: 'Lại Thị Khai Tâm', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
+  { id: 'cb11_2-4', stt: 4, name: 'Phạm Minh Trang', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
+  { id: 'cb11_2-5', stt: 5, name: 'Lương Thanh Trúc', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
+  { id: 'cb11_2-6', stt: 6, name: 'Trương Phương Uyên', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
+  { id: 'cb11_2-7', stt: 7, name: 'Trần Luân Hà Vy', schoolClass: '11A2', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
 
   // Lớp 11A3 (4 học sinh)
-  { id: 'cb11_2-9', stt: 9, name: 'Phạm Thị Ngọc Huyền', schoolClass: '11A3', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
-  { id: 'cb11_2-10', stt: 10, name: 'Lê Xuân Nhi', schoolClass: '11A3', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
-  { id: 'cb11_2-11', stt: 11, name: 'Ngô Thị Phương Thảo', schoolClass: '11A3', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
-  { id: 'cb11_2-12', stt: 12, name: 'Mai Thị Thúy', schoolClass: '11A3', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
+  { id: 'cb11_2-8', stt: 8, name: 'Phạm Thị Ngọc Huyền', schoolClass: '11A3', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
+  { id: 'cb11_2-9', stt: 9, name: 'Lê Xuân Nhi', schoolClass: '11A3', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
+  { id: 'cb11_2-10', stt: 10, name: 'Ngô Thị Phương Thảo', schoolClass: '11A3', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
+  { id: 'cb11_2-11', stt: 11, name: 'Mai Thị Thúy', schoolClass: '11A3', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
 
   // Lớp 11A4 (1 học sinh)
-  { id: 'cb11_2-13', stt: 13, name: 'Nguyễn Thúy Diệu', schoolClass: '11A4', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
+  { id: 'cb11_2-12', stt: 12, name: 'Nguyễn Thúy Diệu', schoolClass: '11A4', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
 
   // Lớp 11A7 (2 học sinh)
-  { id: 'cb11_2-14', stt: 14, name: 'Lê Khánh Ly', schoolClass: '11A7', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
-  { id: 'cb11_2-15', stt: 15, name: 'Chu Trần Bảo Ngọc', schoolClass: '11A7', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
+  { id: 'cb11_2-13', stt: 13, name: 'Lê Khánh Ly', schoolClass: '11A7', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
+  { id: 'cb11_2-14', stt: 14, name: 'Chu Trần Bảo Ngọc', schoolClass: '11A7', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
 
-  // Lớp 11A8 (1 học sinh)
-  { id: 'cb11_2-16', stt: 16, name: 'Nguyễn Thị Dung Nhi', schoolClass: '11A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
+  // Lớp 11A8 (2 học sinh)
+  { id: 'cb11_2-15', stt: 15, name: 'Nguyễn Thị Dung Nhi', schoolClass: '11A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
+  { id: 'cb11_2-16', stt: 16, name: 'Nguyễn Thị Thu Hiền', schoolClass: '11A8', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
 
   // Lớp 11A9 (5 học sinh)
   { id: 'cb11_2-17', stt: 17, name: 'Vũ Thị Ngọc Hân', schoolClass: '11A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB2 - Toán 11' },
@@ -312,12 +313,12 @@ export const ACTIVE_CLASSES: ActiveClass[] = [
     schedule: 'Theo lịch phân nhóm tuần (CB1, CB2, CB3)',
     room: 'Cơ sở Khu Đô Thị Vạn Phú',
     status: 'enrolling',
-    statusLabel: 'ĐANG MỞ (75 học sinh)',
+    statusLabel: 'ĐANG MỞ (76 học sinh)',
     isOpen: true,
     isFull: false,
-    studentCount: 75,
+    studentCount: 76,
     students: STUDENTS_TOAN_12_CO_BAN,
-    note: 'Hiện có 75 học sinh đang theo học (gồm CB1: 29 em - GV Cô Hường; CB2: 23 em - GV Cô Hân; CB3: 23 em - GV Cô Hường). Bám sát cấu trúc đề thi tốt nghiệp THPT mới, củng cố toàn diện môn Toán 12.',
+    note: 'Hiện có 76 học sinh đang theo học (gồm CB1: 29 em - GV Cô Hường; CB2: 23 em - GV Cô Hân; CB3: 24 em - GV Cô Hường). Bám sát cấu trúc đề thi tốt nghiệp THPT mới, củng cố toàn diện môn Toán 12.',
   },
   {
     id: 'toan-12-nc',
