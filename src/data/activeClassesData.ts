@@ -300,6 +300,18 @@ export const STUDENTS_CNTT: Student[] = [
   { id: 'cntt-18', stt: 18, name: 'Trần Thị Hương Trà', schoolClass: '5A4', schoolName: 'TH Vạn Phú', assignedClass: 'Lớp CNTT' },
 ];
 
+// Lớp Toán 10 - Cơ Bản (8 học sinh - GV: Thầy Hoàng & Tổ bộ môn Toán - Cập nhật chính xác theo danh sách mới)
+export const STUDENTS_TOAN_10_CB: Student[] = [
+  { id: '10cb-1', stt: 1, name: 'Đỗ Quốc Đạt', schoolClass: '10A5', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB - Toán 10' },
+  { id: '10cb-2', stt: 2, name: 'Trần Hương Giang', schoolClass: '10A10', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB - Toán 10' },
+  { id: '10cb-3', stt: 3, name: 'Nguyễn Hoàng Quân', schoolClass: '10A4', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB - Toán 10' },
+  { id: '10cb-4', stt: 4, name: 'Nguyễn Quốc Đạt', schoolClass: '10A5', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB - Toán 10' },
+  { id: '10cb-5', stt: 5, name: 'Đào Gia Bảo', schoolClass: '10A5', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB - Toán 10' },
+  { id: '10cb-6', stt: 6, name: 'Trần Anh Đức', schoolClass: '10A5', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB - Toán 10' },
+  { id: '10cb-7', stt: 7, name: 'Lê Duy Hoàng', schoolClass: '10A4', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB - Toán 10' },
+  { id: '10cb-8', stt: 8, name: 'Lê Thị Quỳnh Nga', schoolClass: '10A1', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB - Toán 10' },
+];
+
 // DANH SÁCH LỚP HỌC (TẤT CẢ LỚP ĐANG MỞ, HIỂN THỊ TỔNG SỐ LƯỢNG HỌC SINH)
 export const ACTIVE_CLASSES: ActiveClass[] = [
   {
@@ -367,12 +379,12 @@ export const ACTIVE_CLASSES: ActiveClass[] = [
     schedule: 'Tối Thứ 3 & Thứ 7 (17:30 - 19:30)',
     room: 'Phòng Chuyên Đề Khối 10',
     status: 'enrolling',
-    statusLabel: 'ĐANG MỞ LỚP',
+    statusLabel: 'ĐANG MỞ (8 học sinh)',
     isOpen: true,
     isFull: false,
-    studentCount: 0,
-    students: [],
-    note: 'Bám sát chương trình GDPT mới lớp 10: Xây dựng vững chắc nền tảng Mệnh đề, Tập hợp, Bất phương trình, Hàm số bậc hai, Hệ thức lượng trong tam giác và Tọa độ phẳng Oxy. Lớp đang mở tiếp nhận học sinh mới.',
+    studentCount: 8,
+    students: STUDENTS_TOAN_10_CB,
+    note: 'Hiện có 8 học sinh đang theo học. Bám sát chương trình GDPT mới lớp 10: Xây dựng vững chắc nền tảng Mệnh đề, Tập hợp, Bất phương trình, Hàm số bậc hai, Hệ thức lượng trong tam giác và Tọa độ phẳng Oxy. Lớp đang mở và tiếp tục nhận đăng ký bổ sung.',
   },
   {
     id: 'toan-10-nc',
