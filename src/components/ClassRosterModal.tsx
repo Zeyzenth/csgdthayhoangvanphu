@@ -10,7 +10,13 @@ import {
   Search,
   Filter,
   ArrowUpDown,
-  BookOpen
+  BookOpen,
+  Lock,
+  KeyRound,
+  ShieldCheck,
+  ShieldAlert,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { Student, GradeLevel } from '../types';
 import {
@@ -52,6 +58,54 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [schoolClassFilter, setSchoolClassFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'assignedClass' | 'schoolClass' | 'name'>('schoolClass');
+
+  // Trạng thái bảo mật & khóa danh sách học sinh: yêu cầu mật khẩu mới xem được (mật khẩu đúng: THVP2026 - không có gợi ý mật khẩu)
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return sessionStorage.getItem('roster_auth_status') === 'authenticated';
+    }
+    return false;
+  });
+  const [passwordInput, setPasswordInput] = useState<string>('');
+  const [showPasswordText, setShowPasswordText] = useState<boolean>(false);
+  const [passwordError, setPasswordError] = useState<string>('');
+
+  const handleUnlock = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!passwordInput.trim()) {
+      setPasswordError('Vui lòng nhập mật khẩu để xem danh sách.');
+      return;
+    }
+    if (passwordInput.trim() === 'THVP2026') {
+      setIsAuthenticated(true);
+      setPasswordError('');
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('roster_auth_status', 'authenticated');
+      }
+    } else {
+      setPasswordError('Mật khẩu không chính xác. Vui lòng thử lại.');
+      setPasswordInput('');
+    }
+  };
+
+  const handleLock = () => {
+    setIsAuthenticated(false);
+    setPasswordInput('');
+    setPasswordError('');
+    setShowPasswordText(false);
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('roster_auth_status');
+    }
+  };
+
+  // Reset form nhập mật khẩu khi đóng modal
+  useEffect(() => {
+    if (!isOpen) {
+      setPasswordInput('');
+      setPasswordError('');
+      setShowPasswordText(false);
+    }
+  }, [isOpen]);
 
   // Đồng bộ initialClassId khi mở modal
   useEffect(() => {
@@ -234,14 +288,42 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
           </button>
 
           {/* Dòng huy hiệu phía trên tiêu đề */}
-          <div className="flex flex-wrap items-center gap-2 mb-2 pr-8">
-            <span className="bg-amber-400 text-slate-950 font-black text-[11px] sm:text-xs px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-xs tracking-wide uppercase">
-              <Users className="w-3.5 h-3.5" />
-              <span>DANH SÁCH THÀNH VIÊN LỚP HỌC</span>
-            </span>
-            <span className="bg-[#1e295d] text-blue-100 font-bold text-[11px] sm:text-xs px-3 py-0.5 rounded-full border border-blue-400/20">
-              Môn Toán • Cơ sở Vạn Phú
-            </span>
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-2 pr-8">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="bg-amber-400 text-slate-950 font-black text-[11px] sm:text-xs px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-xs tracking-wide uppercase">
+                <Users className="w-3.5 h-3.5" />
+                <span>DANH SÁCH THÀNH VIÊN LỚP HỌC</span>
+              </span>
+              <span className="bg-[#1e295d] text-blue-100 font-bold text-[11px] sm:text-xs px-3 py-0.5 rounded-full border border-blue-400/20">
+                Môn Toán • Cơ sở Vạn Phú
+              </span>
+            </div>
+
+            {/* Trạng thái bảo mật */}
+            <div className="flex items-center gap-2">
+              {!isAuthenticated ? (
+                <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-bold bg-amber-400/20 text-amber-200 border border-amber-400/30">
+                  <Lock className="w-3 h-3 text-amber-300" />
+                  <span>Bảo mật danh sách</span>
+                </span>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-200 border border-emerald-400/30">
+                    <CheckCircle2 className="w-3 h-3 text-emerald-300" />
+                    <span>Đã mở khóa</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleLock}
+                    className="px-2.5 py-0.5 text-xs font-bold text-blue-200 hover:text-white bg-white/10 hover:bg-white/20 rounded-md transition-colors flex items-center gap-1 cursor-pointer"
+                    title="Khóa lại danh sách học sinh"
+                  >
+                    <Lock className="w-3 h-3" />
+                    <span>Khóa lại</span>
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Tiêu đề chính */}
@@ -401,11 +483,84 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
         {/* ============================================================== */}
         {/* NỘI DUNG CHÍNH (HIỂN THỊ THẬT DÀI THEO CHIỀU DỌC TRÊN ĐIỆN THOẠI) */}
         {/* ============================================================== */}
-        <div className="flex-grow overflow-y-auto p-2.5 sm:p-5 bg-slate-50 space-y-3.5 scrollbar-thin">
+        <div className="flex-grow overflow-y-auto p-2.5 sm:p-5 bg-slate-50 space-y-3.5 scrollbar-thin flex flex-col">
           
-          {/* ============================================================== */}
-          {/* THANH TÌM KIẾM & BỘ LỌC LỚP TRƯỜNG & NÚT IN DANH SÁCH */}
-          {/* ============================================================== */}
+          {!isAuthenticated ? (
+            /* ============================================================== */
+            /* KHỐI BẢO MẬT & NHẬP MẬT KHẨU (KHÔNG CÓ GỢI Ý MẬT KHẨU) */
+            /* ============================================================== */
+            <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-12 flex flex-col items-center justify-center text-center my-auto min-h-[380px]">
+              <div className="relative mb-5">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-gradient-to-br from-[#0c1a40] via-[#162f6b] to-[#1e295d] text-white flex items-center justify-center shadow-xl shadow-blue-950/20 ring-4 ring-blue-100">
+                  <Lock className="w-10 h-10 sm:w-12 sm:h-12 text-amber-400" />
+                </div>
+                <div className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center ring-2 ring-white shadow-xs">
+                  <ShieldCheck className="w-4 h-4" />
+                </div>
+              </div>
+
+              <h3 className="text-lg sm:text-2xl font-black text-slate-900 tracking-tight uppercase">
+                Danh Sách Học Sinh Được Bảo Mật
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-600 max-w-md mt-2 leading-relaxed">
+                Để bảo vệ quyền riêng tư và thông tin cá nhân của học sinh, danh sách thành viên các lớp học yêu cầu nhập mật khẩu xác thực để mở khóa.
+              </p>
+
+              <form onSubmit={handleUnlock} className="w-full max-w-sm mt-6 space-y-3.5">
+                <div className="relative">
+                  <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                    <KeyRound className="w-4 h-4" />
+                  </div>
+                  <input
+                    type={showPasswordText ? 'text' : 'password'}
+                    value={passwordInput}
+                    onChange={(e) => {
+                      setPasswordInput(e.target.value);
+                      if (passwordError) setPasswordError('');
+                    }}
+                    placeholder="Nhập mật khẩu..."
+                    autoFocus
+                    className={`w-full pl-10 pr-11 py-3 bg-white border ${
+                      passwordError ? 'border-rose-500 ring-2 ring-rose-200' : 'border-slate-300 focus:ring-2 focus:ring-blue-600'
+                    } rounded-2xl text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none shadow-2xs transition-all`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPasswordText(!showPasswordText)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer p-1"
+                    title={showPasswordText ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+                    aria-label={showPasswordText ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+                  >
+                    {showPasswordText ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+
+                {passwordError && (
+                  <div className="flex items-center gap-2 text-xs font-bold text-rose-700 bg-rose-50 border border-rose-200 px-3.5 py-2.5 rounded-xl text-left">
+                    <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0" />
+                    <span>{passwordError}</span>
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  className="w-full py-3 px-6 bg-gradient-to-r from-[#162f6b] to-[#1e3a8a] hover:from-[#122557] hover:to-[#172554] text-white font-black text-xs sm:text-sm rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
+                >
+                  <Lock className="w-4 h-4 text-amber-400" />
+                  <span>Mở Khóa Xem Danh Sách</span>
+                </button>
+              </form>
+
+              <div className="mt-8 flex items-center gap-2 text-[11px] text-slate-500 bg-slate-50 px-4 py-2 rounded-full border border-slate-200">
+                <ShieldAlert className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                <span>Thông tin được bảo mật nội bộ theo quy định của Trung tâm.</span>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* ============================================================== */}
+              {/* THANH TÌM KIẾM & BỘ LỌC LỚP TRƯỜNG & NÚT IN DANH SÁCH */}
+              {/* ============================================================== */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 text-xs">
             {/* Ô tìm kiếm */}
             <div className="relative flex-1">
@@ -661,6 +816,8 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
               </table>
             </div>
           </div>
+          </>
+          )}
         </div>
 
         {/* ============================================================== */}
@@ -668,7 +825,12 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
         {/* ============================================================== */}
         <div className="p-3 sm:px-5 bg-white border-t border-slate-200 flex-shrink-0 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="text-xs text-slate-500 text-center sm:text-left">
-            {selectedTab.startsWith('toan-11') ? (
+            {!isAuthenticated ? (
+              <span className="flex items-center gap-1.5 text-slate-600 font-medium">
+                <Lock className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
+                <span>Danh sách học sinh đang ở chế độ bảo mật • Nhập mật khẩu để xem chi tiết</span>
+              </span>
+            ) : selectedTab.startsWith('toan-11') ? (
               <span>Tổng cộng: <strong className="text-slate-800">{STUDENTS_TOAN_11_ALL.length} học sinh</strong> thuộc 2 phân lớp Toán 11 Cơ Bản (CB1: {STUDENTS_TOAN_11_CB1.length} em, CB2: {STUDENTS_TOAN_11_CB2.length} em • GV: Cô Vũ Hằng)</span>
             ) : selectedTab.startsWith('toan-12-cb') ? (
               <span>Tổng cộng: <strong className="text-slate-800">{STUDENTS_TOAN_12_CO_BAN.length} học sinh</strong> thuộc 3 phân lớp Toán 12 Cơ Bản (CB1: {STUDENTS_TOAN_12_CB1.length} em, CB2: {STUDENTS_TOAN_12_CB2.length} em, CB3: {STUDENTS_TOAN_12_CB3.length} em)</span>
@@ -680,6 +842,18 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
           </div>
 
           <div className="flex items-center gap-2.5 w-full sm:w-auto">
+            {isAuthenticated && (
+              <button
+                type="button"
+                onClick={handleLock}
+                className="px-3.5 py-2.5 bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-700 font-bold text-xs sm:text-sm rounded-xl border border-slate-200 hover:border-rose-200 transition-colors flex items-center gap-1.5 cursor-pointer"
+                title="Khóa lại danh sách học sinh"
+              >
+                <Lock className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Khóa lại</span>
+              </button>
+            )}
+
             <button
               onClick={() => {
                 onClose();
