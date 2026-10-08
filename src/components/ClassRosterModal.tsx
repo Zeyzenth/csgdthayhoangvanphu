@@ -167,10 +167,10 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
       return {
         currentStudents: STUDENTS_TOAN_12_CB3,
         tabTitle: `BẢNG DANH SÁCH THÀNH VIÊN LỚP 3 (CB 3: ${STUDENTS_TOAN_12_CB3.length} HỌC SINH - ĐÃ ĐẦY SĨ SỐ)`,
-        tabSubTitle: `Sĩ số: ${STUDENTS_TOAN_12_CB3.length} / ${STUDENTS_TOAN_12_CB3.length} học sinh (Gồm 12A8: 22 em, 12A5: 2 em - THPT Lưu Nhân Chú)`,
+        tabSubTitle: `Sĩ số: ${STUDENTS_TOAN_12_CB3.length} / ${STUDENTS_TOAN_12_CB3.length} học sinh (Gồm 12A8: 22 em, 12A5: 1 em - THPT Lưu Nhân Chú)`,
         isClassFull: true,
         capacityText: `Lớp 3: ${STUDENTS_TOAN_12_CB3.length} em • ĐÃ ĐẦY`,
-        noteText: `Lớp 3 gồm ${STUDENTS_TOAN_12_CB3.length} học sinh lớp 12A8 & 12A5 đã chốt danh sách. Đã đủ sĩ số đào tạo chất lượng cao!`
+        noteText: `Lớp 3 gồm ${STUDENTS_TOAN_12_CB3.length} học sinh (12A8: 22 em, 12A5: 1 em) đã chốt danh sách. Đã đủ sĩ số đào tạo chất lượng cao!`
       };
     }
     if (selectedTab === 'toan-12-cb4') {
