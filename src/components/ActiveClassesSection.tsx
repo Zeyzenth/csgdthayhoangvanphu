@@ -418,7 +418,7 @@ export const ActiveClassesSection: React.FC<ActiveClassesSectionProps> = ({
                             </span>
                             <p className="text-[11px] text-slate-700 mt-0.5 leading-relaxed">
                               {cls.id === 'toan-12-cb'
-                                ? 'Hiện tại cả 3 phân lớp (CB1: 29 em, CB2: 23 em, CB3: 24 em) đều đã đạt 100% sĩ số và tạm ngừng nhận thêm học viên mới.'
+                                ? 'Hiện tại các phân lớp Toán 12 (CB1, CB2, CB3, CB4) bám sát cấu trúc đề thi mới và đang được đào tạo chuyên sâu.'
                                 : 'Lớp đã đủ số lượng học viên theo quy định.'}
                             </p>
                           </div>

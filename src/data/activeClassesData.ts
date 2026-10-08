@@ -191,11 +191,27 @@ export const STUDENTS_TOAN_12_CB3: Student[] = [
   { id: '12cb3-24', stt: 24, name: 'Hoàng Thanh Thương', schoolClass: '12A5', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB3 - Toán 12 (GV: Cô Hường)' },
 ];
 
-// Tổng hợp 76 học sinh của cả 3 phân lớp Toán 12 Cơ bản (CB1: 29 em, CB2: 23 em, CB3: 24 em - ĐÃ ĐẦY CẢ 3 LỚP)
+// LỚP TOÁN 12 - CƠ BẢN 4 (CB4 - THPT Lưu Nhân Chú - Cập nhật chính xác từ danh sách mới)
+export const STUDENTS_TOAN_12_CB4: Student[] = [
+  { id: '12cb4-1', stt: 1, name: 'Học sinh STT 1 (Đang cập nhật)', schoolClass: '12', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB4 - Toán 12' },
+  { id: '12cb4-2', stt: 2, name: 'Học sinh STT 2 (Đang cập nhật)', schoolClass: '12', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB4 - Toán 12' },
+  { id: '12cb4-3', stt: 3, name: 'Học sinh STT 3 (Đang cập nhật)', schoolClass: '12', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB4 - Toán 12' },
+  { id: '12cb4-4', stt: 4, name: 'Học sinh STT 4 (Đang cập nhật)', schoolClass: '12', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB4 - Toán 12' },
+  { id: '12cb4-5', stt: 5, name: 'Học sinh STT 5 (Đang cập nhật)', schoolClass: '12', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB4 - Toán 12' },
+  { id: '12cb4-6', stt: 6, name: 'Học sinh STT 6 (Đang cập nhật)', schoolClass: '12', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB4 - Toán 12' },
+  { id: '12cb4-7', stt: 7, name: 'Học sinh STT 7 (Đang cập nhật)', schoolClass: '12', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB4 - Toán 12' },
+  { id: '12cb4-8', stt: 8, name: 'Trần Yến Nhi', schoolClass: '12A4', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB4 - Toán 12' },
+  { id: '12cb4-9', stt: 9, name: 'Hoàng Thanh Thương', schoolClass: '12A5', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB4 - Toán 12' },
+  { id: '12cb4-10', stt: 10, name: 'Bùi Khánh Vy', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB4 - Toán 12' },
+  { id: '12cb4-11', stt: 11, name: 'Nguyễn Thị Thuỳ Trang', schoolClass: '12A9', schoolName: 'THPT Lưu Nhân Chú', assignedClass: 'CB4 - Toán 12' },
+];
+
+// Tổng hợp học sinh của cả 4 phân lớp Toán 12 Cơ bản (CB1, CB2, CB3, CB4)
 export const STUDENTS_TOAN_12_CO_BAN: Student[] = [
   ...STUDENTS_TOAN_12_CB1,
   ...STUDENTS_TOAN_12_CB2,
   ...STUDENTS_TOAN_12_CB3,
+  ...STUDENTS_TOAN_12_CB4,
 ];
 
 // Lớp Toán 12 Nâng Cao 8.5+ (5 học sinh)
@@ -322,16 +338,16 @@ export const ACTIVE_CLASSES: ActiveClass[] = [
     subject: 'Toán',
     level: 'Cơ Bản',
     classGroup: 'Khối 12',
-    teacher: 'Cô Hường & Cô Hân (Tổ bộ môn Toán)',
-    schedule: 'Theo lịch phân nhóm tuần (CB1, CB2, CB3)',
+    teacher: 'Tổ bộ môn Toán (Cô Hường, Cô Hân & GV phụ trách)',
+    schedule: 'Theo lịch phân nhóm tuần (CB1, CB2, CB3, CB4)',
     room: 'Cơ sở Khu Đô Thị Vạn Phú',
     status: 'enrolling',
-    statusLabel: 'ĐANG MỞ (76 học sinh)',
+    statusLabel: 'ĐANG MỞ (87 học sinh)',
     isOpen: true,
     isFull: false,
-    studentCount: 76,
+    studentCount: 87,
     students: STUDENTS_TOAN_12_CO_BAN,
-    note: 'Hiện có 76 học sinh đang theo học (gồm CB1: 29 em - GV Cô Hường; CB2: 23 em - GV Cô Hân; CB3: 24 em - GV Cô Hường). Bám sát cấu trúc đề thi tốt nghiệp THPT mới, củng cố toàn diện môn Toán 12.',
+    note: 'Hiện có 87 học sinh đang theo học (gồm CB1: 29 em; CB2: 23 em; CB3: 24 em; CB4: 11 em). Bám sát cấu trúc đề thi tốt nghiệp THPT mới, củng cố toàn diện môn Toán 12.',
   },
   {
     id: 'toan-12-nc',

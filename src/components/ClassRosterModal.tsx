@@ -25,6 +25,7 @@ import {
   STUDENTS_TOAN_12_CB1,
   STUDENTS_TOAN_12_CB2,
   STUDENTS_TOAN_12_CB3,
+  STUDENTS_TOAN_12_CB4,
   STUDENTS_TOAN_11_CB1,
   STUDENTS_TOAN_11_CB2,
   STUDENTS_TOAN_11_ALL,
@@ -116,6 +117,8 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
         setSelectedTab('toan-12-cb2');
       } else if (initialClassId === 'toan-12-cb3' || initialClassId === 'cb3') {
         setSelectedTab('toan-12-cb3');
+      } else if (initialClassId === 'toan-12-cb4' || initialClassId === 'cb4') {
+        setSelectedTab('toan-12-cb4');
       } else if (initialClassId === 'toan-12-cb') {
         setSelectedTab('toan-12-cb1');
       } else if (initialClassId === 'toan-12-all' || initialClassId === 'all') {
@@ -170,14 +173,24 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
         noteText: `Lớp 3 gồm ${STUDENTS_TOAN_12_CB3.length} học sinh lớp 12A8 & 12A5 đã chốt danh sách. Đã đủ sĩ số đào tạo chất lượng cao!`
       };
     }
+    if (selectedTab === 'toan-12-cb4') {
+      return {
+        currentStudents: STUDENTS_TOAN_12_CB4,
+        tabTitle: `BẢNG DANH SÁCH THÀNH VIÊN LỚP 4 (CB 4: ${STUDENTS_TOAN_12_CB4.length} HỌC SINH)`,
+        tabSubTitle: `Sĩ số: ${STUDENTS_TOAN_12_CB4.length} học sinh • Lớp Toán 12 - Cơ Bản 4 (Cơ sở GD Thầy Hoàng - Vạn Phú)`,
+        isClassFull: false,
+        capacityText: `Lớp 4: ${STUDENTS_TOAN_12_CB4.length} em • Đang mở`,
+        noteText: `Lớp 4 gồm ${STUDENTS_TOAN_12_CB4.length} học sinh đang theo học. Lớp bám sát cấu trúc đề thi tốt nghiệp THPT mới, củng cố toàn diện môn Toán 12.`
+      };
+    }
     if (selectedTab === 'toan-12-cb-all') {
       return {
         currentStudents: STUDENTS_TOAN_12_CO_BAN,
-        tabTitle: `BẢNG DANH SÁCH TOÀN BỘ 3 PHÂN LỚP TOÁN 12 CƠ BẢN (${STUDENTS_TOAN_12_CO_BAN.length} HỌC SINH)`,
-        tabSubTitle: `Tổng sĩ số: ${STUDENTS_TOAN_12_CO_BAN.length} / ${STUDENTS_TOAN_12_CO_BAN.length} học sinh (Chia làm 3 phân lớp CB1, CB2, CB3 - ĐÃ ĐẦY CẢ 3 LỚP)`,
-        isClassFull: true,
-        capacityText: `Tổng 3 lớp: ${STUDENTS_TOAN_12_CO_BAN.length} em • ĐÃ ĐẦY`,
-        noteText: `Cả 3 phân lớp Toán 12 Cơ bản (CB1: ${STUDENTS_TOAN_12_CB1.length} em, CB2: ${STUDENTS_TOAN_12_CB2.length} em, CB3: ${STUDENTS_TOAN_12_CB3.length} em) đã đủ chỉ tiêu ${STUDENTS_TOAN_12_CO_BAN.length} học sinh. Đang mở đăng ký cho các lớp bổ sung!`
+        tabTitle: `BẢNG DANH SÁCH TOÀN BỘ 4 PHÂN LỚP TOÁN 12 CƠ BẢN (${STUDENTS_TOAN_12_CO_BAN.length} HỌC SINH)`,
+        tabSubTitle: `Tổng sĩ số: ${STUDENTS_TOAN_12_CO_BAN.length} học sinh (Gồm 4 phân lớp CB1, CB2, CB3, CB4)`,
+        isClassFull: false,
+        capacityText: `Tổng 4 lớp: ${STUDENTS_TOAN_12_CO_BAN.length} em • Đang mở`,
+        noteText: `Toàn bộ 4 phân lớp Toán 12 Cơ bản (CB1: ${STUDENTS_TOAN_12_CB1.length} em, CB2: ${STUDENTS_TOAN_12_CB2.length} em, CB3: ${STUDENTS_TOAN_12_CB3.length} em, CB4: ${STUDENTS_TOAN_12_CB4.length} em) đang được giảng dạy chất lượng cao tại cơ sở Vạn Phú.`
       };
     }
     if (selectedTab === 'toan-11-cb1') {
@@ -389,7 +402,20 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
             <span>Lớp 3 (CB 3: {STUDENTS_TOAN_12_CB3.length} em • Đã đầy)</span>
           </button>
 
-          {/* Tab Tổng cả 3 lớp */}
+          {/* Tab CB4 */}
+          <button
+            onClick={() => setSelectedTab('toan-12-cb4')}
+            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
+              selectedTab === 'toan-12-cb4'
+                ? 'bg-white text-slate-900 shadow-sm border border-slate-300 font-black'
+                : 'text-slate-600 hover:bg-slate-200'
+            }`}
+          >
+            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>Lớp 4 (CB 4: {STUDENTS_TOAN_12_CB4.length} em)</span>
+          </button>
+
+          {/* Tab Tổng cả 4 lớp */}
           <button
             onClick={() => setSelectedTab('toan-12-cb-all')}
             className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
@@ -649,6 +675,8 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                     ? `THÔNG BÁO: LỚP 2 (CB 2) ĐÃ ĐẦY SĨ SỐ (${STUDENTS_TOAN_12_CB2.length}/${STUDENTS_TOAN_12_CB2.length} HỌC SINH)`
                     : selectedTab === 'toan-12-cb3'
                     ? `THÔNG BÁO: LỚP 3 (CB 3) ĐÃ ĐẦY SĨ SỐ (${STUDENTS_TOAN_12_CB3.length}/${STUDENTS_TOAN_12_CB3.length} HỌC SINH)`
+                    : selectedTab === 'toan-12-cb4'
+                    ? `THÔNG BÁO: LỚP 4 (CB 4) ĐANG MỞ TIẾP NHẬN (${STUDENTS_TOAN_12_CB4.length} HỌC SINH)`
                     : isClassFull
                     ? 'THÔNG BÁO: PHÂN LỚP ĐÃ ĐỦ SĨ SỐ ĐÀO TẠO'
                     : 'THÔNG BÁO: LỚP HỌC ĐANG MỞ TIẾP NHẬN HỌC SINH MỚI'}
@@ -687,6 +715,8 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                       ? 'BẢNG DANH SÁCH THÀNH VIÊN: LỚP 2 (LỚP CB 2 - ĐÃ ĐẦY)'
                       : selectedTab === 'toan-12-cb3'
                       ? 'BẢNG DANH SÁCH THÀNH VIÊN: LỚP 3 (LỚP CB 3 - ĐÃ ĐẦY)'
+                      : selectedTab === 'toan-12-cb4'
+                      ? 'BẢNG DANH SÁCH THÀNH VIÊN: LỚP 4 (LỚP CB 4)'
                       : 'BẢNG DANH SÁCH THÀNH VIÊN LỚP HỌC'}
                   </h3>
                   <p className="text-[11px] text-amber-200/90 font-medium">
@@ -796,6 +826,8 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
                                   ? 'Lớp CB 2 (Đã đầy)'
                                   : student.assignedClass.includes('CB3') || student.assignedClass.includes('CB 3')
                                   ? 'Lớp CB 3 (Đã đầy)'
+                                  : student.assignedClass.includes('CB4') || student.assignedClass.includes('CB 4')
+                                  ? 'Lớp CB 4'
                                   : student.assignedClass}
                               </span>
                             )}
@@ -833,7 +865,7 @@ export const ClassRosterModal: React.FC<ClassRosterModalProps> = ({
             ) : selectedTab.startsWith('toan-11') ? (
               <span>Tổng cộng: <strong className="text-slate-800">{STUDENTS_TOAN_11_ALL.length} học sinh</strong> thuộc 2 phân lớp Toán 11 Cơ Bản (CB1: {STUDENTS_TOAN_11_CB1.length} em, CB2: {STUDENTS_TOAN_11_CB2.length} em • GV: Cô Vũ Hằng)</span>
             ) : selectedTab.startsWith('toan-12-cb') ? (
-              <span>Tổng cộng: <strong className="text-slate-800">{STUDENTS_TOAN_12_CO_BAN.length} học sinh</strong> thuộc 3 phân lớp Toán 12 Cơ Bản (CB1: {STUDENTS_TOAN_12_CB1.length} em, CB2: {STUDENTS_TOAN_12_CB2.length} em, CB3: {STUDENTS_TOAN_12_CB3.length} em)</span>
+              <span>Tổng cộng: <strong className="text-slate-800">{STUDENTS_TOAN_12_CO_BAN.length} học sinh</strong> thuộc 4 phân lớp Toán 12 Cơ Bản (CB1: {STUDENTS_TOAN_12_CB1.length} em, CB2: {STUDENTS_TOAN_12_CB2.length} em, CB3: {STUDENTS_TOAN_12_CB3.length} em, CB4: {STUDENTS_TOAN_12_CB4.length} em)</span>
             ) : selectedTab === 'toan-10-cb' || selectedTab === 'toan-10' ? (
               <span>Tổng cộng: <strong className="text-slate-800">{STUDENTS_TOAN_10_CB.length} học sinh</strong> lớp Toán 10 Cơ Bản (GV: Thầy Hoàng & Tổ bộ môn Toán)</span>
             ) : (
